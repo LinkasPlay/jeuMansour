@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
             if (event.type == SDL_QUIT) {
                 running = 0;
             }
-        }
+        } //fe
         SDL_Delay(16); // pause = + fluide
     }
 
