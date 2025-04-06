@@ -2,7 +2,10 @@
 // Pour lancer          ./code.x
 #include <stdio.h>
 #include <SDL2/SDL.h>
-//printf("yo");//
+
+
+//printf("yo");
+//printf("Salam");
 
 int main(int argc, char* argv[]) {
     SDL_Init(SDL_INIT_VIDEO);
