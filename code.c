@@ -2,10 +2,11 @@
 // Pour lancer          ./run
 #include <stdio.h>
 #include <SDL2/SDL.h>
-
+#include <stdlid.h>
 
 //printf("yo");
-//printf("Salam");
+
+
 
 int main(int argc, char* argv[]) {
     SDL_Init(SDL_INIT_VIDEO);
