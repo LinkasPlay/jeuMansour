@@ -2,7 +2,7 @@
 // Pour lancer          ./run
 #include <stdio.h>
 #include <SDL2/SDL.h>
-#include <stdlid.h>
+#include <stdlib.h>
 
 //printf("yo");
 
