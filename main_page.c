@@ -74,7 +74,7 @@ int main(void) {
 
     //
     // ===================== LOAD VIDEO FRAMES =====================
-    const int total_frames = 300;
+    const int total_frames = 100;
     SDL_Texture* frames[total_frames];
 
     char path[64];
