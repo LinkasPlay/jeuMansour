@@ -72,7 +72,9 @@ int main() {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 running = 0;
-            } else if (event.type == SDL_MOUSEBUTTONDOWN) {
+            }
+            /*
+            else if (event.type == SDL_MOUSEBUTTONDOWN) {
                 int mouse_x = event.button.x;
                 int mouse_y = event.button.y;
         
@@ -82,6 +84,7 @@ int main() {
                     running = 0; // Ferme la fenêtre
                 }
             }
+            */
         }
 
         Uint32 now = SDL_GetTicks();
