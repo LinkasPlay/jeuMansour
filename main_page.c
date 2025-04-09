@@ -1,13 +1,7 @@
-// Compile: gcc *.c -o run -lSDL2 -lSDL2_image
-// Run:     ./run
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-
-
-//Mouse declaration
 
 
 // Center horizontally, fix Y and apply scale
@@ -72,20 +66,19 @@ int main() {
     int spacing = 10; // less gap between buttons
     int start_y = 40; // move everything higher
 
-
-    SDL_Rect exit_rect;
+    // Initializing exit_rect before the loop
+    SDL_Rect exit_rect = {500, 300, 100, 50}; // Position initiale de exit_rect
 
     while (running) {
         while (SDL_PollEvent(&event)) {
-
             if (event.type == SDL_QUIT) {
                 running = 0;
             }
-            
+
             else if (event.type == SDL_MOUSEBUTTONDOWN) {
                 int mouse_x = event.button.x;
                 int mouse_y = event.button.y;
-        
+
                 // Vérifie si on clique dans le bouton exit
                 if (mouse_x >= exit_rect.x && mouse_x <= exit_rect.x + exit_rect.w &&
                     mouse_y >= exit_rect.y && mouse_y <= exit_rect.y + exit_rect.h) {
@@ -101,10 +94,12 @@ int main() {
             last = now;
         }
 
-        // Get positions
+        // Get positions of buttons
         SDL_Rect start_rect = center_texture(start_btn, win, start_y, 0.28f);
         SDL_Rect settings_rect = center_texture(settings_btn, win, start_rect.y + start_rect.h + spacing, 0.28f);
-        SDL_Rect exit_rect = center_texture(exit_btn, win, settings_rect.y + settings_rect.h + spacing, 0.28f);
+
+        // Mise à jour de la position de exit_rect après avoir mis à jour settings_rect
+        exit_rect = center_texture(exit_btn, win, settings_rect.y + settings_rect.h + spacing, 0.28f);
 
         // Render
         SDL_RenderClear(renderer);
