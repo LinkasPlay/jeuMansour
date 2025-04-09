@@ -6,6 +6,10 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
+
+//Mouse declaration
+
+
 // Center horizontally, fix Y and apply scale
 SDL_Rect center_texture(SDL_Texture* tex, SDL_Window* win, int y, float scale) {
     int win_w, win_h;
@@ -68,12 +72,16 @@ int main() {
     int spacing = 10; // less gap between buttons
     int start_y = 40; // move everything higher
 
+
+    SDL_Rect exit_rect;
+
     while (running) {
         while (SDL_PollEvent(&event)) {
+
             if (event.type == SDL_QUIT) {
                 running = 0;
             }
-            /*
+            
             else if (event.type == SDL_MOUSEBUTTONDOWN) {
                 int mouse_x = event.button.x;
                 int mouse_y = event.button.y;
@@ -84,7 +92,7 @@ int main() {
                     running = 0; // Ferme la fenêtre
                 }
             }
-            */
+            
         }
 
         Uint32 now = SDL_GetTicks();
