@@ -4,7 +4,13 @@
 #include <SDL2/SDL_image.h>
 
 
+
+
+
 // Center horizontally, fix Y and apply scale
+
+#ifndef MENU_H      
+#define MENU_H  
 SDL_Rect center_texture(SDL_Texture* tex, SDL_Window* win, int y, float scale) {
     int win_w, win_h;
     SDL_GetWindowSize(win, &win_w, &win_h);
@@ -23,6 +29,8 @@ SDL_Rect center_texture(SDL_Texture* tex, SDL_Window* win, int y, float scale) {
     };
     return rect;
 }
+#endif
+
 
 // Error handler
 void quit(const char* msg) {
@@ -69,7 +77,21 @@ int main() {
     // Initializing exit_rect before the loop
     SDL_Rect exit_rect = {500, 300, 100, 50}; // Position initiale de exit_rect
 
-    int provisory=0;
+
+    //Fonctions compteur
+    void count(int* N){
+        if(mouse_x >= setting_rect.x && setting_rect_x + settig_rect.w<= &&
+            mouse_y >=setting_rect.x && mouse_y <= setting_rect.y + setting_rect.h){
+                N+=1;
+            }
+        if(N>=5){
+            quit("Arrete de spamer!!!\n");
+        }
+    }
+
+
+
+
     while (running) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
@@ -87,9 +109,11 @@ int main() {
                 }
                 else if(mouse_x >= setting_rect.x && setting_rect_x + settig_rect.w<= &&
                         mouse_y >=setting_rect.x && mouse_y <= setting_rect.y + setting_rect.h){
+                            printf("Tu as touché une fois le bouton setting\n");
                             provisory++; 
                             if(provisory >=5){
                                 running = 0;
+                                quit("Tu ne dois pas spamer le setting !!\n");
                             }
                         }
             }
