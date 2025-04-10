@@ -69,6 +69,7 @@ int main() {
     // Initializing exit_rect before the loop
     SDL_Rect exit_rect = {500, 300, 100, 50}; // Position initiale de exit_rect
 
+    int provisory=0;
     while (running) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
@@ -84,8 +85,14 @@ int main() {
                     mouse_y >= exit_rect.y && mouse_y <= exit_rect.y + exit_rect.h) {
                     running = 0; // Ferme la fenêtre
                 }
+                else if(mouse_x >= setting_rect.x && setting_rect_x + settig_rect.w<= &&
+                        mouse_y >=setting_rect.x && mouse_y <= setting_rect.y + setting_rect.h){
+                            provisory++; 
+                            if(provisory >=5){
+                                running = 0;
+                            }
+                        }
             }
-            
         }
 
         Uint32 now = SDL_GetTicks();
