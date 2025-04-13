@@ -1,16 +1,13 @@
-PROG = projet
-
-SRC = src/main.c src/graphics.c src/game.c src/fighter.c src/combat.c
-
 CC = gcc
-CFLAGS = -Wall sdl2-config --cflags
-LDFLAGS = sdl2-config --libs -lSDL2_image
-INCLUDES = -Iinclude
+CFLAGS = -Wall -Iinclude `sdl2-config --cflags` -lSDL2 -lSDL2_ttf
+SRC = $(wildcard src/*.c)
+OBJ = $(SRC:.c=.o)
+TARGET = build/run
 
-all: $(PROG)
+all: $(TARGET)
 
-$(PROG): $(SRC)
-    $(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS)
+$(TARGET): $(SRC)
+	$(CC) $(CFLAGS) -o $@ $^
 
 clean:
-    rm -f $(PROG)
+	rm -f src/*.o $(TARGET)

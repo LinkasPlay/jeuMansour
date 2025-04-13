@@ -82,7 +82,7 @@ int main() {
     void count(int* N){
         if(mouse_x >= setting_rect.x && setting_rect_x + settig_rect.w<= &&
             mouse_y >=setting_rect.x && mouse_y <= setting_rect.y + setting_rect.h){
-                N+=1;
+                *N+=1;
             }
         if(N>=5){
             quit("Arrete de spamer!!!\n");
@@ -101,21 +101,16 @@ int main() {
             else if (event.type == SDL_MOUSEBUTTONDOWN) {
                 int mouse_x = event.button.x;
                 int mouse_y = event.button.y;
-
-                // Vérifie si on clique dans le bouton exit
+            
                 if (mouse_x >= exit_rect.x && mouse_x <= exit_rect.x + exit_rect.w &&
                     mouse_y >= exit_rect.y && mouse_y <= exit_rect.y + exit_rect.h) {
-                    running = 0; // Ferme la fenêtre
+                    running = 0;
                 }
-                else if(mouse_x >= setting_rect.x && setting_rect_x + settig_rect.w<= &&
-                        mouse_y >=setting_rect.x && mouse_y <= setting_rect.y + setting_rect.h){
-                            printf("Tu as touché une fois le bouton setting\n");
-                            provisory++; 
-                            if(provisory >=5){
-                                running = 0;
-                                quit("Tu ne dois pas spamer le setting !!\n");
-                            }
-                        }
+            
+                else if (mouse_x >= settings_rect.x && mouse_x <= settings_rect.x + settings_rect.w &&
+                         mouse_y >= settings_rect.y && mouse_y <= settings_rect.y + settings_rect.h) {
+                    current_page = PAGE_SETTINGS;
+                }
             }
         }
 
