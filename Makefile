@@ -1,31 +1,23 @@
 CC = gcc
 CFLAGS = -Wall -Iinclude `sdl2-config --cflags`
-LIBS = `sdl2-config --libs` -lSDL2_image -lSDL2_ttf -lSDL2
+LIBS = `sdl2-config --libs` -lSDL2_image -lSDL2_ttf
 
-SRC = $(wildcard source/*.c)
-TARGET = exec/jeu
+SRC = source/main.c source/menu.c source/texte.c source/langue.c
+EXEC = exec/jeu
 
-all: $(TARGET)
+all: $(EXEC)
 
-$(TARGET): $(SRC)
+$(EXEC): $(SRC)
+	@mkdir -p exec
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
+	@echo "✅ Compilation réussie : $(EXEC)"
 
-compile: clean all    # Nettoie et compile
+compile: clean all
 
-jeu: compile          # Compile et exécute
-	./exec/jeu
+jeu: compile
+	@echo "🎮 Lancement du jeu..."
+	./$(EXEC)
 
 clean:
-	rm -f source/*.o $(TARGET)
-
-
-
-
-
-
-
-
-
-
-
- 
+	@echo "🧹 Nettoyage..."
+	rm -f $(EXEC)
