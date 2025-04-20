@@ -1,8 +1,8 @@
 CC = gcc
 CFLAGS = -Wall -Iinclude `sdl2-config --cflags`
-LIBS = `sdl2-config --libs` -lSDL2_image -lSDL2_ttf
+LIBS = `sdl2-config --libs` -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 
-SRC = source/main.c source/menu.c source/texte.c source/langue.c
+SRC = source/main.c source/menu.c source/texte.c source/langue.c source/intro.c
 EXEC = exec/jeu
 
 all: $(EXEC)

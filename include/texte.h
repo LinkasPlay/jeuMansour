@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
-SDL_Texture* generer_texte(SDL_Renderer* rendu, const char* texte, TTF_Font* police);
+// Déclaration de la fonction
+SDL_Texture* generer_texte_couleur(SDL_Renderer* rendu, const char* texte, TTF_Font* police, SDL_Color couleur);
 
 #endif
