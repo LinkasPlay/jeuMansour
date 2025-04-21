@@ -42,7 +42,7 @@ Page afficher_menu(SDL_Renderer* rendu, SDL_Window* fenetre) {
     // Charger les 100 images de fond (à partir de frame_001.png)
     char chemin[128];
     for (int i = 0; i < NB_IMAGES_VIDEO; i++) {
-        sprintf(chemin, "ressource/video/frame_menu/frame_%03d.png", i + 1); // commence à 1
+        sprintf(chemin, "ressource/video/frame_menu/frame_%03d.png", i + 1); // commence à 1 (le 000 ne fonctionne pas)
         fond_video[i] = IMG_LoadTexture(rendu, chemin);
         if (!fond_video[i]) {
             SDL_Log("Image %03d manquante ou illisible", i + 1);

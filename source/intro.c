@@ -4,52 +4,64 @@
 #include "intro.h"
 #include "page.h"
 
-// Fonction pour centrer une texture
-static SDL_Rect centrer_texture(SDL_Texture* texture, SDL_Window* fenetre) {
+// Fonction pour centrer et redimensionner le logo
+static SDL_Rect centrer_logo(SDL_Texture* logo, SDL_Window* fenetre, float largeur_max) {
     int largeur_fenetre, hauteur_fenetre;
     SDL_GetWindowSize(fenetre, &largeur_fenetre, &hauteur_fenetre);
-    int largeur_texture, hauteur_texture;
-    SDL_QueryTexture(texture, NULL, NULL, &largeur_texture, &hauteur_texture);
 
-    SDL_Rect position = {
-        (largeur_fenetre - largeur_texture) / 2,
-        (hauteur_fenetre - hauteur_texture) / 2,
-        largeur_texture,
-        hauteur_texture
+    int lw, lh;
+    SDL_QueryTexture(logo, NULL, NULL, &lw, &lh);
+
+    int nouvelle_largeur = largeur_fenetre * largeur_max;
+    int nouvelle_hauteur = nouvelle_largeur * lh / lw;
+
+    SDL_Rect zone = {
+        (largeur_fenetre - nouvelle_largeur) / 2,
+        (hauteur_fenetre - nouvelle_hauteur) / 2,
+        nouvelle_largeur,
+        nouvelle_hauteur
     };
-    return position;
+    return zone;
 }
 
 Page afficher_intro(SDL_Renderer* rendu, SDL_Window* fenetre) {
-    SDL_Texture* logo = IMG_LoadTexture(rendu, "ressource/image/logo_mym.png");
+    SDL_Texture* logo = IMG_LoadTexture(rendu, "ressource/image/logo_MYMFIGHTERS.png");
     if (!logo) {
-        SDL_Log("Erreur chargement logo : %s", SDL_GetError());
+        SDL_Log("Erreur chargement logo intro : %s", SDL_GetError());
         return PAGE_MENU;
     }
 
-    Mix_Music* musique = Mix_LoadMUS("ressource/musique/intro.wav");
-    if (musique) Mix_PlayMusic(musique, 1);
+    Mix_Music* musique = Mix_LoadMUS("ressource/musique/vav/intro.wav");
+    if (!musique) {
+        SDL_Log("Erreur chargement musique intro : %s", Mix_GetError());
+    } else {
+        Mix_PlayMusic(musique, 1); // une seule fois
+    }
 
-    Uint32 debut = SDL_GetTicks();
-    SDL_Event evenement;
+    SDL_Event e;
+    int en_cours = 1;
 
-    while (SDL_GetTicks() - debut < 3000) {
-        while (SDL_PollEvent(&evenement)) {
-            if (evenement.type == SDL_QUIT) {
-                SDL_DestroyTexture(logo);
-                if (musique) Mix_FreeMusic(musique);
+    while (en_cours) {
+        while (SDL_PollEvent(&e)) {
+            if (e.type == SDL_QUIT)
                 return PAGE_QUITTER;
-            }
         }
 
         SDL_RenderClear(rendu);
-        SDL_Rect position = centrer_texture(logo, fenetre);
+
+        SDL_Rect position = centrer_logo(logo, fenetre, 0.5f);  // 50% de la largeur écran
         SDL_RenderCopy(rendu, logo, NULL, &position);
+
         SDL_RenderPresent(rendu);
-        SDL_Delay(16);
+        SDL_Delay(10);
+
+        // On sort quand la musique est finie
+        if (!Mix_PlayingMusic()) {
+            en_cours = 0;
+        }
     }
 
     SDL_DestroyTexture(logo);
-    if (musique) Mix_FreeMusic(musique);
+    Mix_FreeMusic(musique);
     return PAGE_MENU;
 }
