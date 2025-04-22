@@ -34,7 +34,8 @@ Page afficher_intro(SDL_Renderer* rendu, SDL_Window* fenetre) {
     Mix_Music* musique = Mix_LoadMUS("ressource/musique/vav/intro.wav");
     if (!musique) {
         SDL_Log("Erreur chargement musique intro : %s", Mix_GetError());
-    } else {
+    } 
+    else{
         Mix_PlayMusic(musique, 1); // une seule fois
     }
 
@@ -56,9 +57,19 @@ Page afficher_intro(SDL_Renderer* rendu, SDL_Window* fenetre) {
         SDL_Delay(10);
 
         // On sort quand la musique est finie
+        static int attente_finale = 0;
+        static Uint32 temps_fin_musique = 0;
+
         if (!Mix_PlayingMusic()) {
-            en_cours = 0;
-        }
+            if (!attente_finale) {
+                attente_finale = 1;
+                temps_fin_musique = SDL_GetTicks();
+            } 
+            else if (SDL_GetTicks() - temps_fin_musique >= 2000) { // attendre 2 secondes
+                en_cours = 0;
+            }
+}
+
     }
 
     SDL_DestroyTexture(logo);
