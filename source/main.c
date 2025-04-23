@@ -3,112 +3,63 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
 #include <stdbool.h>
-#include <stdlib.h>
 
 #include "chargement.h"
 #include "menu.h"
-#include "langue.h"
-#include "intro.h"
-#include "texte.h"
 
-// Quitte le jeu avec un message d'erreur
-void quitter(const char* message) {
-    SDL_Log("Erreur : %s\nSDL_Error : %s", message, SDL_GetError());
-    Mix_CloseAudio();
-    IMG_Quit();
-    TTF_Quit();
-    SDL_Quit();
-    exit(EXIT_FAILURE);
-}
-
-// Affiche le logo MYM + texte au lancement
-void afficher_logo_lancement(SDL_Renderer* rendu, SDL_Window* fenetre) {
-    SDL_Texture* logo = IMG_LoadTexture(rendu, "ressource/image/logo_MYM.png");
-    if (!logo) {
-        SDL_Log("Erreur chargement logo MYM : %s", SDL_GetError());
-        return;
+int main(int argc, char *argv[]) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
+        SDL_Log("Erreur SDL_Init : %s", SDL_GetError());
+        return 1;
     }
 
-    TTF_Font* police = TTF_OpenFont("ressource/langue/police/arial.ttf", 24);
-    if (!police) {
-        SDL_Log("Erreur chargement police : %s", TTF_GetError());
-        SDL_DestroyTexture(logo);
-        return;
+    if (IMG_Init(IMG_INIT_PNG) == 0) {
+        SDL_Log("Erreur IMG_Init : %s", IMG_GetError());
+        return 1;
     }
 
-    SDL_Color rouge = {200, 0, 0};
-    SDL_Texture* texte_intro = generer_texte_couleur(rendu, "Bienvenue dans MYM Fighters !", police, rouge);
-
-    Uint32 debut = SDL_GetTicks();
-    SDL_Event e;
-
-    while (SDL_GetTicks() - debut < 2000) {
-        while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT) exit(0);
-        }
-
-        int largeur, hauteur;
-        SDL_GetWindowSize(fenetre, &largeur, &hauteur);
-
-        int taille_logo = largeur / 8;
-        SDL_Rect rect_logo = {20, 20, taille_logo, taille_logo};
-
-        int tw, th;
-        SDL_QueryTexture(texte_intro, NULL, NULL, &tw, &th);
-        SDL_Rect rect_texte = {
-            (largeur - tw) / 2,
-            rect_logo.y + rect_logo.h + 20,
-            tw,
-            th
-        };
-
-        SDL_RenderClear(rendu);
-        SDL_RenderCopy(rendu, logo, NULL, &rect_logo);
-        SDL_RenderCopy(rendu, texte_intro, NULL, &rect_texte);
-        SDL_RenderPresent(rendu);
-        SDL_Delay(16);
+    if (TTF_Init() != 0) {
+        SDL_Log("Erreur TTF_Init : %s", TTF_GetError());
+        return 1;
     }
 
-    SDL_DestroyTexture(logo);
-    SDL_DestroyTexture(texte_intro);
-    TTF_CloseFont(police);
-}
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        SDL_Log("Erreur Mix_OpenAudio : %s", Mix_GetError());
+        return 1;
+    }
 
-int main() {
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) quitter("SDL_Init");
-    if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) quitter("IMG_Init");
-    if (TTF_Init() != 0) quitter("TTF_Init");
-    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) quitter("Mix_OpenAudio");
+    SDL_Window *window = SDL_CreateWindow("CY Fighters", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1024, 640, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    if (!window) {
+        SDL_Log("Erreur création fenêtre : %s", SDL_GetError());
+        return 1;
+    }
 
-    SDL_Window* fenetre = SDL_CreateWindow("MYM Fighters", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1024, 640, SDL_WINDOW_RESIZABLE);
-    if (!fenetre) quitter("Création fenêtre");
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    if (!renderer) {
+        SDL_Log("Erreur création renderer : %s", SDL_GetError());
+        SDL_DestroyWindow(window);
+        return 1;
+    }
 
-    SDL_Renderer* rendu = SDL_CreateRenderer(fenetre, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (!rendu) quitter("Création renderer");
+    // PAGE DE CHARGEMENT
+    afficher_chargement(renderer);
+    SDL_Delay(500);
 
-    // Chargement de la langue
-    charger_langue("ressource/langue/francais.txt");
+    // MENU PRINCIPAL
+    afficher_menu_simple(renderer);
 
-    // Logo au lancement
-    afficher_logo_lancement(rendu, fenetre);
-
-    // Générique (intro + son)
-    Page page = afficher_intro(rendu, fenetre);
-
-    // Navigation par page
-    while (page != PAGE_QUITTER) {
-        if (page == PAGE_MENU) {
-            page = afficher_menu(rendu, fenetre);
-        } else if (page == PAGE_HISTOIRE) {
-            // (à venir) page = afficher_histoire();
-            page = PAGE_MENU;
-        } else {
-            page = PAGE_QUITTER;
+    bool running = true;
+    SDL_Event event;
+    while (running) {
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                running = false;
+            }
         }
     }
 
-    SDL_DestroyRenderer(rendu);
-    SDL_DestroyWindow(fenetre);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
     Mix_CloseAudio();
     TTF_Quit();
     IMG_Quit();
