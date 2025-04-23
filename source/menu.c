@@ -1,85 +1,91 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
-#include "menu.h"
+#include <SDL2/SDL_mixer.h>
+
+#include "fighter.h"
 
 void afficher_menu_simple(SDL_Renderer *rendu) {
-    SDL_Surface *fond_surface = IMG_Load("ressource/image/Menu.png");
-    SDL_Texture *fond = SDL_CreateTextureFromSurface(rendu, fond_surface);
-    SDL_FreeSurface(fond_surface);
+    // Musique du menu (chargée directement en WAV, pas avec une fonction)
+    Mix_Music* musique = Mix_LoadMUS("ressource/musique/wav/menu.wav");
+    if (!musique) {
+        SDL_Log("Erreur chargement musique : %s", Mix_GetError());
+    } else {
+        Mix_PlayMusic(musique, -1); // -1 = boucle infinie
+    }
 
-    SDL_Surface *cadre_surface = IMG_Load("ressource/image/CadreTitre.png");
-    SDL_Texture *cadre_titre = SDL_CreateTextureFromSurface(rendu, cadre_surface);
-    SDL_FreeSurface(cadre_surface);
+    // Fond du menu
+    SDL_Texture *fond = IMG_LoadTexture(rendu, "ressource/image/Menu.png");
 
-    TTF_Font *police = TTF_OpenFont("ressource/langue/police/arial.ttf", 32);
+    // Cadre du titre
+    SDL_Texture *cadre_titre = IMG_LoadTexture(rendu, "ressource/image/CadreTitre.png");
+
+    TTF_Font *police = TTF_OpenFont("ressource/langue/police/arial.ttf", 80);
     SDL_Color blanc = {255, 255, 255, 255};
 
-    int largeur_fenetre, hauteur_fenetre;
-    SDL_GetRendererOutputSize(rendu, &largeur_fenetre, &hauteur_fenetre);
+    int largeur, hauteur;
+    SDL_GetRendererOutputSize(rendu, &largeur, &hauteur);
 
-    SDL_Rect plein_ecran = {0, 0, largeur_fenetre, hauteur_fenetre};
+    SDL_Rect plein_ecran = {0, 0, largeur, hauteur};
     SDL_RenderClear(rendu);
     SDL_RenderCopy(rendu, fond, NULL, &plein_ecran);
 
-    // --- CADRE IMAGE AVEC TITRE ---
-    int largeur_cadre = 450;
-    int hauteur_cadre = 220;
-    int x_cadre = (largeur_fenetre - largeur_cadre) / 2;
-    int y_cadre = hauteur_fenetre * 0.05;
-    SDL_Rect pos_cadre = {x_cadre, y_cadre, largeur_cadre, hauteur_cadre};
-    SDL_RenderCopy(rendu, cadre_titre, NULL, &pos_cadre);
+    // Titre
+    SDL_Rect rect_titre = {
+        (largeur - 450) / 2,
+        hauteur * 0.05,
+        450,
+        220
+    };
+    SDL_RenderCopy(rendu, cadre_titre, NULL, &rect_titre);
 
-    // --- BOUTONS ---
-    int largeur_bouton = 320;
-    int hauteur_bouton = 70;
+    // Boutons
+    int largeur_btn = 320;
+    int hauteur_btn = 70;
     int espacement = 40;
-    int x_bouton = (largeur_fenetre - largeur_bouton) / 2;
-    int y_depart = y_cadre + hauteur_cadre + 40;
+    int x_btn = (largeur - largeur_btn) / 2;
+    int y_base = rect_titre.y + rect_titre.h + 40;
 
     const char *noms[] = {"Jouer", "Options", "Quitter"};
 
     for (int i = 0; i < 3; i++) {
-        SDL_Rect bouton = {
-            x_bouton,
-            y_depart + i * (hauteur_bouton + espacement),
-            largeur_bouton,
-            hauteur_bouton
+        SDL_Rect btn = {
+            x_btn,
+            y_base + i * (hauteur_btn + espacement),
+            largeur_btn,
+            hauteur_btn
         };
 
-        // Fond marron cuir
         SDL_SetRenderDrawColor(rendu, 101, 67, 33, 255);
-        SDL_RenderFillRect(rendu, &bouton);
+        SDL_RenderFillRect(rendu, &btn);
 
-        // Cadre clair effet parchemin
         SDL_SetRenderDrawColor(rendu, 200, 160, 100, 255);
         for (int ep = 0; ep < 3; ep++) {
             SDL_Rect bord = {
-                bouton.x - ep,
-                bouton.y - ep,
-                bouton.w + ep * 2,
-                bouton.h + ep * 2
+                btn.x - ep,
+                btn.y - ep,
+                btn.w + ep * 2,
+                btn.h + ep * 2
             };
             SDL_RenderDrawRect(rendu, &bord);
         }
 
-        // Texte centré
         SDL_Surface *surf = TTF_RenderUTF8_Blended(police, noms[i], blanc);
         SDL_Texture *tex = SDL_CreateTextureFromSurface(rendu, surf);
-        SDL_Rect zone_texte = {
-            bouton.x + (bouton.w - surf->w) / 2,
-            bouton.y + (bouton.h - surf->h) / 2,
+        SDL_Rect txt_rect = {
+            btn.x + (btn.w - surf->w) / 2,
+            btn.y + (btn.h - surf->h) / 2,
             surf->w,
             surf->h
         };
-
         SDL_FreeSurface(surf);
-        SDL_RenderCopy(rendu, tex, NULL, &zone_texte);
+        SDL_RenderCopy(rendu, tex, NULL, &txt_rect);
         SDL_DestroyTexture(tex);
     }
 
     SDL_RenderPresent(rendu);
 
+    // Libération mémoire
     SDL_DestroyTexture(fond);
     SDL_DestroyTexture(cadre_titre);
     TTF_CloseFont(police);

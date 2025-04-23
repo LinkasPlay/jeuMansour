@@ -1,8 +1,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
-#include "intro.h"
-#include "page.h"
+#include "fighter.h"
+
 
 // Fonction pour centrer et redimensionner le logo
 static SDL_Rect centrer_logo(SDL_Texture* logo, SDL_Window* fenetre, float largeur_max) {

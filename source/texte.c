@@ -1,6 +1,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
-#include "texte.h"
+
+
+#include "fighter.h"
+
 
 SDL_Texture* generer_texte(SDL_Renderer* rendu, const char* texte, TTF_Font* police) {
     SDL_Color blanc = {255, 255, 255};

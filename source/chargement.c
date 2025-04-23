@@ -1,7 +1,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
-#include "chargement.h"
+#include "fighter.h"
 
 void afficher_chargement(SDL_Renderer *rendu) {
     SDL_Surface *image_fond = IMG_Load("ressource/image/Chargement.png");

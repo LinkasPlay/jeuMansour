@@ -1,7 +1,9 @@
-#include "langue.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+
+#include "fighter.h"
 
 #define NB_TEXTES 20
 

@@ -4,8 +4,8 @@
 #include <SDL2/SDL_mixer.h>
 #include <stdbool.h>
 
-#include "chargement.h"
-#include "menu.h"
+#include "fighter.h"
+
 
 int main(int argc, char *argv[]) {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
