@@ -6,6 +6,7 @@
 
 #include "fighter.h"
 
+extern void afficher_menu(SDL_Renderer *rendu); // nom très simple
 
 int main(int argc, char *argv[]) {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
@@ -28,38 +29,37 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    SDL_Window *window = SDL_CreateWindow("CY Fighters", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1024, 640, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-    if (!window) {
+    SDL_Window *fenetre = SDL_CreateWindow("CY Fighters", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1024, 640, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    if (!fenetre) {
         SDL_Log("Erreur création fenêtre : %s", SDL_GetError());
         return 1;
     }
 
-    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (!renderer) {
+    SDL_Renderer *rendu = SDL_CreateRenderer(fenetre, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    if (!rendu) {
         SDL_Log("Erreur création renderer : %s", SDL_GetError());
-        SDL_DestroyWindow(window);
+        SDL_DestroyWindow(fenetre);
         return 1;
     }
 
-    // PAGE DE CHARGEMENT
-    afficher_chargement(renderer);
-    SDL_Delay(500);
+    afficher_chargement(rendu);
+    SDL_Delay(100);
 
-    // MENU PRINCIPAL
-    afficher_menu_simple(renderer);
+    afficher_intro(rendu, fenetre);
+    afficher_menu(rendu);  // nom corrigé ici
 
-    bool running = true;
-    SDL_Event event;
-    while (running) {
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
-                running = false;
+    bool en_cours = true;
+    SDL_Event evenement;
+    while (en_cours) {
+        while (SDL_PollEvent(&evenement)) {
+            if (evenement.type == SDL_QUIT) {
+                en_cours = false;
             }
         }
     }
 
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
+    SDL_DestroyRenderer(rendu);
+    SDL_DestroyWindow(fenetre);
     Mix_CloseAudio();
     TTF_Quit();
     IMG_Quit();

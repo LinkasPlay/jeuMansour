@@ -20,9 +20,7 @@ typedef enum {
     PAGE_QUITTER
 } Page;
 
-
 // === Statuts & Effets ===
-
 typedef enum {
     Aucun = 0,
     BRULE,
@@ -36,12 +34,11 @@ typedef enum {
 
 typedef struct {
     TypeEffet type;
-    float valeur; // ex : 0.25 = -25% ; ou 10 = +10 PV
-    int duree;    // en nombre de tours
+    float valeur;
+    int duree;
 } StatutEffet;
 
 // === Attaques spéciales ===
-
 #define MAX_NOM_ATTAQUE 50
 #define MAX_DESCRIPTION 300
 #define MAX_SPECIAL 3
@@ -54,23 +51,21 @@ typedef struct {
     int tour;
 } AttaqueSpecial;
 
-
 // === Fonctions générales ===
-void afficher_menu_simple(SDL_Renderer *rendu);
-void afficher_chargement(SDL_Renderer *rendu);
-Page afficher_intro(SDL_Renderer* rendu, SDL_Window* fenetre);
-Page afficher_menu(SDL_Renderer* rendu, SDL_Window* fenetre);
+extern void afficher_menu_simple(SDL_Renderer *rendu);
+extern void afficher_chargement(SDL_Renderer *rendu);
+extern Page afficher_intro(SDL_Renderer* rendu, SDL_Window* fenetre);
 
 // === Audio ===
-void jouer_musique(const char* chemin, int boucle);
-void arreter_musique(void);
+extern void jouer_musique(const char* chemin, int boucle);
+extern void arreter_musique(void);
 
 // === Texte ===
-SDL_Texture* generer_texte(SDL_Renderer* rendu, const char* texte, TTF_Font* police);
-SDL_Texture* generer_texte_couleur(SDL_Renderer* rendu, const char* texte, TTF_Font* police, SDL_Color couleur);
+extern SDL_Texture* generer_texte(SDL_Renderer* rendu, const char* texte, TTF_Font* police);
+extern SDL_Texture* generer_texte_couleur(SDL_Renderer* rendu, const char* texte, TTF_Font* police, SDL_Color couleur);
 
 // === Langue ===
-char* charger_texte_depuis_fichier(const char* chemin, const char* etiquette);
-void charger_langue(const char* chemin);
+extern char* charger_texte_depuis_fichier(const char* chemin, const char* etiquette);
+extern void charger_langue(const char* chemin);
 
 #endif

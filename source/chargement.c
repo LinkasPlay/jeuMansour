@@ -70,7 +70,7 @@ void afficher_chargement(SDL_Renderer *rendu) {
         SDL_DestroyTexture(tex_pct);
 
         SDL_RenderPresent(rendu);
-        SDL_Delay(300);
+        SDL_Delay(5);
     }
 
     SDL_DestroyTexture(fond);
