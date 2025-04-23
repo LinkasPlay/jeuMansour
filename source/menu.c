@@ -1,120 +1,86 @@
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include "menu.h"
-#include "langue.h"
-#include "texte.h"
-#include "page.h"
 
-#define NB_IMAGES_VIDEO 100
-SDL_Texture* fond_video[NB_IMAGES_VIDEO];
+void afficher_menu_simple(SDL_Renderer *rendu) {
+    SDL_Surface *fond_surface = IMG_Load("ressource/image/Menu.png");
+    SDL_Texture *fond = SDL_CreateTextureFromSurface(rendu, fond_surface);
+    SDL_FreeSurface(fond_surface);
 
-// Fonction pour centrer un rectangle à l’horizontale
-static SDL_Rect centrer_page(SDL_Window* fenetre, int y, int largeur, int hauteur) {
-    int largeur_fenetre;
-    SDL_GetWindowSize(fenetre, &largeur_fenetre, NULL);
+    SDL_Surface *cadre_surface = IMG_Load("ressource/image/CadreTitre.png");
+    SDL_Texture *cadre_titre = SDL_CreateTextureFromSurface(rendu, cadre_surface);
+    SDL_FreeSurface(cadre_surface);
 
-    SDL_Rect zone = {
-        (largeur_fenetre - largeur) / 2,
-        y,
-        largeur,
-        hauteur
-    };
-    return zone;
-}
+    TTF_Font *police = TTF_OpenFont("ressource/langue/police/arial.ttf", 32);
+    SDL_Color blanc = {255, 255, 255, 255};
 
-Page afficher_menu(SDL_Renderer* rendu, SDL_Window* fenetre) {
-    // Charger la police
-    TTF_Font* police = TTF_OpenFont("ressource/langue/police/arial.ttf", 28);
-    if (!police) {
-        SDL_Log("Erreur chargement police : %s", TTF_GetError());
-        return PAGE_QUITTER;
-    }
+    int largeur_fenetre, hauteur_fenetre;
+    SDL_GetRendererOutputSize(rendu, &largeur_fenetre, &hauteur_fenetre);
 
-    // Texte rouge visible
-    SDL_Color couleur_texte = (SDL_Color){200, 0, 0};
+    SDL_Rect plein_ecran = {0, 0, largeur_fenetre, hauteur_fenetre};
+    SDL_RenderClear(rendu);
+    SDL_RenderCopy(rendu, fond, NULL, &plein_ecran);
 
-    // Générer les textes
-    SDL_Texture* texte_jouer   = generer_texte_couleur(rendu, get_texte("START"), police, couleur_texte);
-    SDL_Texture* texte_options = generer_texte_couleur(rendu, get_texte("OPTIONS"), police, couleur_texte);
-    SDL_Texture* texte_quitter = generer_texte_couleur(rendu, get_texte("QUIT"), police, couleur_texte);
+    // --- CADRE IMAGE AVEC TITRE ---
+    int largeur_cadre = 450;
+    int hauteur_cadre = 220;
+    int x_cadre = (largeur_fenetre - largeur_cadre) / 2;
+    int y_cadre = hauteur_fenetre * 0.05;
+    SDL_Rect pos_cadre = {x_cadre, y_cadre, largeur_cadre, hauteur_cadre};
+    SDL_RenderCopy(rendu, cadre_titre, NULL, &pos_cadre);
 
-    // Charger les 100 images de fond (à partir de frame_001.png)
-    char chemin[128];
-    for (int i = 0; i < NB_IMAGES_VIDEO; i++) {
-        sprintf(chemin, "ressource/video/frame_menu/frame_%03d.png", i + 1); // commence à 1
-        fond_video[i] = IMG_LoadTexture(rendu, chemin);
-        if (!fond_video[i]) {
-            SDL_Log("Image %03d manquante ou illisible", i + 1);
-        }
-    }
+    // --- BOUTONS ---
+    int largeur_bouton = 320;
+    int hauteur_bouton = 70;
+    int espacement = 40;
+    int x_bouton = (largeur_fenetre - largeur_bouton) / 2;
+    int y_depart = y_cadre + hauteur_cadre + 40;
 
-    int actif = 1;
-    SDL_Event evenement;
-    Page prochaine_page = PAGE_MENU;
+    const char *noms[] = {"Jouer", "Options", "Quitter"};
 
-    int numero_image = 0;
-    Uint32 moment_precedent = SDL_GetTicks();
+    for (int i = 0; i < 3; i++) {
+        SDL_Rect bouton = {
+            x_bouton,
+            y_depart + i * (hauteur_bouton + espacement),
+            largeur_bouton,
+            hauteur_bouton
+        };
 
-    while (actif) {
-        Uint32 maintenant = SDL_GetTicks();
-        if (maintenant - moment_precedent > 1000 / 10) {
-            numero_image = (numero_image + 1) % NB_IMAGES_VIDEO;
-            moment_precedent = maintenant;
-        }
+        // Fond marron cuir
+        SDL_SetRenderDrawColor(rendu, 101, 67, 33, 255);
+        SDL_RenderFillRect(rendu, &bouton);
 
-        int largeur_fenetre;
-        SDL_GetWindowSize(fenetre, &largeur_fenetre, NULL);
-        int largeur_bouton = largeur_fenetre * 0.25;
-        int hauteur_bouton = largeur_bouton / 3;
-
-        SDL_Rect bouton_jouer   = centrer_page(fenetre, 150, largeur_bouton, hauteur_bouton);
-        SDL_Rect bouton_options = centrer_page(fenetre, bouton_jouer.y + hauteur_bouton + 10, largeur_bouton, hauteur_bouton);
-        SDL_Rect bouton_quitter = centrer_page(fenetre, bouton_options.y + hauteur_bouton + 10, largeur_bouton, hauteur_bouton);
-
-        while (SDL_PollEvent(&evenement)) {
-            if (evenement.type == SDL_QUIT)
-                return PAGE_QUITTER;
-
-            if (evenement.type == SDL_MOUSEBUTTONDOWN) {
-                int x = evenement.button.x;
-                int y = evenement.button.y;
-
-                if (x >= bouton_jouer.x && x <= bouton_jouer.x + bouton_jouer.w &&
-                    y >= bouton_jouer.y && y <= bouton_jouer.y + bouton_jouer.h) {
-                    prochaine_page = PAGE_HISTOIRE;
-                    actif = 0;
-                }
-
-                if (x >= bouton_quitter.x && x <= bouton_quitter.x + bouton_quitter.w &&
-                    y >= bouton_quitter.y && y <= bouton_quitter.y + bouton_quitter.h) {
-                    prochaine_page = PAGE_QUITTER;
-                    actif = 0;
-                }
-            }
+        // Cadre clair effet parchemin
+        SDL_SetRenderDrawColor(rendu, 200, 160, 100, 255);
+        for (int ep = 0; ep < 3; ep++) {
+            SDL_Rect bord = {
+                bouton.x - ep,
+                bouton.y - ep,
+                bouton.w + ep * 2,
+                bouton.h + ep * 2
+            };
+            SDL_RenderDrawRect(rendu, &bord);
         }
 
-        SDL_RenderClear(rendu);
+        // Texte centré
+        SDL_Surface *surf = TTF_RenderUTF8_Blended(police, noms[i], blanc);
+        SDL_Texture *tex = SDL_CreateTextureFromSurface(rendu, surf);
+        SDL_Rect zone_texte = {
+            bouton.x + (bouton.w - surf->w) / 2,
+            bouton.y + (bouton.h - surf->h) / 2,
+            surf->w,
+            surf->h
+        };
 
-        if (fond_video[numero_image]) {
-            SDL_RenderCopy(rendu, fond_video[numero_image], NULL, NULL);
-        }
-
-        SDL_RenderCopy(rendu, texte_jouer,   NULL, &bouton_jouer);
-        SDL_RenderCopy(rendu, texte_options, NULL, &bouton_options);
-        SDL_RenderCopy(rendu, texte_quitter, NULL, &bouton_quitter);
-        SDL_RenderPresent(rendu);
-        SDL_Delay(1);
+        SDL_FreeSurface(surf);
+        SDL_RenderCopy(rendu, tex, NULL, &zone_texte);
+        SDL_DestroyTexture(tex);
     }
 
-    for (int i = 0; i < NB_IMAGES_VIDEO; i++) {
-        if (fond_video[i]) SDL_DestroyTexture(fond_video[i]);
-    }
+    SDL_RenderPresent(rendu);
 
-    SDL_DestroyTexture(texte_jouer);
-    SDL_DestroyTexture(texte_options);
-    SDL_DestroyTexture(texte_quitter);
+    SDL_DestroyTexture(fond);
+    SDL_DestroyTexture(cadre_titre);
     TTF_CloseFont(police);
-
-    return prochaine_page;
 }

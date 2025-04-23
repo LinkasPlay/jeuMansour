@@ -2,106 +2,68 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <stdbool.h>
 
-#include "intro.h"
-#include "langue.h"
+#include "chargement.h"
 #include "menu.h"
-#include "texte.h"
-#include "page.h"
 
-// Quitter avec un message d'erreur
-void quitter(const char* message) {
-    SDL_Log("Erreur : %s\nSDL_Error : %s", message, SDL_GetError());
-    IMG_Quit();
-    TTF_Quit();
-    SDL_Quit();
-    exit(EXIT_FAILURE);
-}
-
-// Fonction pour centrer une texture
-SDL_Rect centrer(SDL_Texture* texture, SDL_Window* fenetre) {
-    int fw, fh, tw, th;
-    SDL_GetWindowSize(fenetre, &fw, &fh);
-    SDL_QueryTexture(texture, NULL, NULL, &tw, &th);
-
-    SDL_Rect r = {
-        (fw - tw) / 2,
-        (fh - th) / 2,
-        tw,
-        th
-    };
-    return r;
-}
-
-// Logo de lancement (logo_MYM.png)
-void afficher_logo_lancement(SDL_Renderer* rendu, SDL_Window* fenetre) {
-    SDL_Texture* logo = IMG_LoadTexture(rendu, "ressource/image/logo_MYM.png");
-    if (!logo) {
-        SDL_Log("Erreur chargement logo lancement : %s", SDL_GetError());
-        return;
+int main(int argc, char *argv[]) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
+        SDL_Log("Erreur SDL_Init : %s", SDL_GetError());
+        return 1;
     }
 
-    Uint32 debut = SDL_GetTicks();
-    SDL_Event e;
-
-    while (SDL_GetTicks() - debut < 2000) {
-        while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT) exit(0);
-        }
-
-        SDL_RenderClear(rendu);
-        SDL_Rect position = centrer(logo, fenetre);
-        SDL_RenderCopy(rendu, logo, NULL, &position);
-        SDL_RenderPresent(rendu);
-        SDL_Delay(10);
+    if (IMG_Init(IMG_INIT_PNG) == 0) {
+        SDL_Log("Erreur IMG_Init : %s", IMG_GetError());
+        return 1;
     }
 
-    SDL_DestroyTexture(logo);
-}
+    if (TTF_Init() != 0) {
+        SDL_Log("Erreur TTF_Init : %s", TTF_GetError());
+        return 1;
+    }
 
-int main() {
-    // Initialisation SDL
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) quitter("SDL_Init");
-    if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) quitter("IMG_Init");
-    if (TTF_Init() != 0) quitter("TTF_Init");
-    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) quitter("Mix_OpenAudio");
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        SDL_Log("Erreur Mix_OpenAudio : %s", Mix_GetError());
+        return 1;
+    }
 
-    // Création de la fenêtre
-    SDL_Window* fenetre = SDL_CreateWindow("MYM Fighters", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_RESIZABLE);
-    if (!fenetre) quitter("Création fenêtre");
+    SDL_Window *window = SDL_CreateWindow("CY Fighters", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1024, 640, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    if (!window) {
+        SDL_Log("Erreur création fenêtre : %s", SDL_GetError());
+        return 1;
+    }
 
-    SDL_Renderer* rendu = SDL_CreateRenderer(fenetre, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (!rendu) quitter("Création rendu");
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    if (!renderer) {
+        SDL_Log("Erreur création renderer : %s", SDL_GetError());
+        SDL_DestroyWindow(window);
+        return 1;
+    }
 
-    // Chargement de la langue
-    charger_langue("ressource/langue/francais.txt");
+    // PAGE DE CHARGEMENT
+    afficher_chargement(renderer);
+    SDL_Delay(500);
 
-    // === Étape 1 : logo MYM
-    afficher_logo_lancement(rendu, fenetre);
+    // MENU PRINCIPAL
+    afficher_menu_simple(renderer);
 
-    // === Étape 2 : générique de début (logo MYM Fighters + son + frames vidéo)
-    Page page = afficher_intro(rendu, fenetre);
-
-    // === Étape 3 : menu
-    while (page != PAGE_QUITTER) {
-        if (page == PAGE_MENU) {
-            page = afficher_menu(rendu, fenetre);
-        } else if (page == PAGE_HISTOIRE) {
-            // à venir : afficher_histoire(rendu, fenetre);
-            page = PAGE_MENU;
-        } else {
-            page = PAGE_QUITTER;
+    bool running = true;
+    SDL_Event event;
+    while (running) {
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                running = false;
+            }
         }
     }
 
-    // Nettoyage
-    SDL_DestroyRenderer(rendu);
-    SDL_DestroyWindow(fenetre);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
     Mix_CloseAudio();
     TTF_Quit();
     IMG_Quit();
     SDL_Quit();
+
     return 0;
 }
