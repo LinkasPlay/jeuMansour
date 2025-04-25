@@ -3,9 +3,7 @@ CFLAGS = -Wall -Iinclude `sdl2-config --cflags`
 LIBS = `sdl2-config --libs` -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 
 SRC = source/main.c \
-      source/menu.c 
-
-
+      source/menu.c \
 
 EXEC = exec/jeu
 

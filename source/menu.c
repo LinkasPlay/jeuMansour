@@ -1,5 +1,12 @@
 #include "fighter.h"
 #include <string.h>
+#include <time.h>
+
+
+// === VARIABLE GLOBALE POUR LA MUSIQUE ===
+Mix_Music* musique_global = NULL;
+int musique_lancee = 0;
+
 
 // === CHARGEMENT ===
 Page afficher_chargement(SDL_Renderer *rendu) {
@@ -26,7 +33,12 @@ Page afficher_chargement(SDL_Renderer *rendu) {
         SDL_RenderCopy(rendu, texture_texte, NULL, &zone_texte);
         SDL_SetRenderDrawColor(rendu, 255, 220, 0, 255);
         for (int j = 0; j < i; j++) {
-            SDL_Rect bloc = { zone_barre.x + j * (largeur_bloc + marge), zone_barre.y, largeur_bloc, zone_barre.h };
+            SDL_Rect bloc = {
+                zone_barre.x + j * (largeur_bloc + marge),
+                zone_barre.y,
+                largeur_bloc,
+                zone_barre.h
+            };
             SDL_RenderFillRect(rendu, &bloc);
         }
         SDL_RenderPresent(rendu);
@@ -52,102 +64,84 @@ Page afficher_histoire(SDL_Renderer* rendu) {
     char affichage[NB_PHRASES][256] = {{0}};
     int lettres[NB_PHRASES] = {0};
 
-    const int NB_FRAMES = 99;
-    SDL_Texture* frames[NB_FRAMES];
-    char chemin[128];
-    for (int i = 1; i <= NB_FRAMES; i++) {
-        sprintf(chemin, "ressource/video/frame_histoire/frame_%03d.png", i);
-        SDL_Surface* surf = IMG_Load(chemin);
-        if (surf) {
-            frames[i - 1] = SDL_CreateTextureFromSurface(rendu, surf);
-            SDL_FreeSurface(surf);
-        } else {
-            frames[i - 1] = NULL;
-        }
-    }
+    // Fond fixe
+    SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/histoire.png");
 
+    // Police
     TTF_Font* police = TTF_OpenFont("ressource/langue/police/arial.ttf", 32);
     SDL_Color blanc = {255, 255, 255, 255};
 
+    // Bouton skip
     SDL_Texture* skip_btn = IMG_LoadTexture(rendu, "ressource/image/Flash Skip.png");
     SDL_Rect skip_rect = {LARGEUR_FENETRE - 120, 20, 80, 80};
 
-   // Charger le son de phrase
-Mix_Chunk* son_phrase = Mix_LoadWAV("ressource/musique/wav/phrase.wav");
-if (!son_phrase) {
-    SDL_Log("ERREUR chargement son phrase : %s", Mix_GetError());
-}
+    // Son
+    Mix_Chunk* son_phrase = Mix_LoadWAV("ressource/musique/wav/phrase.wav");
+    if (!son_phrase) SDL_Log("ERREUR chargement son phrase : %s", Mix_GetError());
 
-Uint32 last_char = SDL_GetTicks();
-SDL_Event event;
-int phrase = 0;
+    Uint32 last_char = SDL_GetTicks();
+    SDL_Event event;
+    int phrase = 0;
 
-while (phrase < NB_PHRASES) {
-    Uint32 now = SDL_GetTicks();
-    int frame = (now / 33) % NB_FRAMES;
+    while (phrase < NB_PHRASES) {
+        Uint32 now = SDL_GetTicks();
 
-    if (lettres[phrase] < strlen(phrases[phrase]) && now - last_char > 40) {
-        lettres[phrase]++;
-        last_char = now;
-        strncpy(affichage[phrase], phrases[phrase], lettres[phrase]);
-        affichage[phrase][lettres[phrase]] = '\0';
+        if (lettres[phrase] < strlen(phrases[phrase]) && now - last_char > 40) {
+            lettres[phrase]++;
+            last_char = now;
+            memset(affichage[phrase], 0, sizeof(affichage[phrase]));
+            strncpy(affichage[phrase], phrases[phrase], lettres[phrase]);
 
-        if (lettres[phrase] == 1 && son_phrase) {
-            int volume = 40 + rand() % 65; // Volume aléatoire entre 40 et 64
-            Mix_VolumeChunk(son_phrase, volume);
-            Mix_PlayChannel(-1, son_phrase, 0);
+            if (lettres[phrase] == 1 && son_phrase) {
+                int volume = 30 + rand() % 35;
+                Mix_VolumeChunk(son_phrase, volume);
+                Mix_PlayChannel(-1, son_phrase, 0);
+            }
         }
-    }
 
-    SDL_RenderClear(rendu);
-    if (frames[frame]) SDL_RenderCopy(rendu, frames[frame], NULL, NULL);
-    else SDL_SetRenderDrawColor(rendu, 0, 0, 0, 255), SDL_RenderClear(rendu);
+        SDL_RenderClear(rendu);
+        if (fond) SDL_RenderCopy(rendu, fond, NULL, NULL);
 
-    for (int i = 0; i <= phrase; i++) {
-        if (lettres[i] > 0) {
-            SDL_Surface* surf = TTF_RenderUTF8_Blended(police, affichage[i], blanc);
-            if (surf) {
-                SDL_Texture* tex = SDL_CreateTextureFromSurface(rendu, surf);
-                SDL_Rect rect = {
-                    (LARGEUR_FENETRE - surf->w) / 2,
-                    60 + i * 80,
-                    surf->w,
-                    surf->h
-                };
-                SDL_RenderCopy(rendu, tex, NULL, &rect);
-                SDL_FreeSurface(surf);
-                SDL_DestroyTexture(tex);
+        for (int i = 0; i <= phrase; i++) {
+            if (lettres[i] > 0) {
+                SDL_Surface* surf = TTF_RenderUTF8_Blended(police, affichage[i], blanc);
+                if (surf) {
+                    SDL_Texture* tex = SDL_CreateTextureFromSurface(rendu, surf);
+                    SDL_Rect rect = {
+                        (LARGEUR_FENETRE - surf->w) / 2,
+                        60 + i * 80,
+                        surf->w, surf->h
+                    };
+                    SDL_RenderCopy(rendu, tex, NULL, &rect);
+                    SDL_FreeSurface(surf);
+                    SDL_DestroyTexture(tex);
+                }
+            }
+        }
+
+        if (skip_btn) SDL_RenderCopy(rendu, skip_btn, NULL, &skip_rect);
+        SDL_RenderPresent(rendu);
+
+        if (lettres[phrase] == strlen(phrases[phrase])) {
+            SDL_Delay(1000);
+            phrase++;
+        }
+
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT)
+                return PAGE_QUITTER;
+            if (event.type == SDL_MOUSEBUTTONDOWN) {
+                int x = event.button.x, y = event.button.y;
+                if (x >= skip_rect.x && x <= skip_rect.x + skip_rect.w &&
+                    y >= skip_rect.y && y <= skip_rect.y + skip_rect.h) {
+                    Mix_HaltChannel(-1);
+                    return PAGE_MENU;
+                }
             }
         }
     }
 
-    if (skip_btn) SDL_RenderCopy(rendu, skip_btn, NULL, &skip_rect);
-    SDL_RenderPresent(rendu);
-
-    if (lettres[phrase] == strlen(phrases[phrase])) {
-        SDL_Delay(1000);
-        phrase++;
-    }
-
-    while (SDL_PollEvent(&event)) {
-        if (event.type == SDL_QUIT)
-            return PAGE_QUITTER;
-
-        if (event.type == SDL_MOUSEBUTTONDOWN) {
-            int x = event.button.x, y = event.button.y;
-
-            if (x >= skip_rect.x && x <= skip_rect.x + skip_rect.w &&
-                y >= skip_rect.y && y <= skip_rect.y + skip_rect.h) {
-
-                Mix_HaltChannel(-1); // ⛔️ Stoppe le son de phrase immédiatement
-                return PAGE_MENU;
-            }
-        }
-    }
-}
-
-
-    for (int i = 0; i < NB_FRAMES; i++) if (frames[i]) SDL_DestroyTexture(frames[i]);
+    if (fond) SDL_DestroyTexture(fond);
     if (skip_btn) SDL_DestroyTexture(skip_btn);
     if (son_phrase) Mix_FreeChunk(son_phrase);
     TTF_CloseFont(police);
@@ -156,14 +150,25 @@ while (phrase < NB_PHRASES) {
 }
 
 
+// === LECTEUR DE MUSIQUE GLOBAL ===
+void jouer_musique(const char* chemin, int volume) {
+    if (musique_lancee) return;
+
+    musique_global = Mix_LoadMUS(chemin);
+    if (musique_global) {
+        Mix_VolumeMusic(volume);
+        Mix_PlayMusic(musique_global, -1);
+        musique_lancee = 1;
+    } else {
+        printf("Erreur musique : %s\n", Mix_GetError());
+    }
+}
+
+
 // === MENU PRINCIPAL ===
 Page afficher_menu(SDL_Renderer* rendu) {
-    Mix_Music* musique = Mix_LoadMUS("ressource/musique/wav/menu.wav");
-    if (musique) {
-        Mix_VolumeMusic(10); // Volume réduit (sur 128)
-        Mix_PlayMusic(musique, -1);
-    }   
-     if (musique) Mix_PlayMusic(musique, -1);
+
+    jouer_musique("ressource/musique/wav/menu.wav", 20);
 
     SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/Menu.png");
     SDL_Texture* cadre_titre = IMG_LoadTexture(rendu, "ressource/image/CadreTitre.png");
@@ -204,22 +209,24 @@ Page afficher_menu(SDL_Renderer* rendu) {
     while (1) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) return PAGE_QUITTER;
-
             if (event.type == SDL_MOUSEBUTTONDOWN) {
                 int x = event.button.x, y = event.button.y;
-                if (x >= boutons[0].x && x <= boutons[0].x + boutons[0].w && y >= boutons[0].y && y <= boutons[0].y + boutons[0].h) return PAGE_HISTOIRE;
-                if (x >= boutons[1].x && x <= boutons[1].x + boutons[1].w && y >= boutons[1].y && y <= boutons[1].y + boutons[1].h) return PAGE_OPTIONS;
-                if (x >= boutons[2].x && x <= boutons[2].x + boutons[2].w && y >= boutons[2].y && y <= boutons[2].y + boutons[2].h) return PAGE_QUITTER;
+                if (x >= boutons[0].x && x <= boutons[0].x + boutons[0].w &&
+                    y >= boutons[0].y && y <= boutons[0].y + boutons[0].h)
+                    return PAGE_HISTOIRE;
+                if (x >= boutons[1].x && x <= boutons[1].x + boutons[1].w &&
+                    y >= boutons[1].y && y <= boutons[1].y + boutons[1].h)
+                    return PAGE_OPTIONS;
+                if (x >= boutons[2].x && x <= boutons[2].x + boutons[2].h)
+                    return PAGE_QUITTER;
             }
         }
     }
 
-    TTF_CloseFont(police);
-    SDL_DestroyTexture(fond);
-    SDL_DestroyTexture(cadre_titre);
-    SDL_DestroyTexture(cadre_bouton);
     return PAGE_MENU;
 }
+
+// === OPTIONS ===
 Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
     SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/Menu.png");
     SDL_Texture* cadre_bouton = IMG_LoadTexture(rendu, "ressource/image/fond_texte.png");
@@ -268,10 +275,4 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
             }
         }
     }
-
-    TTF_CloseFont(police);
-    SDL_DestroyTexture(fond);
-    SDL_DestroyTexture(cadre_bouton);
-    SDL_DestroyTexture(bouton_retour);
-    return PAGE_MENU;
 }
