@@ -38,26 +38,10 @@ Page afficher_chargement(SDL_Renderer *rendu) {
     TTF_CloseFont(police);
     return PAGE_HISTOIRE;
 }
-
-// === HISTOIRE ===
 Page afficher_histoire(SDL_Renderer* rendu) {
-    const int NB_FRAMES = 99;
-    SDL_Texture* frames[NB_FRAMES];
-    char chemin[128];
+    #define NB_PHRASES 5
 
-    for (int i = 1; i <= NB_FRAMES; i++) {
-        sprintf(chemin, "ressource/video/frame_histoire/frame_%03d.png", i);
-        SDL_Surface* surf = IMG_Load(chemin);
-        if (!surf) {
-            frames[i - 1] = NULL;
-            SDL_Log("DEBUG: Couldn't open %s", chemin);
-        } else {
-            frames[i - 1] = SDL_CreateTextureFromSurface(rendu, surf);
-            SDL_FreeSurface(surf);
-        }
-    }
-
-    const char* phrases[] = {
+    const char* phrases[NB_PHRASES] = {
         "Dans un monde divisé par les royaumes...",
         "Un phénomène étrange a bouleversé l’équilibre.",
         "Les artefacts Shōnen refont surface...",
@@ -65,56 +49,108 @@ Page afficher_histoire(SDL_Renderer* rendu) {
         "Bienvenue dans Project Shōnen Smash."
     };
 
-    int phrase = 0, lettres = 0;
+    char affichage[NB_PHRASES][256] = {{0}};
+    int lettres[NB_PHRASES] = {0};
+
+    // Charger les frames d'arrière-plan
+    const int NB_FRAMES = 99;
+    SDL_Texture* frames[NB_FRAMES];
+    char chemin[128];
+    for (int i = 1; i <= NB_FRAMES; i++) {
+        sprintf(chemin, "ressource/video/frame_histoire/frame_%03d.png", i);
+        SDL_Surface* surf = IMG_Load(chemin);
+        if (surf) {
+            frames[i - 1] = SDL_CreateTextureFromSurface(rendu, surf);
+            SDL_FreeSurface(surf);
+        } else {
+            frames[i - 1] = NULL;
+        }
+    }
+
+    // Police et couleur
     TTF_Font* police = TTF_OpenFont("ressource/langue/police/arial.ttf", 32);
     SDL_Color blanc = {255, 255, 255, 255};
 
+    // Bouton Flash Skip
+    SDL_Texture* skip_btn = IMG_LoadTexture(rendu, "ressource/image/Flash Skip.png");
+    SDL_Rect skip_rect = {LARGEUR_FENETRE - 120, 20, 80, 80};
+
+    if (!skip_btn) {
+        SDL_Log("ERREUR: Impossible de charger 'Flash Skip.png' : %s", SDL_GetError());
+    }
+
     Uint32 last_char = SDL_GetTicks();
     SDL_Event event;
+    int phrase = 0;
 
-    while (phrase < 5) {
+    while (phrase < NB_PHRASES) {
         Uint32 now = SDL_GetTicks();
         int frame = (now / 33) % NB_FRAMES;
 
-        if (lettres < strlen(phrases[phrase]) && now - last_char > 40) {
-            lettres++;
+        if (lettres[phrase] < strlen(phrases[phrase]) && now - last_char > 40) {
+            lettres[phrase]++;
             last_char = now;
+            strncpy(affichage[phrase], phrases[phrase], lettres[phrase]);
+            affichage[phrase][lettres[phrase]] = '\0';
         }
 
         SDL_RenderClear(rendu);
         if (frames[frame]) SDL_RenderCopy(rendu, frames[frame], NULL, NULL);
         else SDL_SetRenderDrawColor(rendu, 0, 0, 0, 255), SDL_RenderClear(rendu);
 
-        char buf[256];
-        strncpy(buf, phrases[phrase], lettres);
-        buf[lettres] = '\0';
+        for (int i = 0; i <= phrase; i++) {
+            if (lettres[i] > 0) {
+                SDL_Surface* surf = TTF_RenderUTF8_Blended(police, affichage[i], blanc);
+                if (surf) {
+                    SDL_Texture* tex = SDL_CreateTextureFromSurface(rendu, surf);
+                    SDL_Rect rect = {
+                        (LARGEUR_FENETRE - surf->w) / 2,
+                        60 + i * 80,
+                        surf->w,
+                        surf->h
+                    };
+                    SDL_RenderCopy(rendu, tex, NULL, &rect);
+                    SDL_FreeSurface(surf);
+                    SDL_DestroyTexture(tex);
+                }
+            }
+        }
 
-        if (lettres > 0) {
-            SDL_Surface* surf = TTF_RenderUTF8_Blended(police, buf, blanc);
-            SDL_Texture* tex = SDL_CreateTextureFromSurface(rendu, surf);
-            SDL_Rect rect = { (LARGEUR_FENETRE - surf->w) / 2, HAUTEUR_FENETRE - 100, surf->w, surf->h };
-            SDL_RenderCopy(rendu, tex, NULL, &rect);
-            SDL_FreeSurface(surf);
-            SDL_DestroyTexture(tex);
+        // Afficher le bouton skip s'il est chargé
+        if (skip_btn) {
+            SDL_RenderCopy(rendu, skip_btn, NULL, &skip_rect);
+        } else {
+            // Alternative visible : rectangle rouge si image manquante
+            SDL_SetRenderDrawColor(rendu, 255, 0, 0, 255);
+            SDL_RenderFillRect(rendu, &skip_rect);
         }
 
         SDL_RenderPresent(rendu);
 
-        if (lettres == strlen(phrases[phrase])) {
+        if (lettres[phrase] == strlen(phrases[phrase])) {
             SDL_Delay(1000);
             phrase++;
-            lettres = 0;
         }
 
-        while (SDL_PollEvent(&event)) if (event.type == SDL_QUIT) return PAGE_QUITTER;
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) return PAGE_QUITTER;
+            if (event.type == SDL_MOUSEBUTTONDOWN) {
+                int x = event.button.x, y = event.button.y;
+                if (x >= skip_rect.x && x <= skip_rect.x + skip_rect.w &&
+                    y >= skip_rect.y && y <= skip_rect.y + skip_rect.h)
+                    return PAGE_MENU;
+            }
+        }
     }
 
     for (int i = 0; i < NB_FRAMES; i++) if (frames[i]) SDL_DestroyTexture(frames[i]);
+    if (skip_btn) SDL_DestroyTexture(skip_btn);
     TTF_CloseFont(police);
     return PAGE_MENU;
 }
 
-// === MENU ===
+
+// === MENU PRINCIPAL ===
 Page afficher_menu(SDL_Renderer* rendu) {
     Mix_Music* musique = Mix_LoadMUS("ressource/musique/menu.wav");
     if (musique) Mix_PlayMusic(musique, -1);
@@ -174,8 +210,6 @@ Page afficher_menu(SDL_Renderer* rendu) {
     SDL_DestroyTexture(cadre_bouton);
     return PAGE_MENU;
 }
-
-// === OPTIONS ===
 Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
     SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/Menu.png");
     SDL_Texture* cadre_bouton = IMG_LoadTexture(rendu, "ressource/image/fond_texte.png");
@@ -218,12 +252,13 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
             if (event.type == SDL_QUIT) return PAGE_QUITTER;
             if (event.type == SDL_MOUSEBUTTONDOWN) {
                 int x = event.button.x, y = event.button.y;
-                if (x >= retour_rect.x && x <= retour_rect.x + retour_rect.w && y >= retour_rect.y && y <= retour_rect.y + retour_rect.h)
+                if (x >= retour_rect.x && x <= retour_rect.x + retour_rect.w &&
+                    y >= retour_rect.y && y <= retour_rect.y + retour_rect.h)
                     return page_prec;
             }
         }
-    } 
-    //blavlavla
+    }
+
     TTF_CloseFont(police);
     SDL_DestroyTexture(fond);
     SDL_DestroyTexture(cadre_bouton);
