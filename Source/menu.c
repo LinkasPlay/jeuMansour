@@ -500,7 +500,7 @@ Page afficher_selec_difficulte(SDL_Renderer* rendu) {
     SDL_DestroyTexture(cadre_bouton);
     SDL_DestroyTexture(bouton_retour);
     TTF_CloseFont(police);
-
+    //ezfez
     return PAGE_MENU;
 }
 
