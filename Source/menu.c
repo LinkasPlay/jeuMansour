@@ -1,10 +1,16 @@
-#include "../Include/fighter.h"
+#include "fighter.h"
 #include <string.h>
 #include <time.h>
+
+
+
+int mode_choisi = 0;
 
 // === VARIABLE GLOBALE POUR LA MUSIQUE ===
 Mix_Music* musique_global = NULL;
 int musique_lancee = 0;
+
+
 
 // === CHARGEMENT ===
 Page afficher_chargement(SDL_Renderer *rendu) {
@@ -163,7 +169,14 @@ Page afficher_histoire(SDL_Renderer* rendu) {
 
 // === LECTEUR DE MUSIQUE GLOBAL ===
 void jouer_musique(const char* chemin, int volume) {
-    if (musique_lancee) return;
+    if (musique_lancee) {
+        Mix_HaltMusic();
+        if (musique_global) {
+            Mix_FreeMusic(musique_global);
+            musique_global = NULL;
+        }
+        musique_lancee = 0;
+    }
 
     musique_global = Mix_LoadMUS(chemin);
     if (musique_global) {
@@ -174,6 +187,7 @@ void jouer_musique(const char* chemin, int volume) {
         printf("Erreur musique : %s\n", Mix_GetError());
     }
 }
+
 
 // === MENU PRINCIPAL ===
 Page afficher_menu(SDL_Renderer* rendu) {
@@ -224,7 +238,7 @@ Page afficher_menu(SDL_Renderer* rendu) {
 
                 if (x >= boutons[0].x && x <= boutons[0].x + boutons[0].w &&
                     y >= boutons[0].y && y <= boutons[0].y + boutons[0].h)
-                    return PAGE_JEU;
+                    return PAGE_SELEC_MODE;
 
                 if (x >= boutons[1].x && x <= boutons[1].x + boutons[1].w &&
                     y >= boutons[1].y && y <= boutons[1].y + boutons[1].h)
@@ -324,3 +338,169 @@ Page afficher_jeu(SDL_Renderer* rendu) {
         }
     }
 }
+
+// === PAGE DE SÉLECTION MODE ===
+Page afficher_selec_mode(SDL_Renderer* rendu) {
+    SDL_Texture* fond = IMG_LoadTexture(rendu, "Ressource/image/Fonds/fond_menu.png");
+    SDL_Texture* cadre_bouton = IMG_LoadTexture(rendu, "Ressource/image/Cadres/cadre_texte_carre.png");
+    SDL_Texture* bouton_retour = IMG_LoadTexture(rendu, "Ressource/image/Utilité/retour.png");
+
+    TTF_Font* police = TTF_OpenFont("Ressource/langue/Police/arial.ttf", 80);
+    TTF_SetFontStyle(police, TTF_STYLE_BOLD);
+
+    SDL_Color noir = {0, 0, 0, 255};
+
+    int marge = 30;
+    int largeur_bouton = (LARGEUR_FENETRE - 3 * marge) / 2;
+    int hauteur_bouton = HAUTEUR_FENETRE - 2 * marge;
+
+    const char* textes[2][3] = {
+        {"J1", "VS", "J2"},
+        {"J1", "VS", "IA"}
+    };
+
+    SDL_Rect boutons[2] = {
+        {marge, marge, largeur_bouton, hauteur_bouton},
+        {2 * marge + largeur_bouton, marge, largeur_bouton, hauteur_bouton}
+    };
+
+    SDL_Rect retour = {20, HAUTEUR_FENETRE - 100, 80, 80};
+
+    SDL_Event event;
+    while (1) {
+        SDL_RenderClear(rendu);
+        SDL_RenderCopy(rendu, fond, NULL, NULL);
+
+        for (int i = 0; i < 2; i++) {
+            SDL_RenderCopy(rendu, cadre_bouton, NULL, &boutons[i]);
+
+            for (int j = 0; j < 3; j++) {
+                SDL_Surface* surf = TTF_RenderUTF8_Blended(police, textes[i][j], noir);
+                SDL_Texture* tex = SDL_CreateTextureFromSurface(rendu, surf);
+
+                SDL_Rect txt = {
+                    boutons[i].x + (boutons[i].w - surf->w) / 2 - 30 + j * 30,
+                    boutons[i].y + (boutons[i].h - 3 * surf->h) / 2 + j * surf->h,
+                    surf->w,
+                    surf->h
+                };
+                SDL_RenderCopy(rendu, tex, NULL, &txt);
+                SDL_FreeSurface(surf);
+                SDL_DestroyTexture(tex);
+            }
+        }
+
+        SDL_RenderCopy(rendu, bouton_retour, NULL, &retour);
+        SDL_RenderPresent(rendu);
+
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) return PAGE_QUITTER;
+            if (event.type == SDL_MOUSEBUTTONDOWN) {
+                int x = event.button.x, y = event.button.y;
+
+                if (x >= boutons[0].x && x <= boutons[0].x + boutons[0].w &&
+                    y >= boutons[0].y && y <= boutons[0].y + boutons[0].h) {
+                    mode_choisi = 0; // ✅ J1vsJ2
+                    return PAGE_SELECTION_PERSO;
+                }
+
+                if (x >= boutons[1].x && x <= boutons[1].x + boutons[1].w &&
+                    y >= boutons[1].y && y <= boutons[1].y + boutons[1].h) {
+                    mode_choisi = 1; // ✅ J1vsIA
+                    return PAGE_SELEC_DIFFICULTE;
+                }
+
+                if (x >= retour.x && x <= retour.x + retour.w &&
+                    y >= retour.y && y <= retour.y + retour.h)
+                    return PAGE_MENU;
+            }
+        }
+    }
+}
+
+
+
+// === PAGE DE SÉLECTION DIFFICULTÉ ===
+Page afficher_selec_difficulte(SDL_Renderer* rendu) {
+    SDL_Texture* fond = IMG_LoadTexture(rendu, "Ressource/image/Fonds/fond_menu.png");
+    SDL_Texture* cadre_bouton = IMG_LoadTexture(rendu, "Ressource/image/Cadres/cadre_texte_carre.png");
+    SDL_Texture* bouton_retour = IMG_LoadTexture(rendu, "Ressource/image/Utilité/retour.png");
+
+    TTF_Font* police = TTF_OpenFont("Ressource/langue/Police/arial.ttf", 40);
+    SDL_Color noir = {0, 0, 0, 255};
+
+    int marge = 30;
+    int largeur_bouton = LARGEUR_FENETRE - 2 * marge;
+    int hauteur_bouton = (HAUTEUR_FENETRE - 4 * marge) / 3;
+
+    const char* textes[] = {"Facile", "Moyen", "Difficile"};
+
+    SDL_Rect boutons[3] = {
+        {marge, marge, largeur_bouton, hauteur_bouton},
+        {marge, 2 * marge + hauteur_bouton, largeur_bouton, hauteur_bouton},
+        {marge, 3 * marge + 2 * hauteur_bouton, largeur_bouton, hauteur_bouton}
+    };
+
+    SDL_Rect retour = {20, HAUTEUR_FENETRE - 100, 80, 80};
+
+    SDL_Event event;
+    while (1) {
+        SDL_RenderClear(rendu);
+        SDL_RenderCopy(rendu, fond, NULL, NULL);
+
+        for (int i = 0; i < 3; i++) {
+            SDL_RenderCopy(rendu, cadre_bouton, NULL, &boutons[i]);
+            SDL_Surface* surf = TTF_RenderUTF8_Blended(police, textes[i], noir);
+            SDL_Texture* tex = SDL_CreateTextureFromSurface(rendu, surf);
+            SDL_Rect txt = {
+                boutons[i].x + (boutons[i].w - surf->w) / 2,
+                boutons[i].y + (boutons[i].h - surf->h) / 2,
+                surf->w,
+                surf->h
+            };
+            SDL_RenderCopy(rendu, tex, NULL, &txt);
+            SDL_FreeSurface(surf);
+            SDL_DestroyTexture(tex);
+        }
+
+        SDL_RenderCopy(rendu, bouton_retour, NULL, &retour);
+        SDL_RenderPresent(rendu);
+
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT)
+                return PAGE_QUITTER;
+
+            if (event.type == SDL_MOUSEBUTTONDOWN) {
+                int x = event.button.x, y = event.button.y;
+
+                // Clic sur "Facile"
+                if (x >= boutons[0].x && x <= boutons[0].x + boutons[0].w &&
+                    y >= boutons[0].y && y <= boutons[0].y + boutons[0].h)
+                    return PAGE_SELECTION_PERSO;
+
+                // Clic sur "Moyen"
+                if (x >= boutons[1].x && x <= boutons[1].x + boutons[1].w &&
+                    y >= boutons[1].y && y <= boutons[1].y + boutons[1].h)
+                    return PAGE_SELECTION_PERSO;
+
+                // Clic sur "Difficile"
+                if (x >= boutons[2].x && x <= boutons[2].x + boutons[2].w &&
+                    y >= boutons[2].y && y <= boutons[2].y + boutons[2].h)
+                    return PAGE_SELECTION_PERSO;
+
+                // Clic sur retour
+                if (x >= retour.x && x <= retour.x + retour.w &&
+                    y >= retour.y && y <= retour.y + retour.h)
+                    return PAGE_SELEC_MODE;
+            }
+        }
+    }
+
+    SDL_DestroyTexture(fond);
+    SDL_DestroyTexture(cadre_bouton);
+    SDL_DestroyTexture(bouton_retour);
+    TTF_CloseFont(police);
+
+    return PAGE_MENU;
+}
+
