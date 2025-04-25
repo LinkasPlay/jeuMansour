@@ -15,6 +15,10 @@ Page afficher_chargement(SDL_Renderer *rendu) {
     TTF_Font *police = TTF_OpenFont("Ressource/langue/Police/arial.ttf", 28);
     SDL_Color blanc = {255, 255, 255, 255};
 
+    // === CADRE DE TITRE SEUL ===
+    SDL_Texture* cadre_titre = IMG_LoadTexture(rendu, "Ressource/image/Cadres/cadre_titre_chargement.png");
+    SDL_Rect zone_cadre_titre = { (LARGEUR_FENETRE - 500) / 2, 10, 500, 200 };
+
     SDL_Rect zone_barre = {60, 500, 900, 30};
     SDL_Rect zone_texte = {zone_barre.x, zone_barre.y + 40, 400, 30};
 
@@ -28,6 +32,8 @@ Page afficher_chargement(SDL_Renderer *rendu) {
     for (int i = 0; i <= nb_blocs; i++) {
         SDL_RenderClear(rendu);
         SDL_RenderCopy(rendu, fond, NULL, NULL);
+
+        SDL_RenderCopy(rendu, cadre_titre, NULL, &zone_cadre_titre); // ✅ juste le cadre
 
         SDL_SetRenderDrawColor(rendu, 255, 220, 0, 255);
         for (int j = 0; j < i; j++) {
@@ -55,9 +61,13 @@ Page afficher_chargement(SDL_Renderer *rendu) {
 
     SDL_DestroyTexture(fond);
     SDL_DestroyTexture(texture_texte);
+    SDL_DestroyTexture(cadre_titre);
     TTF_CloseFont(police);
     return PAGE_HISTOIRE;
 }
+
+
+
 
 // === HISTOIRE ===
 Page afficher_histoire(SDL_Renderer* rendu) {
