@@ -1,15 +1,13 @@
-#include "fighter.h"
+#include "../Include/fighter.h"
 #include <string.h>
 #include <time.h>
 
-
-
+// Variables globales réelles
 int mode_choisi = 0;
-
-// === VARIABLE GLOBALE POUR LA MUSIQUE ===
-Mix_Music* musique_global = NULL;
+int chemin_retour = 0;
 int musique_lancee = 0;
-
+Mix_Music* musique_global = NULL;
+int perso_choisi = -1;
 
 
 // === CHARGEMENT ===
@@ -169,24 +167,29 @@ Page afficher_histoire(SDL_Renderer* rendu) {
 
 // === LECTEUR DE MUSIQUE GLOBAL ===
 void jouer_musique(const char* chemin, int volume) {
-    if (musique_lancee) {
-        Mix_HaltMusic();
-        if (musique_global) {
-            Mix_FreeMusic(musique_global);
-            musique_global = NULL;
-        }
-        musique_lancee = 0;
+    // Si la musique est déjà lancée et est en train de jouer, on ne fait rien
+    if (musique_lancee && Mix_PlayingMusic()) {
+        return;
     }
 
+    // Sinon, on arrête l'ancienne musique si elle existe
+    if (musique_global) {
+        Mix_HaltMusic();
+        Mix_FreeMusic(musique_global);
+        musique_global = NULL;
+    }
+
+    // Chargement de la nouvelle musique
     musique_global = Mix_LoadMUS(chemin);
     if (musique_global) {
         Mix_VolumeMusic(volume);
         Mix_PlayMusic(musique_global, -1);
         musique_lancee = 1;
     } else {
-        printf("Erreur musique : %s\n", Mix_GetError());
+        SDL_Log("Erreur musique : %s", Mix_GetError());
     }
 }
+
 
 
 // === MENU PRINCIPAL ===
@@ -395,24 +398,29 @@ Page afficher_selec_mode(SDL_Renderer* rendu) {
 
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) return PAGE_QUITTER;
+
             if (event.type == SDL_MOUSEBUTTONDOWN) {
                 int x = event.button.x, y = event.button.y;
 
+                // 👉 Clique sur le bouton Retour en premier
+                if (x >= retour.x && x <= retour.x + retour.w &&
+                    y >= retour.y && y <= retour.y + retour.h) {
+                    return PAGE_MENU; // 🔥 Retourner au menu principal
+                }
+
+                // 👉 Clique sur J1 vs J2
                 if (x >= boutons[0].x && x <= boutons[0].x + boutons[0].w &&
                     y >= boutons[0].y && y <= boutons[0].y + boutons[0].h) {
-                    mode_choisi = 0; // ✅ J1vsJ2
+                    chemin_retour = 0;
                     return PAGE_SELECTION_PERSO;
                 }
 
+                // 👉 Clique sur J1 vs IA
                 if (x >= boutons[1].x && x <= boutons[1].x + boutons[1].w &&
                     y >= boutons[1].y && y <= boutons[1].y + boutons[1].h) {
-                    mode_choisi = 1; // ✅ J1vsIA
+                    chemin_retour = 1;
                     return PAGE_SELEC_DIFFICULTE;
                 }
-
-                if (x >= retour.x && x <= retour.x + retour.w &&
-                    y >= retour.y && y <= retour.y + retour.h)
-                    return PAGE_MENU;
             }
         }
     }
@@ -503,4 +511,3 @@ Page afficher_selec_difficulte(SDL_Renderer* rendu) {
     //ezfez
     return PAGE_MENU;
 }
-

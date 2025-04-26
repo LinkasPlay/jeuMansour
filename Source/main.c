@@ -13,12 +13,13 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) != 0) {
+    if (Mix_OpenAudio(48000, MIX_DEFAULT_FORMAT, 2, 1024) != 0) {
         printf("Erreur initialisation Mixer : %s\n", Mix_GetError());
         TTF_Quit();
         SDL_Quit();
         return 1;
     }
+    
 
     SDL_Window* fenetre = SDL_CreateWindow(
         "Project Shōnen Smash",

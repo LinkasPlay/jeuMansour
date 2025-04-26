@@ -20,23 +20,23 @@ typedef enum {
     PAGE_QUITTER
 } Page;
 
-// === Fonctions principales ===
+// Variables globales
 extern int mode_choisi;
+extern int chemin_retour;
+extern int musique_lancee;
+extern Mix_Music* musique_global;
+extern int perso_choisi;
 
+// Fonctions
 Page afficher_chargement(SDL_Renderer* rendu);
+Page afficher_histoire(SDL_Renderer* rendu);
 Page afficher_menu(SDL_Renderer* rendu);
 Page afficher_selec_mode(SDL_Renderer* rendu);
 Page afficher_selec_difficulte(SDL_Renderer* rendu);
 Page afficher_selection_perso(SDL_Renderer* rendu);
 Page afficher_jeu(SDL_Renderer* rendu);
 Page afficher_options(SDL_Renderer* rendu, Page page_prec);
-Page afficher_histoire(SDL_Renderer* rendu);
 
-// === Fonctions utilitaires ===
 void jouer_musique(const char* chemin, int volume);
-
-// === Variables globales externes ===
-extern Mix_Music* musique_global;
-extern int musique_lancee;
 
 #endif
