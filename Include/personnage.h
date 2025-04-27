@@ -2,7 +2,7 @@
 #define PERSONNAGES_H
 
 // ==== Définition des effets ====
-
+//Je vais ajouter plus tard un autre .h pour les maps
 typedef enum {
     Aucun = 0,
     BRULE,
