@@ -2,7 +2,7 @@
 #include <stdlib.h> 
 #include <string.h>
 #include "personnages.h" 
-
+//test
 Fighter personnage[8];
 
 // Création d'une attaque spéciale
@@ -17,7 +17,7 @@ AttaqueSpecial* creer_attaqueSpe(const char* nom, const char* desc, float degats
     attaque->description[MAX_DESCRIPTION - 1] = '\0'; 
     attaque->degats = degats;
     attaque->statu_effet = effet;
-    attaque->tour = tour; //tour de rechargement 
+    attaque->tour = tour; //tour de rechargement genre le cooldown quoi
     return attaque;
 }
 
@@ -46,7 +46,7 @@ void initialisation_personnages(){
 
 
     //Tableau des attaques
-    AttaqueSpecial* attaques_êrso1[MAX_SPECIAL] = {attaque1,attaque2,attaque3};
+    AttaqueSpecial* attaques_perso1[MAX_SPECIAL] = {attaque1,attaque2,attaque3};
 
     //Crétion de Incassable 
     personnage[0] = creer_fighter(
@@ -58,5 +58,6 @@ void initialisation_personnages(){
         3.0f, // Vitesse
         attaques_perso1 //Attaques Spe
     );
+    
 }
 //TEST MANSOUR//

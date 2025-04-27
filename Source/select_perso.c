@@ -1,6 +1,6 @@
 #include "../Include/fighter.h"
 #include <string.h>
-
+//test
 // === PAGE DE SÉLECTION DES PERSONNAGES ===
 Page afficher_selection_perso(SDL_Renderer* rendu) {
     SDL_Texture* fond = IMG_LoadTexture(rendu, "Ressource/image/Fonds/fond_selection_perso.png");

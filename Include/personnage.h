@@ -1,6 +1,6 @@
 #ifndef PERSONNAGES_H
 #define PERSONNAGES_H
-//TEST MANSOUR//
+
 // ==== Définition des effets ====
 
 typedef enum {

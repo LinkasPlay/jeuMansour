@@ -1,7 +1,7 @@
 #include "../Include/fighter.h"
 #include <stdio.h>
 
-//TEST//
+
  //Test//
 int main(int argc, char* argv[]) {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
