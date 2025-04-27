@@ -1,7 +1,7 @@
 #include "../Include/fighter.h"
 #include <string.h>
 #include <time.h>
-//test
+//test//
 // Variables globales réelles
 int mode_choisi = 0;
 int chemin_retour = 0;
