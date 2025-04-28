@@ -1,6 +1,6 @@
 #include "../Include/fighter.h"
 #include <stdio.h>
-//test
+//test 1
 
  
 int main(int argc, char* argv[]) {
