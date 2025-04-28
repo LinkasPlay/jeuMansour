@@ -1,8 +1,8 @@
 #include "../Include/fighter.h"
 #include <stdio.h>
-//test
 
- 
+// test
+
 int main(int argc, char* argv[]) {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
         printf("Erreur initialisation SDL : %s\n", SDL_GetError());
@@ -21,7 +21,6 @@ int main(int argc, char* argv[]) {
         SDL_Quit();
         return 1;
     }
-    
 
     SDL_Window* fenetre = SDL_CreateWindow(
         "Project Shōnen Smash",
