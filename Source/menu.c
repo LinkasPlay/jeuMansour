@@ -193,7 +193,7 @@ void jouer_musique(const char* chemin, int volume) {
 
 // === MENU PRINCIPAL ===
 Page afficher_menu(SDL_Renderer* rendu) {
-    jouer_musique("Ressource/musique/Wav/menu.wav", 20);
+    //jouer_musique("Ressource/musique/Wav/menu.wav", 20);
 
     SDL_Texture* fond = IMG_LoadTexture(rendu, "Ressource/image/Fonds/fond_menu.png");
     SDL_Texture* cadre_titre = IMG_LoadTexture(rendu, "Ressource/image/Cadres/cadre_titre.png");
@@ -474,39 +474,46 @@ Page afficher_selec_difficulte(SDL_Renderer* rendu) {
         SDL_RenderPresent(rendu);
 
         while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT)
+            if (event.type == SDL_QUIT) {
                 return PAGE_QUITTER;
-
-            if (event.type == SDL_MOUSEBUTTONDOWN) {
+            }
+        
+            if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
                 int x = event.button.x, y = event.button.y;
-
-                // Clic sur "Facile"
-                if (x >= boutons[0].x && x <= boutons[0].x + boutons[0].w &&
-                    y >= boutons[0].y && y <= boutons[0].y + boutons[0].h)
-                    return PAGE_SELECTION_PERSO;
-
-                // Clic sur "Moyen"
-                if (x >= boutons[1].x && x <= boutons[1].x + boutons[1].w &&
-                    y >= boutons[1].y && y <= boutons[1].y + boutons[1].h)
-                    return PAGE_SELECTION_PERSO;
-
-                // Clic sur "Difficile"
-                if (x >= boutons[2].x && x <= boutons[2].x + boutons[2].w &&
-                    y >= boutons[2].y && y <= boutons[2].y + boutons[2].h)
-                    return PAGE_SELECTION_PERSO;
+                printf("Clic détecté aux coordonnées (%d, %d)\n", x, y); // pour debug
 
                 // Clic sur retour
                 if (x >= retour.x && x <= retour.x + retour.w &&
-                    y >= retour.y && y <= retour.y + retour.h)
+                    y >= retour.y && y <= retour.y + retour.h) {
+                    printf("Retour sélectionné\n");
                     return PAGE_SELEC_MODE;
+                }
+                
+                // Clic sur "Facile"
+                if (x >= boutons[0].x && x <= boutons[0].x + boutons[0].w &&
+                    y >= boutons[0].y && y <= boutons[0].y + boutons[0].h) {
+                    printf("Facile sélectionné\n");
+                    return PAGE_SELECTION_PERSO;
+                }
+        
+                // Clic sur "Moyen"
+                if (x >= boutons[1].x && x <= boutons[1].x + boutons[1].w &&
+                    y >= boutons[1].y && y <= boutons[1].y + boutons[1].h) {
+                    printf("Moyen sélectionné\n");
+                    return PAGE_SELECTION_PERSO;
+                }
+        
+                // Clic sur "Difficile"
+                if (x >= boutons[2].x && x <= boutons[2].x + boutons[2].w &&
+                    y >= boutons[2].y && y <= boutons[2].y + boutons[2].h) {
+                    printf("Difficile sélectionné\n");
+                    return PAGE_SELECTION_PERSO;
+                }
+        
+                
+        
+                printf("Clic ailleurs\n");
             }
         }
     }
-
-    SDL_DestroyTexture(fond);
-    SDL_DestroyTexture(cadre_bouton);
-    SDL_DestroyTexture(bouton_retour);
-    TTF_CloseFont(police);
-    //ezfez
-    return PAGE_MENU;
 }

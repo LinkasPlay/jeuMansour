@@ -13,6 +13,12 @@ Page afficher_selection_perso(SDL_Renderer* rendu) {
 
     // --- LOGO VERSUS ---
     SDL_Texture* logo_versus_texture = IMG_LoadTexture(rendu, "Ressource/image/Utilité/versus.png");
+    if (!logo_versus_texture) {
+        SDL_Log("Erreur chargement logo: %s", SDL_GetError());
+        SDL_DestroyTexture(fond_texture);
+        return PAGE_QUITTER;
+    }
+
     SDL_Rect dest_logo = {
         (LARGEUR_FENETRE - 80) / 2,
         10,
@@ -32,52 +38,81 @@ Page afficher_selection_perso(SDL_Renderer* rendu) {
         "Ressource/image/Personnages_pp/pp_droite/pp_zoro.png"
     };
 
-    SDL_Texture* portraits[8];
-    bool perso_disponible[8] = {true, true, true, true, true, true, true, true}; // Tous disponibles au départ
+    SDL_Texture* portraits[8] = {NULL};
+    bool perso_disponible[8] = {true, true, true, true, true, true, true, true};
 
     for (int i = 0; i < 8; i++) {
         portraits[i] = IMG_LoadTexture(rendu, noms_portraits[i]);
         if (!portraits[i]) {
             SDL_Log("Erreur chargement portrait %d: %s", i, SDL_GetError());
+            // Nettoyer les textures déjà chargées
+            for (int j = 0; j < i; j++) {
+                if (portraits[j]) SDL_DestroyTexture(portraits[j]);
+            }
+            SDL_DestroyTexture(fond_texture);
+            SDL_DestroyTexture(logo_versus_texture);
+            return PAGE_QUITTER;
         }
     }
 
-    // --- GESTION DE LA SELECTION (3 MAX) ---
-    SDL_Texture* selections_j1[3] = {NULL, NULL, NULL};
-    SDL_Texture* selections_j2[3] = {NULL, NULL, NULL};
+    // --- GESTION SELECTION ---
+    SDL_Texture* selections_j1[3] = {NULL};
+    SDL_Texture* selections_j2[3] = {NULL};
     int nb_selections_j1 = 0;
     int nb_selections_j2 = 0;
-    bool tour_j1 = true; // Commence avec J1
+    bool tour_j1 = true;
 
-    // --- POSITIONNEMENT DES PERSOS ---
+    // --- POSITIONNEMENT ---
     const int largeur_perso = 150;
     const int hauteur_perso = 150;
     const int espacement_x = (LARGEUR_FENETRE - 4*largeur_perso) / 5;
     const int espacement_y = 50;
     const int start_y_persos = HAUTEUR_FENETRE - hauteur_perso - espacement_y;
 
-    // --- MINI-PORTRAITS SELECTIONNES ---
+    // --- MINI-PORTRAITS ---
     const int mini_size = 80;
     const int marge_haut = 20;
     const int marge_cote = 50;
     const int espacement_selections = 10;
 
     // --- TEXTE TOUR ---
-    TTF_Font* police = TTF_OpenFont("Ressource/police/arial.ttf", 24);
-    SDL_Color couleur_blanc = {255, 255, 255, 255};
+    TTF_Font* police = TTF_OpenFont("Ressource/langue/Police/arial.ttf", 24);
+    if (!police) {
+        SDL_Log("Erreur chargement police: %s", TTF_GetError());
+        for (int i = 0; i < 8; i++) {
+            if (portraits[i]) SDL_DestroyTexture(portraits[i]);
+        }
+        SDL_DestroyTexture(fond_texture);
+        SDL_DestroyTexture(logo_versus_texture);
+        return PAGE_QUITTER;
+    }
+
+    SDL_Color couleur_blanc = {255, 0, 0, 255};
     SDL_Surface* surface_tour = NULL;
     SDL_Texture* texture_tour = NULL;
 
     // --- BOUCLE PRINCIPALE ---
     bool running = true;
+    Page result = PAGE_SELECTION_PERSO;
+    
     while (running && (nb_selections_j1 < 3 || nb_selections_j2 < 3)) {
-        // Mise à jour du texte "Tour de..."
+        // Mise à jour texte tour
         if (surface_tour) SDL_FreeSurface(surface_tour);
         if (texture_tour) SDL_DestroyTexture(texture_tour);
         
         const char* texte_tour = tour_j1 ? "Tour du Joueur 1" : "Tour du Joueur 2";
         surface_tour = TTF_RenderText_Blended(police, texte_tour, couleur_blanc);
+        if (!surface_tour) {
+            SDL_Log("Erreur création surface texte: %s", TTF_GetError());
+            continue;
+        }
+        
         texture_tour = SDL_CreateTextureFromSurface(rendu, surface_tour);
+        if (!texture_tour) {
+            SDL_Log("Erreur création texture texte: %s", SDL_GetError());
+            SDL_FreeSurface(surface_tour);
+            continue;
+        }
         
         SDL_Rect rect_tour = {
             (LARGEUR_FENETRE - surface_tour->w) / 2,
@@ -90,14 +125,13 @@ Page afficher_selection_perso(SDL_Renderer* rendu) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 running = false;
-                return PAGE_QUITTER;
+                result = PAGE_QUITTER;
             }
 
             if (event.type == SDL_MOUSEBUTTONDOWN) {
                 int mouseX = event.button.x;
                 int mouseY = event.button.y;
 
-                // Détection clic sur personnage disponible
                 for (int i = 0; i < 8; i++) {
                     if (!perso_disponible[i]) continue;
                     
@@ -122,26 +156,22 @@ Page afficher_selection_perso(SDL_Renderer* rendu) {
                             nb_selections_j2++;
                         }
                         
-                        perso_disponible[i] = false; // Plus disponible
-                        tour_j1 = !tour_j1; // Changement de tour
+                        perso_disponible[i] = false;
+                        tour_j1 = !tour_j1;
                         break;
                     }
                 }
             }
-        } 
+        }
 
-        // --- RENDU ---        
+        // --- RENDU ---
         SDL_RenderClear(rendu);
-        
-        // Fond
         SDL_RenderCopy(rendu, fond_texture, NULL, NULL);
-        
-        // Logo versus
         SDL_RenderCopy(rendu, logo_versus_texture, NULL, &dest_logo);
 
-        // Affichage des personnages disponibles
+        // Personnages disponibles
         for (int i = 0; i < 8; i++) {
-            if (!perso_disponible[i]) continue;
+            if (!perso_disponible[i] || !portraits[i]) continue;
             
             int colonne = i % 4;
             int ligne = i / 4;
@@ -153,19 +183,17 @@ Page afficher_selection_perso(SDL_Renderer* rendu) {
                 hauteur_perso
             };
             
-            if (portraits[i]) {
-                SDL_RenderCopy(rendu, portraits[i], NULL, &dest);
-                
-                // Surbrillance si c'est le tour du joueur
-                if ((tour_j1 && nb_selections_j1 < 3) || (!tour_j1 && nb_selections_j2 < 3)) {
-                    SDL_SetRenderDrawColor(rendu, 255, 255, 0, 128);
-                    SDL_RenderDrawRect(rendu, &dest);
-                }
+            SDL_RenderCopy(rendu, portraits[i], NULL, &dest);
+            
+            if ((tour_j1 && nb_selections_j1 < 3) || (!tour_j1 && nb_selections_j2 < 3)) {
+                SDL_SetRenderDrawColor(rendu, 255, 255, 0, 128);
+                SDL_RenderDrawRect(rendu, &dest);
             }
         }
 
-        // Affichage des sélections J1 (gauche)
+        // Sélections J1
         for (int i = 0; i < nb_selections_j1; i++) {
+            if (!selections_j1[i]) continue;
             SDL_Rect dest = {
                 marge_cote,
                 marge_haut + i * (mini_size + espacement_selections),
@@ -175,8 +203,9 @@ Page afficher_selection_perso(SDL_Renderer* rendu) {
             SDL_RenderCopy(rendu, selections_j1[i], NULL, &dest);
         }
 
-        // Affichage des sélections J2 (droite)
+        // Sélections J2
         for (int i = 0; i < nb_selections_j2; i++) {
+            if (!selections_j2[i]) continue;
             SDL_Rect dest = {
                 LARGEUR_FENETRE - marge_cote - mini_size,
                 marge_haut + i * (mini_size + espacement_selections),
@@ -186,7 +215,6 @@ Page afficher_selection_perso(SDL_Renderer* rendu) {
             SDL_RenderCopy(rendu, selections_j2[i], NULL, &dest);
         }
 
-        // Affichage du texte "Tour de..."
         if (texture_tour) {
             SDL_RenderCopy(rendu, texture_tour, NULL, &rect_tour);
         }
@@ -194,17 +222,15 @@ Page afficher_selection_perso(SDL_Renderer* rendu) {
         SDL_RenderPresent(rendu);
     }
 
-    /// --- NETTOYAGE ---    
+    // --- NETTOYAGE ---
     for (int i = 0; i < 8; i++) {
         if (portraits[i]) SDL_DestroyTexture(portraits[i]);
     }
-    if (fond_texture) SDL_DestroyTexture(fond_texture);
-    if (logo_versus_texture) SDL_DestroyTexture(logo_versus_texture);
+    SDL_DestroyTexture(fond_texture);
+    SDL_DestroyTexture(logo_versus_texture);
     if (surface_tour) SDL_FreeSurface(surface_tour);
     if (texture_tour) SDL_DestroyTexture(texture_tour);
-    if (police) TTF_CloseFont(police);
+    TTF_CloseFont(police);
 
-    if (!running) {
-        return PAGE_QUITTER;
-    }
+    return result;
 }
