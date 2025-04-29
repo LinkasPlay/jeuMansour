@@ -1,8 +1,9 @@
 #ifndef PERSONNAGES_H
 #define PERSONNAGES_H
 
+
+#include "maps.h"    // Pour identifier l'element afin de buff le perso selon la map 
 // ==== Définition des effets ====
-//Je vais ajouter plus tard un autre .h pour les maps
 typedef enum {
     Aucun = 0,
     BRULE,
@@ -11,13 +12,16 @@ typedef enum {
     SAIGNEMENT,
     BOOST_DEF,
     BOOST_PV,
+    BOOST_VIT,
+    BOOST_ATT,
+    NERF_VIT,
     NERF_DEF
 } TypeEffet;
 
 typedef struct {
     TypeEffet type;
-    float valeur; // ex : 5.5 dégâts ou 0.25 pour -25%
-    int duree;    // durée de l'effet en nombre de tours
+    int valeur;  // dégâts ou pourcentage en entier (ex : 5 pour dégâts fixes, 25 pour 25%)
+    int duree;   // durée de l'effet en nombre de tours
 } StatutEffet;
 
 // ==== Définition des attaques spéciales ====
@@ -25,13 +29,15 @@ typedef struct {
 #define MAX_NOM_ATTAQUE 50
 #define MAX_DESCRIPTION 300
 #define MAX_SPECIAL 3
+#define MAX_EFFETS 3
 
 typedef struct {
     char nom[MAX_NOM_ATTAQUE];
     char description[MAX_DESCRIPTION];
-    float degats;
-    StatutEffet statu_effet;
-    int tour;
+    int degats;
+    StatutEffet effets[MAX_EFFETS];
+    int nb_effets;
+    int tour; // cooldown
 } AttaqueSpecial;
 
 // ==== Définition des personnages ====
@@ -40,11 +46,13 @@ typedef struct {
 
 typedef struct {
     char nom[MAX_NOM_PERSO];
-    float actu_pv;
-    float max_pv;
-    float attaque;
-    float defense;
-    float vitesse;
+    int actu_pv;
+    int max_pv;
+    int attaque;
+    int defense;
+    int agilite;  // <-- NOUVEAU : agilité ajoutée j'avais zappé mb
+    int vitesse; // determinera l'odre de passage dans l'equipe celui qui a la plus grande vitesse sera le premier à attaquer
+    ElementType element;  // <--- UPDATE : element du perso
     AttaqueSpecial* spe_atq[MAX_SPECIAL];
 } Fighter;
 
@@ -52,7 +60,7 @@ typedef struct {
 extern Fighter personnage[8];
 
 // ==== Fonctions pour créer personnages et attaques ====
-AttaqueSpecial* creer_attaqueSpe(const char* nom, const char* desc, int degats, StatutEffet effet, int tour);
-Fighter creer_fighter(const char* nom, float actu_pv, float max_pv, float attaque, float defense, float vitesse, AttaqueSpecial** attaques);
+extern AttaqueSpecial* creer_attaqueSpe(const char* nom, const char* desc, int degats, StatutEffet effets[], int nb_effets, int tour);
+extern Fighter creer_fighter(const char* nom, int actu_pv, int max_pv, int attaque, int defense, int agilite, int vitesse, AttaqueSpecial** attaques);
 
 #endif

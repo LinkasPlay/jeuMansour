@@ -2,7 +2,7 @@
 #include <SDL2/SDL_ttf.h>
 //test
 #include "fighter.h"
-
+//test
 
 SDL_Texture* generer_texte(SDL_Renderer* rendu, const char* texte, TTF_Font* police) {
     SDL_Color blanc = {255, 255, 255};
