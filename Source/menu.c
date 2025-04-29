@@ -45,7 +45,6 @@ Page afficher_chargement(SDL_Renderer *rendu) {
             };
             SDL_RenderFillRect(rendu, &bloc);
         }
-//fzfes
         SDL_RenderCopy(rendu, texture_texte, NULL, &zone_texte);
         SDL_RenderPresent(rendu);
 
