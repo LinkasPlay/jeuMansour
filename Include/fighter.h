@@ -18,6 +18,7 @@ typedef enum {
     PAGE_OPTIONS,
     PAGE_HISTOIRE,
     PAGE_QUITTER
+    
 } Page;
 
 // Variables globales

@@ -4,32 +4,23 @@
 #include <stdbool.h>
 
 Page afficher_selection_perso(SDL_Renderer* rendu) {
-    // --- CHARGEMENT DE L'IMAGE DU CADRE ---
-    SDL_Texture* cadre_pp_texture = NULL;
-    SDL_Surface* cadre_pp_surface = NULL;
-
-    // Charger le cadre
-    cadre_pp_surface = IMG_Load("Ressource/image/Utilité/cadre_pp.png");
-    if (!cadre_pp_surface) {
-        SDL_Log("Erreur chargement de l'image cadre_pp.png : %s", SDL_GetError());
-        return PAGE_QUITTER; // Quitte si l'image ne peut pas être chargée
-    } else {
-        cadre_pp_texture = SDL_CreateTextureFromSurface(rendu, cadre_pp_surface);
-        SDL_FreeSurface(cadre_pp_surface);
-        if (!cadre_pp_texture) {
-            SDL_Log("Erreur création de la texture du cadre : %s", SDL_GetError());
-            return PAGE_QUITTER; // Quitte si la texture ne peut pas être créée
-        }
-    }
-
-    // --- CHARGEMENT DE L'IMAGE DE FOND ---
+    // --- CHARGEMENT DES TEXTURES ---
     SDL_Texture* fond_texture = IMG_LoadTexture(rendu, "Ressource/image/Fonds/fond_selection_perso.png");
     if (!fond_texture) {
-        SDL_Log("Erreur chargement de l'image de fond : %s", SDL_GetError());
-        return PAGE_QUITTER; // Quitte si l'image de fond ne peut pas être chargée
+        SDL_Log("Erreur chargement fond: %s", SDL_GetError());
+        return PAGE_QUITTER;
     }
 
-    // --- CHARGEMENT PORTRAITS ---
+    // --- LOGO VERSUS ---
+    SDL_Texture* logo_versus_texture = IMG_LoadTexture(rendu, "Ressource/image/Utilité/versus.png");
+    SDL_Rect dest_logo = {
+        (LARGEUR_FENETRE - 80) / 2,
+        10,
+        80,
+        80
+    };
+
+    // --- PORTRAITS DES PERSONNAGES ---
     const char* noms_portraits[8] = {
         "Ressource/image/Personnages_pp/pp_droite/pp_darkshadow.png",
         "Ressource/image/Personnages_pp/pp_droite/pp_hitsugaya.png",
@@ -41,55 +32,179 @@ Page afficher_selection_perso(SDL_Renderer* rendu) {
         "Ressource/image/Personnages_pp/pp_droite/pp_zoro.png"
     };
 
-    SDL_Texture* portraits[8] = {NULL};
+    SDL_Texture* portraits[8];
+    bool perso_disponible[8] = {true, true, true, true, true, true, true, true}; // Tous disponibles au départ
 
     for (int i = 0; i < 8; i++) {
         portraits[i] = IMG_LoadTexture(rendu, noms_portraits[i]);
         if (!portraits[i]) {
-            SDL_Log("Erreur chargement de l'image portrait %d : %s", i, SDL_GetError());
+            SDL_Log("Erreur chargement portrait %d: %s", i, SDL_GetError());
         }
     }
 
-    // Variables de positionnement des portraits
-    int largeur_portrait = 200;
-    int hauteur_portrait = 200;
-    int espacement_x = (LARGEUR_FENETRE - (4 * largeur_portrait)) / 5;
-    int espacement_y = (HAUTEUR_FENETRE - 200 - (2 * hauteur_portrait)) / 3;  // Ajusté pour 200px du haut
-    int start_x = espacement_x;
-    int start_y = 200; // Début à 200px du haut (baisse de 100px)
+    // --- GESTION DE LA SELECTION (3 MAX) ---
+    SDL_Texture* selections_j1[3] = {NULL, NULL, NULL};
+    SDL_Texture* selections_j2[3] = {NULL, NULL, NULL};
+    int nb_selections_j1 = 0;
+    int nb_selections_j2 = 0;
+    bool tour_j1 = true; // Commence avec J1
 
-    SDL_Event event;
+    // --- POSITIONNEMENT DES PERSOS ---
+    const int largeur_perso = 150;
+    const int hauteur_perso = 150;
+    const int espacement_x = (LARGEUR_FENETRE - 4*largeur_perso) / 5;
+    const int espacement_y = 50;
+    const int start_y_persos = HAUTEUR_FENETRE - hauteur_perso - espacement_y;
 
-    // Affichage de l'écran
-    while (1) {
+    // --- MINI-PORTRAITS SELECTIONNES ---
+    const int mini_size = 80;
+    const int marge_haut = 20;
+    const int marge_cote = 50;
+    const int espacement_selections = 10;
+
+    // --- TEXTE TOUR ---
+    TTF_Font* police = TTF_OpenFont("Ressource/police/arial.ttf", 24);
+    SDL_Color couleur_blanc = {255, 255, 255, 255};
+    SDL_Surface* surface_tour = NULL;
+    SDL_Texture* texture_tour = NULL;
+
+    // --- BOUCLE PRINCIPALE ---
+    bool running = true;
+    while (running && (nb_selections_j1 < 3 || nb_selections_j2 < 3)) {
+        // Mise à jour du texte "Tour de..."
+        if (surface_tour) SDL_FreeSurface(surface_tour);
+        if (texture_tour) SDL_DestroyTexture(texture_tour);
+        
+        const char* texte_tour = tour_j1 ? "Tour du Joueur 1" : "Tour du Joueur 2";
+        surface_tour = TTF_RenderText_Blended(police, texte_tour, couleur_blanc);
+        texture_tour = SDL_CreateTextureFromSurface(rendu, surface_tour);
+        
+        SDL_Rect rect_tour = {
+            (LARGEUR_FENETRE - surface_tour->w) / 2,
+            marge_haut + mini_size + 20,
+            surface_tour->w,
+            surface_tour->h
+        };
+
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                running = false;
+                return PAGE_QUITTER;
+            }
+
+            if (event.type == SDL_MOUSEBUTTONDOWN) {
+                int mouseX = event.button.x;
+                int mouseY = event.button.y;
+
+                // Détection clic sur personnage disponible
+                for (int i = 0; i < 8; i++) {
+                    if (!perso_disponible[i]) continue;
+                    
+                    int colonne = i % 4;
+                    int ligne = i / 4;
+                    
+                    SDL_Rect pos_perso = {
+                        espacement_x + colonne * (largeur_perso + espacement_x),
+                        start_y_persos - ligne * (hauteur_perso + espacement_y),
+                        largeur_perso,
+                        hauteur_perso
+                    };
+
+                    if (mouseX >= pos_perso.x && mouseX <= pos_perso.x + pos_perso.w &&
+                        mouseY >= pos_perso.y && mouseY <= pos_perso.y + pos_perso.h) {
+                        
+                        if (tour_j1 && nb_selections_j1 < 3) {
+                            selections_j1[nb_selections_j1] = portraits[i];
+                            nb_selections_j1++;
+                        } else if (!tour_j1 && nb_selections_j2 < 3) {
+                            selections_j2[nb_selections_j2] = portraits[i];
+                            nb_selections_j2++;
+                        }
+                        
+                        perso_disponible[i] = false; // Plus disponible
+                        tour_j1 = !tour_j1; // Changement de tour
+                        break;
+                    }
+                }
+            }
+        } 
+
+        // --- RENDU ---        
         SDL_RenderClear(rendu);
-
-        // === Affichage de l'image de fond ===
+        
+        // Fond
         SDL_RenderCopy(rendu, fond_texture, NULL, NULL);
+        
+        // Logo versus
+        SDL_RenderCopy(rendu, logo_versus_texture, NULL, &dest_logo);
 
-        // === Affichage des portraits avec le cadre ===
+        // Affichage des personnages disponibles
         for (int i = 0; i < 8; i++) {
-            int ligne = i / 4;
+            if (!perso_disponible[i]) continue;
+            
             int colonne = i % 4;
+            int ligne = i / 4;
+            
+            SDL_Rect dest = {
+                espacement_x + colonne * (largeur_perso + espacement_x),
+                start_y_persos - ligne * (hauteur_perso + espacement_y),
+                largeur_perso,
+                hauteur_perso
+            };
+            
+            if (portraits[i]) {
+                SDL_RenderCopy(rendu, portraits[i], NULL, &dest);
+                
+                // Surbrillance si c'est le tour du joueur
+                if ((tour_j1 && nb_selections_j1 < 3) || (!tour_j1 && nb_selections_j2 < 3)) {
+                    SDL_SetRenderDrawColor(rendu, 255, 255, 0, 128);
+                    SDL_RenderDrawRect(rendu, &dest);
+                }
+            }
+        }
 
-            start_x = espacement_x + colonne * (largeur_portrait + espacement_x);
-            start_y = 200 + ligne * (hauteur_portrait + espacement_y);  // Position à partir de 200px du haut
+        // Affichage des sélections J1 (gauche)
+        for (int i = 0; i < nb_selections_j1; i++) {
+            SDL_Rect dest = {
+                marge_cote,
+                marge_haut + i * (mini_size + espacement_selections),
+                mini_size,
+                mini_size
+            };
+            SDL_RenderCopy(rendu, selections_j1[i], NULL, &dest);
+        }
 
-            SDL_Rect dest = {start_x, start_y, largeur_portrait, hauteur_portrait};
-            SDL_RenderCopy(rendu, cadre_pp_texture, NULL, &dest);  // Affichage du cadre
-            SDL_RenderCopy(rendu, portraits[i], NULL, &dest);  // Affichage du portrait dans le cadre
+        // Affichage des sélections J2 (droite)
+        for (int i = 0; i < nb_selections_j2; i++) {
+            SDL_Rect dest = {
+                LARGEUR_FENETRE - marge_cote - mini_size,
+                marge_haut + i * (mini_size + espacement_selections),
+                mini_size,
+                mini_size
+            };
+            SDL_RenderCopy(rendu, selections_j2[i], NULL, &dest);
+        }
+
+        // Affichage du texte "Tour de..."
+        if (texture_tour) {
+            SDL_RenderCopy(rendu, texture_tour, NULL, &rect_tour);
         }
 
         SDL_RenderPresent(rendu);
+    }
 
-        // Écoute des événements
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT)
-                return PAGE_QUITTER;
+    /// --- NETTOYAGE ---    
+    for (int i = 0; i < 8; i++) {
+        if (portraits[i]) SDL_DestroyTexture(portraits[i]);
+    }
+    if (fond_texture) SDL_DestroyTexture(fond_texture);
+    if (logo_versus_texture) SDL_DestroyTexture(logo_versus_texture);
+    if (surface_tour) SDL_FreeSurface(surface_tour);
+    if (texture_tour) SDL_DestroyTexture(texture_tour);
+    if (police) TTF_CloseFont(police);
 
-            if (event.type == SDL_MOUSEBUTTONDOWN) {
-                // Gérer la sélection des personnages ici si besoin
-            }
-        }
+    if (!running) {
+        return PAGE_QUITTER;
     }
 }
