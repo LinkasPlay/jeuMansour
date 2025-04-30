@@ -1,6 +1,6 @@
 #ifndef FIGHTER_H
 #define FIGHTER_H
-//test
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
@@ -18,7 +18,6 @@ typedef enum {
     PAGE_OPTIONS,
     PAGE_HISTOIRE,
     PAGE_QUITTER
-    
 } Page;
 
 // Variables globales
@@ -34,7 +33,7 @@ Page afficher_histoire(SDL_Renderer* rendu);
 Page afficher_menu(SDL_Renderer* rendu);
 Page afficher_selec_mode(SDL_Renderer* rendu);
 Page afficher_selec_difficulte(SDL_Renderer* rendu);
-Page afficher_selection_perso(SDL_Renderer* rendu);
+Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3], SDL_Texture* selections_j2[3]);
 Page afficher_jeu(SDL_Renderer* rendu);
 Page afficher_options(SDL_Renderer* rendu, Page page_prec);
 
