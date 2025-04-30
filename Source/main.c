@@ -1,7 +1,26 @@
-#include "../Include/fighter.h"
+#include "fighter.h"
+#include "equipe.h"
+#include "gameplay.h"
+#include "generation_maps.h"
+#include "maps.h"
+#include "personnage.h"
+#include "selection.h"
+
+#include <time.h>
 #include <stdio.h>
 
+
+
+
+
 int main(int argc, char* argv[]) {
+
+    Partie partie;
+    initialiser_equipe(&partie.equipe1);
+    initialiser_equipe(&partie.equipe2);
+    partie.element_map = ELEMENT_FEU;
+    partie.id_map = 1;
+
     // Initialisation des variables
     Mix_Music* musique_global = NULL;
     SDL_Texture* selections_j1[3] = {NULL, NULL, NULL};
@@ -82,7 +101,7 @@ int main(int argc, char* argv[]) {
                 SDL_Texture* old_j1[3] = {selections_j1[0], selections_j1[1], selections_j1[2]};
                 SDL_Texture* old_j2[3] = {selections_j2[0], selections_j2[1], selections_j2[2]};
                 
-                page = afficher_selection_perso(rendu, selections_j1, selections_j2);
+                page = afficher_selection_perso(rendu, selections_j1, selections_j2, &partie);
                 
                 if (page == PAGE_CONFIRMATION_PERSO) {
                     page = afficher_confirmation_perso(rendu, selections_j1, selections_j2);

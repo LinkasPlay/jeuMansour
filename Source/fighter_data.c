@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "personnages.h"
+#include "personnage.h"
 
 Fighter personnage[8];
 

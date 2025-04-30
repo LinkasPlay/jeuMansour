@@ -61,6 +61,8 @@ extern Fighter personnage[8];
 
 // ==== Fonctions pour créer personnages et attaques ====
 extern AttaqueSpecial* creer_attaqueSpe(const char* nom, const char* desc, int degats, StatutEffet effets[], int nb_effets, int tour);
-extern Fighter creer_fighter(const char* nom, int actu_pv, int max_pv, int attaque, int defense, int agilite, int vitesse, AttaqueSpecial** attaques);
+extern Fighter creer_fighter(const char* nom, int actu_pv, int max_pv, int attaque, int defense, int agilite, int vitesse, ElementType element, AttaqueSpecial** attaques);
+
+appliquer_buffs(perso1, bonus1);
 
 #endif

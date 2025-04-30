@@ -1,7 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include "generation_map.h"
+#include "generation_maps.h"
+#include "maps.h"
+
 
 // Fonction pour générer une map aléatoire
 MapType generer_map_aleatoire(void) {

@@ -1,5 +1,12 @@
 #include <stdio.h>
+
+#include "fighter.h"
 #include "equipe.h"
+#include "gameplay.h"
+#include "generation_maps.h"
+#include "maps.h"
+#include "personnage.h"
+#include "selection.h"
 
 // Initialise une équipe vide
 void initialiser_equipe(Equipe* equipe) {
@@ -21,10 +28,9 @@ int ajouter_personnage_equipe(Equipe* equipe, Fighter* perso) {
 
 // Affiche les personnages de l'équipe
 void afficher_equipe(const Equipe* equipe) {
-    printf("Équipe :\n");
     for (int i = 0; i < NB_PERSOS_EQUIPE; i++) {
-        if (equipe->persos[i] != NULL) {
-            printf("- %s\n", equipe->persos[i]->nom);
+        if (equipe->persos[i]) {
+            printf("Perso %d : %s\n", i, equipe->persos[i]->nom);
         }
     }
 }

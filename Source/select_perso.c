@@ -1,9 +1,17 @@
-#include "../Include/fighter.h"
+#include "fighter.h"
+#include "equipe.h"
+#include "gameplay.h"
+#include "generation_maps.h"
+#include "maps.h"
+#include "personnage.h"
+#include "selection.h"
+
 #include <string.h>
 #include <time.h>
 #include <stdbool.h>
 
-Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3], SDL_Texture* selections_j2[3]) {
+Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3], SDL_Texture* selections_j2[3], Partie* partie) {
+
     // --- CHARGEMENT DES TEXTURES ---
     SDL_Texture* fond_texture = IMG_LoadTexture(rendu, "Ressource/image/Fonds/fond_selection_perso.png");
     if (!fond_texture) {
@@ -162,13 +170,13 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                             
                             if (tour_j1 && nb_selections_j1 < 3) {
                                 selections_j1[nb_selections_j1] = portraits[i];
+                                ajouter_personnage_equipe(&partie->equipe1, &personnage[i]); // AJOUT
                                 nb_selections_j1++;
-                            } 
-                            else if (!tour_j1 && nb_selections_j2 < 3) {
+                            } else if (!tour_j1 && nb_selections_j2 < 3) {
                                 selections_j2[nb_selections_j2] = portraits[i];
+                                ajouter_personnage_equipe(&partie->equipe2, &personnage[i]); // AJOUT
                                 nb_selections_j2++;
-                            }
-                            
+                            }                                
                             perso_disponible[i] = false;
                             tour_j1 = !tour_j1;
                             break;
@@ -247,6 +255,9 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
     if (surface_tour) SDL_FreeSurface(surface_tour);
     if (texture_tour) SDL_DestroyTexture(texture_tour);
     TTF_CloseFont(police);
+
+    afficher_equipe(&partie->equipe1);
+    afficher_equipe(&partie->equipe2);    
 
     return PAGE_CONFIRMATION_PERSO;
 }

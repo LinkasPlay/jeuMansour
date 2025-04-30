@@ -1,13 +1,22 @@
 #ifndef EQUIPE_H
 #define EQUIPE_H
 
-#include "personnages.h"  // Car une équipe contient des personnages
+#include "personnage.h" 
+#include "maps.h" 
+
 
 #define NB_PERSOS_EQUIPE 3
 
 typedef struct {
     Fighter* persos[NB_PERSOS_EQUIPE]; // Pointeurs vers les personnages sélectionnés
 } Equipe;
+
+typedef struct {
+    Equipe equipe1;
+    Equipe equipe2;
+    ElementType element_map;
+    int id_map; 
+} Partie;
 
 // Fonction pour initialiser une équipe à vide
 void initialiser_equipe(Equipe* equipe);

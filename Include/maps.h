@@ -10,6 +10,7 @@ typedef enum {
     MAP_VENT,
     MAP_EAU,
     MAP_OMBRE,
+    MAP_NEUTRE,
     MAP_TEMPS,   // Map sans élément
     MAP_MYSTERE,  // Map sans élément
     NB_MAPS       // Total = 9 maps
