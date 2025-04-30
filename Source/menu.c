@@ -309,35 +309,75 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
 }
 
 // === PAGE DE JEU ===
-Page afficher_jeu(SDL_Renderer* rendu) {
+Page afficher_jeu(SDL_Renderer* rendu, SDL_Texture* selections_j1[3], SDL_Texture* selections_j2[3]) {
+    // Fond noir
     SDL_SetRenderDrawColor(rendu, 0, 0, 0, 255);
     SDL_RenderClear(rendu);
 
+    // Afficher les personnages sélectionnés
+    const int taille_perso = 100;
+    const int marge = 50;
+    
+    // Afficher l'équipe du joueur 1 (gauche)
+    for (int i = 0; i < 3; i++) {
+        if (selections_j1[i]) {
+            SDL_Rect dest = {
+                marge,
+                marge + i * (taille_perso + 20),
+                taille_perso,
+                taille_perso
+            };
+            SDL_RenderCopy(rendu, selections_j1[i], NULL, &dest);
+        }
+    }
+
+    // Afficher l'équipe du joueur 2 (droite)
+    for (int i = 0; i < 3; i++) {
+        if (selections_j2[i]) {
+            SDL_Rect dest = {
+                LARGEUR_FENETRE - marge - taille_perso,
+                marge + i * (taille_perso + 20),
+                taille_perso,
+                taille_perso
+            };
+            SDL_RenderCopy(rendu, selections_j2[i], NULL, &dest);
+        }
+    }
+
+    // Texte "JEU EN COURS..."
     TTF_Font* police = TTF_OpenFont("Ressource/langue/Police/arial.ttf", 40);
-    SDL_Color blanc = {255, 255, 255, 255};
-    SDL_Surface* surf = TTF_RenderUTF8_Blended(police, "JEU EN COURS...", blanc);
-    SDL_Texture* texte = SDL_CreateTextureFromSurface(rendu, surf);
+    if (police) {
+        SDL_Color blanc = {255, 255, 255, 255};
+        SDL_Surface* surf = TTF_RenderUTF8_Blended(police, "JEU EN COURS...", blanc);
+        if (surf) {
+            SDL_Texture* texte = SDL_CreateTextureFromSurface(rendu, surf);
+            if (texte) {
+                SDL_Rect rect = {
+                    (LARGEUR_FENETRE - surf->w) / 2,
+                    HAUTEUR_FENETRE - 100,
+                    surf->w,
+                    surf->h
+                };
+                SDL_RenderCopy(rendu, texte, NULL, &rect);
+                SDL_DestroyTexture(texte);
+            }
+            SDL_FreeSurface(surf);
+        }
+        TTF_CloseFont(police);
+    }
 
-    SDL_Rect rect = {
-        (LARGEUR_FENETRE - surf->w) / 2,
-        (HAUTEUR_FENETRE - surf->h) / 2,
-        surf->w,
-        surf->h
-    };
-
-    SDL_RenderCopy(rendu, texte, NULL, &rect);
     SDL_RenderPresent(rendu);
 
-    SDL_FreeSurface(surf);
-    SDL_DestroyTexture(texte);
-    TTF_CloseFont(police);
-
+    // Gestion des événements
     SDL_Event event;
     while (1) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) return PAGE_QUITTER;
-            if (event.type == SDL_MOUSEBUTTONDOWN) return PAGE_MENU;
+            if (event.type == SDL_KEYDOWN || event.type == SDL_MOUSEBUTTONDOWN) {
+                return PAGE_MENU;
+            }
         }
+        SDL_Delay(16); // Limite à ~60 FPS
     }
 }
 
@@ -480,39 +520,31 @@ Page afficher_selec_difficulte(SDL_Renderer* rendu) {
         
             if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
                 int x = event.button.x, y = event.button.y;
-                printf("Clic détecté aux coordonnées (%d, %d)\n", x, y); // pour debug
 
                 // Clic sur retour
                 if (x >= retour.x && x <= retour.x + retour.w &&
                     y >= retour.y && y <= retour.y + retour.h) {
-                    printf("Retour sélectionné\n");
                     return PAGE_SELEC_MODE;
                 }
                 
                 // Clic sur "Facile"
                 if (x >= boutons[0].x && x <= boutons[0].x + boutons[0].w &&
                     y >= boutons[0].y && y <= boutons[0].y + boutons[0].h) {
-                    printf("Facile sélectionné\n");
                     return PAGE_SELECTION_PERSO;
                 }
         
                 // Clic sur "Moyen"
                 if (x >= boutons[1].x && x <= boutons[1].x + boutons[1].w &&
                     y >= boutons[1].y && y <= boutons[1].y + boutons[1].h) {
-                    printf("Moyen sélectionné\n");
                     return PAGE_SELECTION_PERSO;
                 }
         
                 // Clic sur "Difficile"
                 if (x >= boutons[2].x && x <= boutons[2].x + boutons[2].w &&
                     y >= boutons[2].y && y <= boutons[2].y + boutons[2].h) {
-                    printf("Difficile sélectionné\n");
                     return PAGE_SELECTION_PERSO;
                 }
         
-                
-        
-                printf("Clic ailleurs\n");
             }
         }
     }
