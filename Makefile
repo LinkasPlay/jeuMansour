@@ -1,21 +1,18 @@
-CC = gcc
-CFLAGS = -Wall -IInclude `sdl2-config --cflags`
-LIBS = `sdl2-config --libs` -lSDL2_image -lSDL2_ttf -lSDL2_mixer
+CC       = gcc
+CFLAGS   = -Wall -IInclude `sdl2-config --cflags`
+LIBS     = `sdl2-config --libs` -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 
 SRC = \
     Source/main.c \
     Source/menu.c \
     Source/select_perso.c \
-    Source/selection.c \
-    Source/equipe.c \
-    Source/fighter_data.c \
-    Source/langue.c \
-    Source/maps.c \
-    Source/initialisation.c \
-    Source/gameplay.c \
-    Source/generation_maps.c
+    Source/data.c \
+    Source/logique.c\
+    Source/interface.c
 
-EXEC = exec/jeu
+EXEC     = exec/jeu
+
+.PHONY: all compile jeu clean
 
 all: $(EXEC)
 

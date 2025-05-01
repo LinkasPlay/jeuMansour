@@ -1,6 +1,8 @@
-#include "../Include/fighter.h"
 #include <string.h>
-#include <time.h>
+#include "data.h"
+#include "logic.h"
+#include "interface.h"
+
 //test//
 // Variables globales réelles
 int mode_choisi = 0;
