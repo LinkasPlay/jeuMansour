@@ -26,7 +26,7 @@ Page afficher_chargement(SDL_Renderer *rendu) {
     SDL_Rect zone_barre = {60, 500, 900, 30};
     SDL_Rect zone_texte = {zone_barre.x, zone_barre.y + 40, 400, 30};
 
-    SDL_Surface *surf_texte = TTF_RenderUTF8_Blended(police, "Chargement en cours...", blanc);
+    SDL_Surface *surf_texte = TTF_RenderUTF8_Solid(police, "Chargement en cours...", blanc);
     SDL_Texture *texture_texte = SDL_CreateTextureFromSurface(rendu, surf_texte);
     SDL_FreeSurface(surf_texte);
 
@@ -120,7 +120,7 @@ Page afficher_histoire(SDL_Renderer* rendu) {
 
         for (int i = 0; i <= phrase; i++) {
             if (lettres[i] > 0) {
-                SDL_Surface* surf = TTF_RenderUTF8_Blended(police, affichage[i], blanc);
+                SDL_Surface* surf = TTF_RenderUTF8_Solid(police, affichage[i], blanc);
                 if (surf) {
                     SDL_Texture* tex = SDL_CreateTextureFromSurface(rendu, surf);
                     SDL_Rect rect = {
@@ -218,7 +218,7 @@ Page afficher_menu(SDL_Renderer* rendu) {
 
     for (int i = 0; i < 3; i++) {
         SDL_RenderCopy(rendu, cadre_bouton, NULL, &boutons[i]);
-        SDL_Surface* surf = TTF_RenderUTF8_Blended(police, textes[i], noir);
+        SDL_Surface* surf = TTF_RenderUTF8_Solid(police, textes[i], noir);
         SDL_Texture* tex = SDL_CreateTextureFromSurface(rendu, surf);
         SDL_Rect txt = {
             boutons[i].x + (boutons[i].w - surf->w) / 2,
@@ -282,7 +282,7 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
 
         for (int i = 0; i < 3; i++) {
             SDL_RenderCopy(rendu, cadre_bouton, NULL, &boutons[i]);
-            SDL_Surface* surf = TTF_RenderUTF8_Blended(police, textes[i], noir);
+            SDL_Surface* surf = TTF_RenderUTF8_Solid(police, textes[i], noir);
             SDL_Texture* tex = SDL_CreateTextureFromSurface(rendu, surf);
             SDL_Rect txt = {
                 boutons[i].x + (boutons[i].w - surf->w) / 2,
@@ -350,7 +350,7 @@ Page afficher_jeu(SDL_Renderer* rendu, SDL_Texture* selections_j1[3], SDL_Textur
     TTF_Font* police = TTF_OpenFont("Ressource/langue/Police/arial.ttf", 40);
     if (police) {
         SDL_Color blanc = {255, 255, 255, 255};
-        SDL_Surface* surf = TTF_RenderUTF8_Blended(police, "JEU EN COURS...", blanc);
+        SDL_Surface* surf = TTF_RenderUTF8_Solid(police, "JEU EN COURS...", blanc);
         if (surf) {
             SDL_Texture* texte = SDL_CreateTextureFromSurface(rendu, surf);
             if (texte) {
@@ -419,7 +419,7 @@ Page afficher_selec_mode(SDL_Renderer* rendu) {
             SDL_RenderCopy(rendu, cadre_bouton, NULL, &boutons[i]);
 
             for (int j = 0; j < 3; j++) {
-                SDL_Surface* surf = TTF_RenderUTF8_Blended(police, textes[i][j], noir);
+                SDL_Surface* surf = TTF_RenderUTF8_Solid(police, textes[i][j], noir);
                 SDL_Texture* tex = SDL_CreateTextureFromSurface(rendu, surf);
 
                 SDL_Rect txt = {
@@ -499,7 +499,7 @@ Page afficher_selec_difficulte(SDL_Renderer* rendu) {
 
         for (int i = 0; i < 3; i++) {
             SDL_RenderCopy(rendu, cadre_bouton, NULL, &boutons[i]);
-            SDL_Surface* surf = TTF_RenderUTF8_Blended(police, textes[i], noir);
+            SDL_Surface* surf = TTF_RenderUTF8_Solid(police, textes[i], noir);
             SDL_Texture* tex = SDL_CreateTextureFromSurface(rendu, surf);
             SDL_Rect txt = {
                 boutons[i].x + (boutons[i].w - surf->w) / 2,
