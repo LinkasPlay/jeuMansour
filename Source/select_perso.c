@@ -261,13 +261,12 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
 
 
 Page afficher_confirmation_perso(SDL_Renderer* rendu, SDL_Texture* equipe1[3], SDL_Texture* equipe2[3]) {
-    // Chargement des textures de fond et d'interface uniquement
+    // Chargement des textures
     SDL_Texture* fond_texture = IMG_LoadTexture(rendu, "Ressource/image/Fonds/fond_selection_perso.png");
     SDL_Texture* btn_avancer_texture = IMG_LoadTexture(rendu, "Ressource/image/Utilité/avance.png");
     SDL_Texture* btn_retour_texture = IMG_LoadTexture(rendu, "Ressource/image/Utilité/retour.png");
     SDL_Texture* vs_texture = IMG_LoadTexture(rendu, "Ressource/image/Utilité/versus_recap.png");
 
-    // Vérification des textures chargées
     if (!fond_texture || !btn_avancer_texture || !btn_retour_texture || !vs_texture) {
         if (fond_texture) SDL_DestroyTexture(fond_texture);
         if (btn_avancer_texture) SDL_DestroyTexture(btn_avancer_texture);
@@ -276,64 +275,62 @@ Page afficher_confirmation_perso(SDL_Renderer* rendu, SDL_Texture* equipe1[3], S
         return PAGE_QUITTER;
     }
 
-    // Positions des éléments fixes
     const SDL_Rect btn_retour_rect = {20, HAUTEUR_FENETRE - 100, 80, 80};
     const SDL_Rect btn_avancer_rect = {LARGEUR_FENETRE - 100, HAUTEUR_FENETRE - 100, 80, 80};
-    const SDL_Rect vs_rect = {LARGEUR_FENETRE/2 - 40, HAUTEUR_FENETRE/2 - 40, 80, 80};
+    const SDL_Rect vs_rect = {LARGEUR_FENETRE / 2 - 40, HAUTEUR_FENETRE / 2 - 40, 80, 80};
 
-    // Paramètres d'affichage des personnages
     const int largeur_perso = 150;
     const int hauteur_perso = 150;
     const int marge_haut = 100;
     const int espacement = 30;
-    const int start_x_j1 = 100; // Position fixe gauche
-    const int start_x_j2 = LARGEUR_FENETRE - 100 - largeur_perso; // Position fixe droite
+    const int start_x_j1 = 100;
+    const int start_x_j2 = LARGEUR_FENETRE - 100 - largeur_perso;
 
     bool running = true;
     SDL_Event event;
-    
+
     while (running) {
-        // Gestion des événements
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 running = false;
                 return PAGE_QUITTER;
-            }
-            else if (event.type == SDL_MOUSEBUTTONDOWN) {
+            } else if (event.type == SDL_MOUSEBUTTONDOWN) {
                 SDL_Point mouse = {event.button.x, event.button.y};
-                
                 if (SDL_PointInRect(&mouse, &btn_avancer_rect)) {
                     running = false;
+                    
+                    
+                    Jeu(rendu);
+                    
+                    
                     return PAGE_COMBAT;
-                }
-                else if (SDL_PointInRect(&mouse, &btn_retour_rect)) {
+                } else if (SDL_PointInRect(&mouse, &btn_retour_rect)) {
                     running = false;
                     return PAGE_SELECTION_PERSO;
                 }
             }
         }
 
-        // Rendu
         SDL_RenderClear(rendu);
-        
-        // Fond
+
+        // 1. Afficher le fond d'abord
         SDL_RenderCopy(rendu, fond_texture, NULL, NULL);
-        
-        // Équipe 1 (gauche) - seulement les persos sélectionnés
+
+        // 2. Afficher les personnages des deux équipes
         for (int i = 0; i < 3; i++) {
             if (equipe1[i]) {
                 SDL_Rect dest = {
                     start_x_j1,
                     marge_haut + i * (hauteur_perso + espacement),
-                    largeur_perso, 
+                    largeur_perso,
                     hauteur_perso
                 };
                 SDL_RenderCopy(rendu, equipe1[i], NULL, &dest);
+                //printf("test %d",i);
+
             }
-        }
-        
-        // Équipe 2 (droite) - seulement les persos sélectionnés
-        for (int i = 0; i < 3; i++) {
+
+
             if (equipe2[i]) {
                 SDL_Rect dest = {
                     start_x_j2,
@@ -342,21 +339,24 @@ Page afficher_confirmation_perso(SDL_Renderer* rendu, SDL_Texture* equipe1[3], S
                     hauteur_perso
                 };
                 SDL_RenderCopy(rendu, equipe2[i], NULL, &dest);
+                //printf("test %d",i);
             }
         }
 
+        // 3. Interface par-dessus
+        SDL_RenderCopy(rendu, btn_retour_texture, NULL, &btn_retour_rect);
         SDL_RenderCopy(rendu, vs_texture, NULL, &vs_rect);
         SDL_RenderCopy(rendu, btn_avancer_texture, NULL, &btn_avancer_rect);
-        SDL_RenderCopy(rendu, btn_retour_texture, NULL, &btn_retour_rect);
-        
+
         SDL_RenderPresent(rendu);
     }
-    
-    // Nettoyage (ne pas détruire equipe1/equipe2)
+
+    // Libération
     SDL_DestroyTexture(fond_texture);
     SDL_DestroyTexture(btn_avancer_texture);
     SDL_DestroyTexture(btn_retour_texture);
     SDL_DestroyTexture(vs_texture);
-    
+
     return PAGE_CONFIRMATION_PERSO;
 }
+

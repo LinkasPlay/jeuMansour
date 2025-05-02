@@ -85,6 +85,28 @@ typedef struct {
     AttaqueSpecial* spe_atq[MAX_SPECIAL];
 } Fighter;
 
+
+
+typedef struct {
+    Fighter fighter1;
+    Fighter fighter2;
+    Fighter fighter3;
+
+} Joueur;
+
+
+
+typedef struct{
+    Joueur joueur1;
+    Joueur joueur2;
+
+    int perso_actif; 
+
+    int tour;
+    bool fin;
+
+} Partie;
+
 // Tableau global de personnages
 extern Fighter personnage[8];
 
