@@ -5,8 +5,28 @@
 #include <stdlib.h>
 #include <string.h>
 
+
+
 // Le tableau global de tous les personnages
-Fighter personnage[8];
+
+
+
+
+Fighter zoro={
+    .nom ="zoro",
+    .actu_pv =300,
+    .max_pv =300,
+    .attaque = 30,
+    .defense = 15,
+    .agilite = 20,
+    .vitesse = 10,
+    .element = ELEMENT_NONE
+};
+
+
+Joueur equipe1;
+Partie partieActuel;
+
 
 // Création d'une attaque spéciale
 AttaqueSpecial* creer_attaqueSpe(const char* nom, const char* desc, int degats,

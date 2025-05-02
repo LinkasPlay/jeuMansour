@@ -7,6 +7,11 @@
 #include <time.h>
 #include <stdbool.h>
 
+Fighter persoChoisi[6];
+void jeu(SDL_Renderer* rendu);
+
+
+
 Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3], SDL_Texture* selections_j2[3]) {
 
     // --- CHARGEMENT DES TEXTURES ---
@@ -123,6 +128,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
         }
         
         SDL_Rect rect_tour = {
+
             (LARGEUR_FENETRE - surface_tour->w) / 2,
             marge_haut + mini_size + 20,
             surface_tour->w,
@@ -130,6 +136,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
         };
 
         SDL_Event event;
+        int a=0;
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 running = false;
@@ -151,7 +158,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                     // Détection clic sur personnage
                     for (int i = 0; i < 8; i++) {
                         if (!perso_disponible[i]) continue;
-                        
+
                         int colonne = i % 4;
                         int ligne = i / 4;
                         
@@ -164,22 +171,140 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
 
                         if (mouseX >= pos_perso.x && mouseX <= pos_perso.x + pos_perso.w &&
                             mouseY >= pos_perso.y && mouseY <= pos_perso.y + pos_perso.h) {
-                            
+
                             if (tour_j1 && nb_selections_j1 < 3) {
                                 selections_j1[nb_selections_j1] = portraits[i];
                                 nb_selections_j1++;
+
                             } else if (!tour_j1 && nb_selections_j2 < 3) {
                                 selections_j2[nb_selections_j2] = portraits[i];
                                 nb_selections_j2++;
+
                             }                                
                             perso_disponible[i] = false;
+                            
+                            switch(i){
+
+                                case 0:
+                                    strcpy(persoChoisi[a].nom,zoro.nom);
+                                    persoChoisi[a].actu_pv=zoro.actu_pv;
+                                    persoChoisi[a].max_pv=zoro.max_pv;
+                                    persoChoisi[a].attaque=zoro.attaque;
+                                    persoChoisi[a].defense=zoro.defense;
+                                    persoChoisi[a].agilite=zoro.agilite;
+                                    persoChoisi[a].vitesse=zoro.vitesse;
+                                    persoChoisi[a].element=zoro.element;
+                            
+                                    break;
+                               
+                                case 1:
+                                
+                                    strcpy(persoChoisi[a].nom,zoro.nom);
+                                    persoChoisi[a].actu_pv=zoro.actu_pv;
+                                    persoChoisi[a].max_pv=zoro.max_pv;
+                                    persoChoisi[a].attaque=zoro.attaque;
+                                    persoChoisi[a].defense=zoro.defense;
+                                    persoChoisi[a].agilite=zoro.agilite;
+                                    persoChoisi[a].vitesse=zoro.vitesse;
+                                    persoChoisi[a].element=zoro.element;
+                                    break;
+                                case 2:
+                                
+                                    strcpy(persoChoisi[a].nom,zoro.nom);
+                                    persoChoisi[a].actu_pv=zoro.actu_pv;
+                                    persoChoisi[a].max_pv=zoro.max_pv;
+                                    persoChoisi[a].attaque=zoro.attaque;
+                                    persoChoisi[a].defense=zoro.defense;
+                                    persoChoisi[a].agilite=zoro.agilite;
+                                    persoChoisi[a].vitesse=zoro.vitesse;
+                                    persoChoisi[a].element=zoro.element;
+                                    break;
+                                
+                                case 3:
+                                    
+                                    strcpy(persoChoisi[a].nom,zoro.nom);
+                                    persoChoisi[a].actu_pv=zoro.actu_pv;
+                                    persoChoisi[a].max_pv=zoro.max_pv;
+                                    persoChoisi[a].attaque=zoro.attaque;
+                                    persoChoisi[a].defense=zoro.defense;
+                                    persoChoisi[a].agilite=zoro.agilite;
+                                    persoChoisi[a].vitesse=zoro.vitesse;
+                                    persoChoisi[a].element=zoro.element;
+                                    break;
+                                
+                                case 4:
+                                
+                                    strcpy(persoChoisi[a].nom,zoro.nom);
+                                    persoChoisi[a].actu_pv=zoro.actu_pv;
+                                    persoChoisi[a].max_pv=zoro.max_pv;
+                                    persoChoisi[a].attaque=zoro.attaque;
+                                    persoChoisi[a].defense=zoro.defense;
+                                    persoChoisi[a].agilite=zoro.agilite;
+                                    persoChoisi[a].vitesse=zoro.vitesse;
+                                    persoChoisi[a].element=zoro.element;
+                                    break;
+                                    
+                                case 5:
+                                
+                                    strcpy(persoChoisi[a].nom,zoro.nom);
+                                    persoChoisi[a].actu_pv=zoro.actu_pv;
+                                    persoChoisi[a].max_pv=zoro.max_pv;
+                                    persoChoisi[a].attaque=zoro.attaque;
+                                    persoChoisi[a].defense=zoro.defense;
+                                    persoChoisi[a].agilite=zoro.agilite;
+                                    persoChoisi[a].vitesse=zoro.vitesse;
+                                    persoChoisi[a].element=zoro.element;
+                                    break;
+                                    
+                                case 6:
+                                    
+                                    strcpy(persoChoisi[a].nom,zoro.nom);
+                                    persoChoisi[a].actu_pv=zoro.actu_pv;
+                                    persoChoisi[a].max_pv=zoro.max_pv;
+                                    persoChoisi[a].attaque=zoro.attaque;
+                                    persoChoisi[a].defense=zoro.defense;
+                                    persoChoisi[a].agilite=zoro.agilite;
+                                    persoChoisi[a].vitesse=zoro.vitesse;
+                                    persoChoisi[a].element=zoro.element;
+                                    break;
+                                    
+                                case 7:
+                                
+                                    strcpy(persoChoisi[a].nom,zoro.nom);
+                                    persoChoisi[a].actu_pv=zoro.actu_pv;
+                                    persoChoisi[a].max_pv=zoro.max_pv;
+                                    persoChoisi[a].attaque=zoro.attaque;
+                                    persoChoisi[a].defense=zoro.defense;
+                                    persoChoisi[a].agilite=zoro.agilite;
+                                    persoChoisi[a].vitesse=zoro.vitesse;
+                                    persoChoisi[a].element=zoro.element;
+                                    break;
+                               
+                            }
+
+
+
+
+
+
+
+
+                            SDL_Log("%s",persoChoisi[a].nom);
+
+
+
+
+
+
                             tour_j1 = !tour_j1;
+                            a++;
                             break;
                         }
                     }
                 }
             }
         }
+
 
         // --- RENDU ---
         SDL_RenderClear(rendu);
@@ -300,7 +425,7 @@ Page afficher_confirmation_perso(SDL_Renderer* rendu, SDL_Texture* equipe1[3], S
                     running = false;
                     
                     
-                    Jeu(rendu);
+                    //jeu(rendu);
                     
                     
                     return PAGE_COMBAT;

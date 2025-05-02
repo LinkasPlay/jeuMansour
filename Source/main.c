@@ -10,12 +10,7 @@
 #include <SDL2/SDL_mixer.h>
 
 int main(int argc, char* argv[]) {
-    Partie partie;
-    initialiser_equipe(&partie.equipe1);
-    initialiser_equipe(&partie.equipe2);
-    partie.element_map = ELEMENT_FEU;
-    partie.element_map = ELEMENT_FEU;
-    partie.id_map = 1;
+    
 
     // Initialisation des variables
     SDL_Texture* selections_j1[NB_PERSOS_EQUIPE] = { NULL, NULL, NULL };

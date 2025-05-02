@@ -2,7 +2,12 @@
 #ifndef DATA_H
 #define DATA_H
 
-#include <stddef.h>
+#include <time.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_mixer.h>
 
 // ==== Définition des maps disponibles ====
 typedef enum {
@@ -21,7 +26,7 @@ typedef enum {
 
 // ==== Définition des éléments ====
 typedef enum {
-    ELEMENT_NONE = 0,
+    ELEMENT_NONE,
     ELEMENT_CRISTAL,
     ELEMENT_GLACE,
     ELEMENT_FEU,
@@ -108,9 +113,14 @@ typedef struct{
 } Partie;
 
 // Tableau global de personnages
-extern Fighter personnage[8];
 
-// Créateurs et buffs
+extern Fighter zoro;
+extern Joueur equipe1;
+extern Partie partieActuel;
+
+
+void jeu(SDL_Renderer* rendu);
+
 AttaqueSpecial* creer_attaqueSpe(const char* nom, const char* desc, int degats,
                                  StatutEffet effets[], int nb_effets, int tour);
 Fighter        creer_fighter   (const char* nom, int actu_pv, int max_pv, int attaque,

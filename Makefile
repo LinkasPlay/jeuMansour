@@ -7,7 +7,6 @@ SRC = \
     Source/menu.c \
     Source/select_perso.c \
     Source/data.c \
-    Source/logique.c\
     Source/interface.c
 
 EXEC     = exec/jeu

@@ -1,3 +1,4 @@
+/*
 // ----- src/logique.c -----
 #include "data.h"
 #include "logic.h"
@@ -117,3 +118,7 @@ void afficher_nom_map(MapType map) {
     else
         printf("Map inconnue (%d)\n", map);
 }
+
+
+
+*/

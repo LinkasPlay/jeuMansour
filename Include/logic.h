@@ -1,11 +1,16 @@
+
 // Include/logic.h
 #ifndef LOGIC_H
 #define LOGIC_H
+
+#include <stdio.h>
+#include <string.h>
 
 #include "data.h"
 
 #define NB_PERSOS_EQUIPE 3
 
+/*
 typedef struct {
     Fighter* persos[NB_PERSOS_EQUIPE];
 } Equipe;
@@ -16,6 +21,7 @@ typedef struct {
     ElementType element_map;
     int         id_map;
 } Partie;
+
 
 // Équipes
 void  initialiser_equipe         (Equipe* equipe);
@@ -33,5 +39,5 @@ float calculer_vitesse_moyenne   (const Equipe* equipe);
 // Maps
 MapType generer_map_aleatoire    (void);
 void    afficher_nom_map         (MapType map);
-
+*/
 #endif // LOGIC_H
