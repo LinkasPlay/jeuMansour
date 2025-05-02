@@ -1,5 +1,4 @@
 // ----- src/main.c -----
-#include "data.h"
 #include "logic.h"
 #include "interface.h"
 
@@ -14,6 +13,7 @@ int main(int argc, char* argv[]) {
     Partie partie;
     initialiser_equipe(&partie.equipe1);
     initialiser_equipe(&partie.equipe2);
+    partie.element_map = ELEMENT_FEU;
     partie.element_map = ELEMENT_FEU;
     partie.id_map = 1;
 

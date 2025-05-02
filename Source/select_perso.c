@@ -344,8 +344,7 @@ Page afficher_confirmation_perso(SDL_Renderer* rendu, SDL_Texture* equipe1[3], S
                 SDL_RenderCopy(rendu, equipe2[i], NULL, &dest);
             }
         }
-        
-        // Éléments d'interface
+
         SDL_RenderCopy(rendu, vs_texture, NULL, &vs_rect);
         SDL_RenderCopy(rendu, btn_avancer_texture, NULL, &btn_avancer_rect);
         SDL_RenderCopy(rendu, btn_retour_texture, NULL, &btn_retour_rect);
