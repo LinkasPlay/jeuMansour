@@ -25,7 +25,7 @@ Fighter zoro={
 
 
 Joueur equipe1;
-Partie partieActuel;
+Partie partieActuelle;
 
 
 // Création d'une attaque spéciale

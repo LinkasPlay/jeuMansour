@@ -8,7 +8,7 @@
 #include <stdbool.h>
 
 Fighter persoChoisi[6];
-void jeu(SDL_Renderer* rendu);
+void runGame(SDL_Renderer* rendu);
 
 
 
@@ -425,7 +425,7 @@ Page afficher_confirmation_perso(SDL_Renderer* rendu, SDL_Texture* equipe1[3], S
                     running = false;
                     
                     
-                    //jeu(rendu);
+                    runGame(rendu);
                     
                     
                     return PAGE_COMBAT;

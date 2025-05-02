@@ -9,6 +9,9 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
 
+
+SDL_Window* fenetre;
+
 int main(int argc, char* argv[]) {
     
 
@@ -40,7 +43,8 @@ int main(int argc, char* argv[]) {
     }
 
     // Création de la fenêtre
-    SDL_Window* fenetre = SDL_CreateWindow(
+    
+    fenetre = SDL_CreateWindow(
         "Project Shōnen Smash",
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,

@@ -9,6 +9,12 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
 
+
+
+
+extern SDL_Window* fenetre;
+
+
 // ==== Définition des maps disponibles ====
 typedef enum {
     MAP_CRISTAL = 0,
@@ -106,20 +112,28 @@ typedef struct{
     Joueur joueur2;
 
     int perso_actif; 
-
     int tour;
     bool fin;
 
 } Partie;
 
-// Tableau global de personnages
+
+
+typedef struct {
+    SDL_Rect rect;
+    SDL_Color baseColor;
+    SDL_Color hoverColor;
+    bool hovered;
+    const char* text;
+} Button;
+
 
 extern Fighter zoro;
 extern Joueur equipe1;
-extern Partie partieActuel;
+extern Partie partieActuelle;
+extern Fighter persoChoisi[];
 
-
-void jeu(SDL_Renderer* rendu);
+void runGame(SDL_Renderer* rendu);
 
 AttaqueSpecial* creer_attaqueSpe(const char* nom, const char* desc, int degats,
                                  StatutEffet effets[], int nb_effets, int tour);
