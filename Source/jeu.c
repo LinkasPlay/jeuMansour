@@ -14,7 +14,7 @@
 
 
 void renduJeu(SDL_Renderer* rendu) {
-    TTF_Font* font = TTF_OpenFont("Ressource/langue/Police/arial.ttf", 32);
+    TTF_Font* font = TTF_OpenFont("ressource/langue/Police/arial.ttf", 32);
     if (!font) {
         SDL_Log("Erreur police: %s", TTF_GetError());
         return;
@@ -49,7 +49,7 @@ void renduJeu(SDL_Renderer* rendu) {
         SDL_Rect dest = {x, y, largeur_perso, hauteur_perso};
     
         char path[128];
-        snprintf(path, sizeof(path), "Ressource/image/Personnages_pixel/%s.png", perso1[i]->nom);
+        snprintf(path, sizeof(path), "ressource/image/personnages_pixel/%s.png", perso1[i]->nom);
         SDL_Texture* tex = IMG_LoadTexture(rendu, path);
     
         if (tex) SDL_RenderCopy(rendu, tex, NULL, &dest);
@@ -74,7 +74,7 @@ void renduJeu(SDL_Renderer* rendu) {
         SDL_Rect dest = {x, y, largeur_perso, hauteur_perso};
 
         char path[128];
-        snprintf(path, sizeof(path), "Ressource/image/Personnages_pixel/%s_reverse.png", perso2[i]->nom);
+        snprintf(path, sizeof(path), "ressource/image/personnages_pixel/%s_reverse.png", perso2[i]->nom);
         SDL_Texture* tex = IMG_LoadTexture(rendu, path);
 
         if (tex) SDL_RenderCopy(rendu, tex, NULL, &dest);
@@ -182,7 +182,7 @@ bool isMouseOver(Button* btn, int x, int y) {
 }
 
 void actionPerso(SDL_Renderer* renderer, Fighter persoActuel, int equipeAdverse) {
-    TTF_Font* font = TTF_OpenFont("Ressource/langue/Police/arial.ttf", 32);
+    TTF_Font* font = TTF_OpenFont("ressource/langue/Police/arial.ttf", 32);
     if (!font) {
         SDL_Log("Erreur chargement police: %s", TTF_GetError());
         return;
