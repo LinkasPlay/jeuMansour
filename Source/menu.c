@@ -2,8 +2,6 @@
 #include "data.h"
 #include "logic.h"
 #include "interface.h"
-#include "audio.h"
-
 
 //test//
 // Variables globales réelles
@@ -94,7 +92,7 @@ Page afficher_histoire(SDL_Renderer* rendu) {
     SDL_Texture* skip_btn = IMG_LoadTexture(rendu, "Ressource/image/Utilité/avance.png");
     SDL_Rect skip_rect = {LARGEUR_FENETRE - 120, 20, 80, 80};
 
-    Mix_Chunk* son_phrase = Mix_LoadWAV("Ressource/musique/Ogg/menu.wav");
+    Mix_Chunk* son_phrase = Mix_LoadWAV("Ressource/musique/Wav/phrase.wav");
     if (!son_phrase) SDL_Log("ERREUR chargement son phrase : %s", Mix_GetError());
 
     Uint32 last_char = SDL_GetTicks();
