@@ -45,31 +45,33 @@ void renduJeu(SDL_Renderer* rendu) {
     // === ÉQUIPE 1 ===
     for (int i = 0; i < 3; i++) {
         int x = 100 + i * (largeur_perso + espacement);
-        SDL_Rect dest = {x, y_perso, largeur_perso, hauteur_perso};
-
+        int y = y_perso + i * 30;
+        SDL_Rect dest = {x, y, largeur_perso, hauteur_perso};
+    
         char path[128];
         snprintf(path, sizeof(path), "Ressource/image/Personnages_pixel/%s.png", perso1[i]->nom);
         SDL_Texture* tex = IMG_LoadTexture(rendu, path);
-
+    
         if (tex) SDL_RenderCopy(rendu, tex, NULL, &dest);
-
+    
         char infos[64];
         snprintf(infos, sizeof(infos), "PV: %d/%d", perso1[i]->actu_pv, perso1[i]->max_pv);
         SDL_Surface* surf = TTF_RenderUTF8_Blended(font, infos, (SDL_Color){255, 255, 255, 255});
         SDL_Texture* txt = SDL_CreateTextureFromSurface(rendu, surf);
-
+    
         SDL_Rect txtRect = {dest.x + (largeur_perso - surf->w)/2, dest.y - surf->h - 5, surf->w, surf->h};
         SDL_RenderCopy(rendu, txt, NULL, &txtRect);
-
+    
         SDL_FreeSurface(surf);
         SDL_DestroyTexture(txt);
         if (tex) SDL_DestroyTexture(tex);
     }
-
+    
     // === ÉQUIPE 2 ===
     for (int i = 0; i < 3; i++) {
         int x = LARGEUR_FENETRE - 100 - largeur_perso - i * (largeur_perso + espacement);
-        SDL_Rect dest = {x, y_perso, largeur_perso, hauteur_perso};
+        int y = y_perso + i * 30;
+        SDL_Rect dest = {x, y, largeur_perso, hauteur_perso};
 
         char path[128];
         snprintf(path, sizeof(path), "Ressource/image/Personnages_pixel/%s_reverse.png", perso2[i]->nom);
