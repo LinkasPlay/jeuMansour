@@ -39,7 +39,84 @@ Fighter zoro={
     .defense = 15,
     .agilite = 20,
     .vitesse = 10,
-    .element = ELEMENT_NONE,
+    .element = ELEMENT_NONE
+};
+
+Fighter rengoku={
+    .nom = "rengoku",
+    .actu_pv = 280,
+    .max_pv =300,
+    .attaque = 20,
+    .defense = 35,
+    .agilite = 10,
+    .vitesse = 30,
+    .element = ELEMENT_FEU
+};
+
+Fighter hitsugaya={
+    .nom = "hitsugaya",
+    .actu_pv = 270,
+    .max_pv =270,
+    .attaque = 20,
+    .defense = 30,
+    .agilite = 15,
+    .vitesse = 30,
+    .element = ELEMENT_GLACE
+};
+
+Fighter katara={
+    .nom = "katara",
+    .actu_pv = 230,
+    .max_pv =230,
+    .attaque = 20,
+    .defense = 20,
+    .agilite = 15,
+    .vitesse = 50,
+    .element = ELEMENT_EAU
+};
+
+Fighter dark_shadow={
+    .nom = "dark_shadow",
+    .actu_pv = 240,
+    .max_pv =240,
+    .attaque = 20,
+    .defense = 20,
+    .agilite = 20,
+    .vitesse = 35,
+    .element = ELEMENT_OMBRE
+};
+
+Fighter temari={
+    .nom = "temari",
+    .actu_pv = 220,
+    .max_pv =220,
+    .attaque = 15,
+    .defense = 20,
+    .agilite = 40,
+    .vitesse = 50,
+    .element = ELEMENT_VENT
+};
+
+Fighter kirua={
+    .nom = "kirua",
+    .actu_pv = 240,
+    .max_pv =240,
+    .attaque = 30,
+    .defense = 10,
+    .agilite = 25,
+    .vitesse = 50,
+    .element = ELEMENT_ECLAIR
+};
+
+Fighter incassable={
+    .nom = "incassable",
+    .actu_pv = 300,
+    .max_pv =300,
+    .attaque = 10,
+    .defense = 40,
+    .agilite = 10,
+    .vitesse = 30,
+    .element = ELEMENT_CRISTAL
 };
 
 
