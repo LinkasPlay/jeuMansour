@@ -13,7 +13,6 @@
 
 
 Fighter zoro={
-    .nom ="zoro",
     .actu_pv =300,
     .max_pv =300,
     .attaque = 30,
@@ -26,30 +25,6 @@ Fighter zoro={
 
 Joueur equipe1;
 Partie partieActuelle;
-
-
-
-// Création d'un fighter
-Fighter creer_fighter(const char* nom, int actu_pv, int max_pv, int attaque,
-                      int defense, int agilite, int vitesse, ElementType element,
-                      AttaqueSpecial** attaques) {
-    Fighter f;
-    // Nom
-    strncpy(f.nom, nom, MAX_NOM_PERSO);
-    f.nom[MAX_NOM_PERSO - 1] = '\0';
-    // Stats de base
-    f.actu_pv  = actu_pv;
-    f.max_pv   = max_pv;
-    f.attaque  = attaque;
-    f.defense  = defense;
-    f.agilite  = agilite;
-    f.vitesse  = vitesse;
-    f.element  = element;
-    // Attaques spéciales
-    for (int i = 0; i < MAX_SPECIAL; i++)
-        f.spe_atq[i] = (attaques ? attaques[i] : NULL);
-    return f;
-}
 
 // Applique un bonus de map à un fighter
 void appliquer_buffs(Fighter* perso, BonusMap bonus) {
