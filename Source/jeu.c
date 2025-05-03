@@ -12,6 +12,66 @@
 #include <SDL2/SDL_mixer.h>
 
 
+
+
+
+
+Fighter choisirCible(SDL_Renderer* rendu, int equipeAdverse){
+    
+    bool choisi=false;
+    SDL_Event event;
+    int selection;
+    SDL_Log("test before salope");
+    while(!choisi){
+    
+        while(SDL_PollEvent(&event)){
+           
+            if(event.type==SDL_KEYDOWN && event.key.keysym.sym == SDLK_TAB) {
+                selection = (selection + 1) % 3;
+                SDL_Log("Salope %d",selection);
+            }
+
+            else if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_LEFT){
+                SDL_Log("test after salope");
+                choisi=true;
+            }
+        }
+    }
+
+
+    if(equipeAdverse==1){
+    
+        switch(selection){
+            case 0:
+                SDL_Log("Salope %s",partieActuelle.joueur1.fighter1.nom);
+                return partieActuelle.joueur1.fighter1;
+            case 1:
+
+                return partieActuelle.joueur1.fighter2;
+            case 2:
+                return partieActuelle.joueur1.fighter3;
+        
+        }
+    }
+    else{
+        switch(selection){
+            case 0:
+                SDL_Log("Salope %s",partieActuelle.joueur2.fighter1.nom);
+
+                return partieActuelle.joueur2.fighter1;
+            case 1:
+                return partieActuelle.joueur2.fighter2;
+            case 2:
+                return partieActuelle.joueur2.fighter3;
+        }
+    }
+
+}
+
+
+
+
+
 int screenWidth = 0;
 int screenHeight = 0;
 
@@ -44,31 +104,34 @@ bool isMouseOver(Button* btn, int x, int y) {
            y >= btn->rect.y && y <= btn->rect.y + btn->rect.h;
 }
 
-void actionPerso(SDL_Renderer* renderer, int persoActuel) {
-    TTF_Font* font = TTF_OpenFont("./Ressource/langue/Police", 32);
+void actionPerso(SDL_Renderer* renderer, Fighter persoActuel, int equipeAdverse) {
+    TTF_Font* font = TTF_OpenFont("Ressource/langue/Police/arial.ttf", 32);
     if (!font) {
         SDL_Log("Erreur chargement police: %s", TTF_GetError());
         return;
     }
 
 
-    Button btnPlay = {{screenWidth/2 - 150, screenHeight/2 - 100, 300, 60},{
-        60, 60, 60, 255}, {120, 120, 120, 255}, false, "Jouer"};
+    Button btnAttaque = {{20, screenHeight - 100, 150, 60},{
+        60, 60, 60, 255}, {120, 120, 120, 255}, false, "Attaque"};
 
-    Button btnOptions = {{screenWidth/2 - 150, screenHeight/2, 300, 60},
+    Button btnDefense = {{40+btnAttaque.rect.w, screenHeight - 100, 150, 60},
         {60, 60, 60, 255}, {120, 120, 120, 255}, false, "Options"};
 
-    Button btnQuit = {{screenWidth/2 - 150, screenHeight/2 + 100, 300, 60},
+    Button btnComp1 = {{screenWidth-(btnAttaque.rect.w + 20), screenHeight - 100, 150, 60},
         {60, 60, 60, 255}, {120, 120, 120, 255}, false, "Quitter"};
-
-        
     
+    Button btnComp2 = {{screenWidth-(btnAttaque.rect.w*2 + 40), screenHeight - 100, 150, 60},
+        {60, 60, 60, 255}, {120, 120, 120, 255}, false, "Quitter"};
+        
+    Button btnComp3 = {{screenWidth-(btnAttaque.rect.w*3 + 60), screenHeight - 100, 150, 60},
+        {60, 60, 60, 255}, {120, 120, 120, 255}, false, "Quitter"};
 
     bool quit = false;
     SDL_Event event;
 
     // Track hover précédent
-    bool lastHoverPlay = false, lastHoverOptions = false, lastHoverQuit = false;
+    bool lastHoverAttaque = false, lastHoverDefense = false, lastHoverComp1 = false, lastHoverComp2 = false, lastHoverComp3 = false;
 
     //SDL_WarpMouseInWindow(window, screenWidth / 2, screenHeight / 2);
 
@@ -77,24 +140,31 @@ void actionPerso(SDL_Renderer* renderer, int persoActuel) {
         SDL_GetMouseState(&mx, &my);
 
         // Mise à jour des états hover
-        btnPlay.hovered = isMouseOver(&btnPlay, mx, my);
-        btnOptions.hovered = isMouseOver(&btnOptions, mx, my);
-        btnQuit.hovered = isMouseOver(&btnQuit, mx, my);
+        btnAttaque.hovered = isMouseOver(&btnAttaque, mx, my);
+        btnDefense.hovered = isMouseOver(&btnDefense, mx, my);
+        btnComp1.hovered = isMouseOver(&btnComp1, mx, my);
+        btnComp2.hovered = isMouseOver(&btnComp2, mx, my);
+        btnComp3.hovered = isMouseOver(&btnComp3, mx, my);
 
       
 
         // Mise à jour des états précédents
-        lastHoverPlay = btnPlay.hovered;
-        lastHoverOptions = btnOptions.hovered;
-        lastHoverQuit = btnQuit.hovered;
+        lastHoverAttaque = btnAttaque.hovered;
+        lastHoverDefense = btnDefense.hovered;
+        lastHoverComp1 = btnComp1.hovered;
+        lastHoverComp2= btnComp2.hovered;
+        lastHoverComp3 = btnComp3.hovered;
 
         // Affichage
         SDL_SetRenderDrawColor(renderer, 20, 20, 20, 255);
         SDL_RenderClear(renderer);
 
-        drawButton(renderer, &btnPlay, font);
-        drawButton(renderer, &btnOptions, font);
-        drawButton(renderer, &btnQuit, font);
+        drawButton(renderer, &btnAttaque, font);
+        drawButton(renderer, &btnDefense, font);
+        drawButton(renderer, &btnComp1, font);        
+        drawButton(renderer, &btnComp2, font);
+        drawButton(renderer, &btnComp3, font);
+
         SDL_RenderPresent(renderer);
 
         // Événements
@@ -104,16 +174,14 @@ void actionPerso(SDL_Renderer* renderer, int persoActuel) {
                 SDL_Delay(300);
                 quit = true;
             } else if (event.type == SDL_MOUSEBUTTONDOWN &&
-                    event.button.button == SDL_BUTTON_LEFT) {
-                if (btnPlay.hovered) {
-                    //if (sonClick) Mix_PlayChannel(CHANNEL_CLICK, sonClick, 0);
-                    //Mix_HaltMusic();
-                    //afficherMenuSecondaire(renderer);
-                    //if (menuMusic) Mix_PlayMusic(menuMusic, -1);
-                } else if (btnOptions.hovered) {
+                event.button.button == SDL_BUTTON_LEFT) {
+                    if(btnAttaque.hovered) {
+                        attaqueClassique(persoActuel, choisirCible(renderer,equipeAdverse));
+
+                } else if (btnDefense.hovered) {
                     //if (sonClick) Mix_PlayChannel(CHANNEL_CLICK, sonClick, 0);
                    // afficherOptions(renderer);
-                } else if (btnQuit.hovered) {
+                } else if (btnComp1.hovered) {
                     quit = true;
                 }
             }
@@ -145,7 +213,7 @@ void runGame(SDL_Renderer* rendu){
     
     */
 
-    actionPerso(rendu,0);
+    actionPerso(rendu,partieActuelle.joueur1.fighter1,2);
     
 
 }

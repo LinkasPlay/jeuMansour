@@ -76,10 +76,8 @@ typedef enum {
 typedef struct {
     char nom[MAX_NOM_ATTAQUE];
     char description[MAX_DESCRIPTION];
-    int degats;
-    StatutEffet effets[MAX_EFFETS];
-    int nb_effets;
-    int tour;
+    int id;
+    int cout;
 } AttaqueSpecial;
 
 // ==== Fighters ====
@@ -133,10 +131,10 @@ extern Joueur equipe1;
 extern Partie partieActuelle;
 extern Fighter persoChoisi[];
 
+void attaqueClassique(Fighter attaquant, Fighter cible);
 void runGame(SDL_Renderer* rendu);
 
-AttaqueSpecial* creer_attaqueSpe(const char* nom, const char* desc, int degats,
-                                 StatutEffet effets[], int nb_effets, int tour);
+
 Fighter        creer_fighter   (const char* nom, int actu_pv, int max_pv, int attaque,
                                 int defense, int agilite, int vitesse, ElementType element,
                                 AttaqueSpecial** attaques);

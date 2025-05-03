@@ -10,8 +10,8 @@
 #include "data.h"
 #include "logic.h"
 
-#define LARGEUR_FENETRE 1000
-#define HAUTEUR_FENETRE 700
+#define LARGEUR_FENETRE 1280
+#define HAUTEUR_FENETRE 720
 
 typedef enum {
     PAGE_MENU,

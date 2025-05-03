@@ -28,24 +28,6 @@ Joueur equipe1;
 Partie partieActuelle;
 
 
-// Création d'une attaque spéciale
-AttaqueSpecial* creer_attaqueSpe(const char* nom, const char* desc, int degats,
-                                 StatutEffet effets[], int nb_effets, int tour) {
-    AttaqueSpecial* attaque = malloc(sizeof(AttaqueSpecial));
-    if (!attaque) return NULL;
-    // Nom et description
-    strncpy(attaque->nom, nom, MAX_NOM_ATTAQUE);
-    attaque->nom[MAX_NOM_ATTAQUE - 1] = '\0';
-    strncpy(attaque->description, desc, MAX_DESCRIPTION);
-    attaque->description[MAX_DESCRIPTION - 1] = '\0';
-    // Stats
-    attaque->degats   = degats;
-    attaque->nb_effets = nb_effets > MAX_EFFETS ? MAX_EFFETS : nb_effets;
-    for (int i = 0; i < attaque->nb_effets; i++)
-        attaque->effets[i] = effets[i];
-    attaque->tour     = tour;
-    return attaque;
-}
 
 // Création d'un fighter
 Fighter creer_fighter(const char* nom, int actu_pv, int max_pv, int attaque,

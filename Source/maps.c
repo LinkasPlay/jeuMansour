@@ -1,3 +1,4 @@
+/*
 #include "maps.h"
 
 // Vérifie si l'élément du personnage correspond à la map actuelle
@@ -64,3 +65,4 @@ BonusMap obtenir_bonus_map(MapType map_actuelle, ElementType element_perso) {
 
     return bonus;
 }
+*/
