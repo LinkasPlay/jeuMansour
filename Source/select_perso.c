@@ -187,7 +187,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                             switch(i){
 
                                 case 0:
-                                    strcpy(persoChoisi[a].nom,"darkshadow");
+                                    strcpy(persoChoisi[a].nom,"darkShadow");
                                     persoChoisi[a].actu_pv=zoro.actu_pv;
                                     persoChoisi[a].max_pv=zoro.max_pv;
                                     persoChoisi[a].attaque=zoro.attaque;
@@ -211,7 +211,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                                     break;
                                 case 2:
                                 
-                                    strcpy(persoChoisi[a].nom,"incassable");
+                                    strcpy(persoChoisi[a].nom,"Incassable");
                                     persoChoisi[a].actu_pv=zoro.actu_pv;
                                     persoChoisi[a].max_pv=zoro.max_pv;
                                     persoChoisi[a].attaque=zoro.attaque;
