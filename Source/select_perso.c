@@ -107,7 +107,6 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
 
     // --- BOUCLE PRINCIPALE ---
     bool running = true;
-    int a = 0;
     
     while (running && (nb_selections_j1 < 3 || nb_selections_j2 < 3)) {
         // Mise à jour texte tour
@@ -137,7 +136,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
         };
 
         SDL_Event event;
-        
+        int a=0;
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 running = false;
@@ -187,7 +186,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                             switch(i){
 
                                 case 0:
-                                    strcpy(persoChoisi[a].nom,"DarkShadow");
+                                    strcpy(persoChoisi[a].nom,zoro.nom);
                                     persoChoisi[a].actu_pv=zoro.actu_pv;
                                     persoChoisi[a].max_pv=zoro.max_pv;
                                     persoChoisi[a].attaque=zoro.attaque;
@@ -200,7 +199,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                                
                                 case 1:
                                 
-                                    strcpy(persoChoisi[a].nom,"Hitsugaya");
+                                    strcpy(persoChoisi[a].nom,zoro.nom);
                                     persoChoisi[a].actu_pv=zoro.actu_pv;
                                     persoChoisi[a].max_pv=zoro.max_pv;
                                     persoChoisi[a].attaque=zoro.attaque;
@@ -211,7 +210,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                                     break;
                                 case 2:
                                 
-                                    strcpy(persoChoisi[a].nom,"Incassable");
+                                    strcpy(persoChoisi[a].nom,zoro.nom);
                                     persoChoisi[a].actu_pv=zoro.actu_pv;
                                     persoChoisi[a].max_pv=zoro.max_pv;
                                     persoChoisi[a].attaque=zoro.attaque;
@@ -223,7 +222,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                                 
                                 case 3:
                                     
-                                    strcpy(persoChoisi[a].nom,"Katara");
+                                    strcpy(persoChoisi[a].nom,zoro.nom);
                                     persoChoisi[a].actu_pv=zoro.actu_pv;
                                     persoChoisi[a].max_pv=zoro.max_pv;
                                     persoChoisi[a].attaque=zoro.attaque;
@@ -235,7 +234,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                                 
                                 case 4:
                                 
-                                    strcpy(persoChoisi[a].nom,"Kirua");
+                                    strcpy(persoChoisi[a].nom,zoro.nom);
                                     persoChoisi[a].actu_pv=zoro.actu_pv;
                                     persoChoisi[a].max_pv=zoro.max_pv;
                                     persoChoisi[a].attaque=zoro.attaque;
@@ -247,7 +246,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                                     
                                 case 5:
                                 
-                                    strcpy(persoChoisi[a].nom,"Rengoku");
+                                    strcpy(persoChoisi[a].nom,zoro.nom);
                                     persoChoisi[a].actu_pv=zoro.actu_pv;
                                     persoChoisi[a].max_pv=zoro.max_pv;
                                     persoChoisi[a].attaque=zoro.attaque;
@@ -259,7 +258,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                                     
                                 case 6:
                                     
-                                    strcpy(persoChoisi[a].nom,"Temari");
+                                    strcpy(persoChoisi[a].nom,zoro.nom);
                                     persoChoisi[a].actu_pv=zoro.actu_pv;
                                     persoChoisi[a].max_pv=zoro.max_pv;
                                     persoChoisi[a].attaque=zoro.attaque;
@@ -271,7 +270,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                                     
                                 case 7:
                                 
-                                    strcpy(persoChoisi[a].nom,"Zoro");
+                                    strcpy(persoChoisi[a].nom,zoro.nom);
                                     persoChoisi[a].actu_pv=zoro.actu_pv;
                                     persoChoisi[a].max_pv=zoro.max_pv;
                                     persoChoisi[a].attaque=zoro.attaque;
@@ -280,24 +279,25 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                                     persoChoisi[a].vitesse=zoro.vitesse;
                                     persoChoisi[a].element=zoro.element;
                                     break;
-
-                                default :
-                                    strcpy(persoChoisi[a].nom,"N/A");
-                                    persoChoisi[a].actu_pv=zoro.actu_pv;
-                                    persoChoisi[a].max_pv=zoro.max_pv;
-                                    persoChoisi[a].attaque=zoro.attaque;
-                                    persoChoisi[a].defense=zoro.defense;
-                                    persoChoisi[a].agilite=zoro.agilite;
-                                    persoChoisi[a].vitesse=zoro.vitesse;
-                                    persoChoisi[a].element=zoro.element;
-                                    break;
+                               
                             }
 
-                            if(tour_j1) SDL_Log("Perso %d l'équipe 1 est : %s",a + 1, persoChoisi[a].nom);
-                            else SDL_Log("Perso %d de l'équipe 2 est : %s",a + 1, persoChoisi[a].nom);
-                            a = a + 1;
+
+
+
+
+
+
+
+                            SDL_Log("%s",persoChoisi[a].nom);
+
+
+
+
+
+
                             tour_j1 = !tour_j1;
-                            
+                            a++;
                             break;
                         }
                     }

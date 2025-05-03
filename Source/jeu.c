@@ -22,13 +22,6 @@ Fighter choisirCible(SDL_Renderer* rendu, int equipeAdverse){
     SDL_Event event;
     int selection;
     SDL_Log("test before salope");
-    SDL_Log("Cible : '%s'", partieActuelle.joueur1.fighter1.nom);
-    SDL_Log("Cible : '%s'", partieActuelle.joueur1.fighter2.nom);
-    SDL_Log("Cible : '%s'", partieActuelle.joueur1.fighter3.nom);
-    SDL_Log("Cible : '%s'", partieActuelle.joueur2.fighter1.nom);
-    SDL_Log("Cible : '%s'", partieActuelle.joueur2.fighter2.nom);
-    SDL_Log("Cible : '%s'", partieActuelle.joueur2.fighter3.nom);
-
     while(!choisi){
     
         while(SDL_PollEvent(&event)){
