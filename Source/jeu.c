@@ -126,7 +126,6 @@ Fighter choisirCible(SDL_Renderer* rendu, int equipeAdverse){
             case 0:
                 return partieActuelle.joueur1.fighter1;
             case 1:
-
                 return partieActuelle.joueur1.fighter2;
             case 2:
                 return partieActuelle.joueur1.fighter3;
@@ -194,16 +193,16 @@ void actionPerso(SDL_Renderer* renderer, Fighter persoActuel, int equipeAdverse)
         60, 60, 60, 255}, {120, 120, 120, 255}, false, "Attaque"};
 
     Button btnDefense = {{40+btnAttaque.rect.w, screenHeight - 100, 150, 60},
-        {60, 60, 60, 255}, {120, 120, 120, 255}, false, "Options"};
+        {60, 60, 60, 255}, {120, 120, 120, 255}, false, "Defense"};
 
     Button btnComp1 = {{screenWidth-(btnAttaque.rect.w + 20), screenHeight - 100, 150, 60},
-        {60, 60, 60, 255}, {120, 120, 120, 255}, false, "Quitter"};
+        {60, 60, 60, 255}, {120, 120, 120, 255}, false, persoActuel.spe_atq1.nom};
     
     Button btnComp2 = {{screenWidth-(btnAttaque.rect.w*2 + 40), screenHeight - 100, 150, 60},
-        {60, 60, 60, 255}, {120, 120, 120, 255}, false, "Quitter"};
+        {60, 60, 60, 255}, {120, 120, 120, 255}, false, persoActuel.spe_atq2.nom};
         
     Button btnComp3 = {{screenWidth-(btnAttaque.rect.w*3 + 60), screenHeight - 100, 150, 60},
-        {60, 60, 60, 255}, {120, 120, 120, 255}, false, "Quitter"};
+        {60, 60, 60, 255}, {120, 120, 120, 255}, false, persoActuel.spe_atq3.nom};
 
     bool quit = false;
     SDL_Event event;

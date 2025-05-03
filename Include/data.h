@@ -91,7 +91,9 @@ typedef struct {
     int agilite;
     int vitesse;
     ElementType element;
-    AttaqueSpecial* spe_atq[MAX_SPECIAL];
+    AttaqueSpecial spe_atq1;
+    AttaqueSpecial spe_atq2;
+    AttaqueSpecial spe_atq3;
 } Fighter;
 
 
@@ -130,6 +132,10 @@ extern Fighter zoro;
 extern Joueur equipe1;
 extern Partie partieActuelle;
 extern Fighter persoChoisi[];
+
+extern AttaqueSpecial Test1;
+extern AttaqueSpecial Test2;
+extern AttaqueSpecial Test3;
 
 void attaqueClassique(Fighter attaquant, Fighter cible);
 void runGame(SDL_Renderer* rendu);

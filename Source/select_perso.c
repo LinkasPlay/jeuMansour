@@ -279,6 +279,9 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                                     persoChoisi[a].agilite=zoro.agilite;
                                     persoChoisi[a].vitesse=zoro.vitesse;
                                     persoChoisi[a].element=zoro.element;
+                                    persoChoisi[a].spe_atq1 = Test1;
+                                    persoChoisi[a].spe_atq2 = Test2;
+                                    persoChoisi[a].spe_atq3 = Test3;
                                     break;
 
                                 default :
