@@ -12,7 +12,8 @@ SRC = \
     Source/main.c \
     Source/maps.c \
     Source/menu.c \
-    Source/select_perso.c
+    Source/select_perso.c \
+    Source/audio.c
 
 
 
