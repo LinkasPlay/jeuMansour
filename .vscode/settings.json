@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "generation_maps.h": "c"
+        "generation_maps.h": "c",
+        "logic.h": "c"
     }
 }

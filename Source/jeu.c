@@ -13,26 +13,105 @@
 
 
 
+void renduJeu(SDL_Renderer* rendu) {
+    TTF_Font* font = TTF_OpenFont("Ressource/langue/Police/arial.ttf", 32);
+    if (!font) {
+        SDL_Log("Erreur police: %s", TTF_GetError());
+        return;
+    }
 
+    SDL_SetRenderDrawColor(rendu, 20, 20, 20, 255);
+    SDL_RenderClear(rendu);
 
+    const int largeur_perso = 100;
+    const int hauteur_perso = 100;
+    const int espacement = 30;
+
+    // Position Y fixe au centre vertical
+    const int y_perso = (HAUTEUR_FENETRE - hauteur_perso) / 2;
+
+    Fighter* perso1[3] = {
+        &partieActuelle.joueur1.fighter1,
+        &partieActuelle.joueur1.fighter2,
+        &partieActuelle.joueur1.fighter3
+    };
+
+    Fighter* perso2[3] = {
+        &partieActuelle.joueur2.fighter1,
+        &partieActuelle.joueur2.fighter2,
+        &partieActuelle.joueur2.fighter3
+    };
+
+    // === ÉQUIPE 1 ===
+    for (int i = 0; i < 3; i++) {
+        int x = 100 + i * (largeur_perso + espacement);
+        SDL_Rect dest = {x, y_perso, largeur_perso, hauteur_perso};
+
+        char path[128];
+        snprintf(path, sizeof(path), "Ressource/image/Personnages_pixel/%s.png", perso1[i]->nom);
+        SDL_Texture* tex = IMG_LoadTexture(rendu, path);
+
+        if (tex) SDL_RenderCopy(rendu, tex, NULL, &dest);
+
+        char infos[64];
+        snprintf(infos, sizeof(infos), "PV: %d/%d", perso1[i]->actu_pv, perso1[i]->max_pv);
+        SDL_Surface* surf = TTF_RenderUTF8_Blended(font, infos, (SDL_Color){255, 255, 255, 255});
+        SDL_Texture* txt = SDL_CreateTextureFromSurface(rendu, surf);
+
+        SDL_Rect txtRect = {dest.x + (largeur_perso - surf->w)/2, dest.y - surf->h - 5, surf->w, surf->h};
+        SDL_RenderCopy(rendu, txt, NULL, &txtRect);
+
+        SDL_FreeSurface(surf);
+        SDL_DestroyTexture(txt);
+        if (tex) SDL_DestroyTexture(tex);
+    }
+
+    // === ÉQUIPE 2 ===
+    for (int i = 0; i < 3; i++) {
+        int x = LARGEUR_FENETRE - 100 - largeur_perso - i * (largeur_perso + espacement);
+        SDL_Rect dest = {x, y_perso, largeur_perso, hauteur_perso};
+
+        char path[128];
+        snprintf(path, sizeof(path), "Ressource/image/Personnages_pixel/%s_reverse.png", perso2[i]->nom);
+        SDL_Texture* tex = IMG_LoadTexture(rendu, path);
+
+        if (tex) SDL_RenderCopy(rendu, tex, NULL, &dest);
+
+        char infos[64];
+        snprintf(infos, sizeof(infos), "PV: %d/%d", perso2[i]->actu_pv, perso2[i]->max_pv);
+        SDL_Surface* surf = TTF_RenderUTF8_Blended(font, infos, (SDL_Color){255, 255, 255, 255});
+        SDL_Texture* txt = SDL_CreateTextureFromSurface(rendu, surf);
+
+        SDL_Rect txtRect = {dest.x + (largeur_perso - surf->w)/2, dest.y - surf->h - 5, surf->w, surf->h};
+        SDL_RenderCopy(rendu, txt, NULL, &txtRect);
+
+        SDL_FreeSurface(surf);
+        SDL_DestroyTexture(txt);
+        if (tex) SDL_DestroyTexture(tex);
+    }
+}
 
 Fighter choisirCible(SDL_Renderer* rendu, int equipeAdverse){
     
     bool choisi=false;
     SDL_Event event;
     int selection;
-    SDL_Log("test before salope");
+    
+    SDL_Log("Ennemi %d séléctionné !",selection + 1);
+    
     while(!choisi){
+
+        renduJeu(rendu); //rendu --------------------------
     
         while(SDL_PollEvent(&event)){
            
             if(event.type==SDL_KEYDOWN && event.key.keysym.sym == SDLK_TAB) {
                 selection = (selection + 1) % 3;
-                SDL_Log("Salope %d",selection);
+                SDL_Log("Ennemi %d séléctionné !",selection + 1);
             }
 
             else if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_LEFT){
-                SDL_Log("test after salope");
+
                 choisi=true;
             }
         }
@@ -43,7 +122,6 @@ Fighter choisirCible(SDL_Renderer* rendu, int equipeAdverse){
     
         switch(selection){
             case 0:
-                SDL_Log("Salope %s",partieActuelle.joueur1.fighter1.nom);
                 return partieActuelle.joueur1.fighter1;
             case 1:
 
@@ -56,8 +134,6 @@ Fighter choisirCible(SDL_Renderer* rendu, int equipeAdverse){
     else{
         switch(selection){
             case 0:
-                SDL_Log("Salope %s",partieActuelle.joueur2.fighter1.nom);
-
                 return partieActuelle.joueur2.fighter1;
             case 1:
                 return partieActuelle.joueur2.fighter2;
@@ -159,6 +235,8 @@ void actionPerso(SDL_Renderer* renderer, Fighter persoActuel, int equipeAdverse)
         SDL_SetRenderDrawColor(renderer, 20, 20, 20, 255);
         SDL_RenderClear(renderer);
 
+        renduJeu(renderer); //renduuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu
+
         drawButton(renderer, &btnAttaque, font);
         drawButton(renderer, &btnDefense, font);
         drawButton(renderer, &btnComp1, font);        
@@ -177,12 +255,15 @@ void actionPerso(SDL_Renderer* renderer, Fighter persoActuel, int equipeAdverse)
                 event.button.button == SDL_BUTTON_LEFT) {
                     if(btnAttaque.hovered) {
                         attaqueClassique(persoActuel, choisirCible(renderer,equipeAdverse));
+                        SDL_Log("Attaque terminée");
+                        quit = true;
+                        break;
 
                 } else if (btnDefense.hovered) {
                     //if (sonClick) Mix_PlayChannel(CHANNEL_CLICK, sonClick, 0);
                    // afficherOptions(renderer);
                 } else if (btnComp1.hovered) {
-                    quit = true;
+                    
                 }
             }
         }
@@ -207,6 +288,8 @@ void runGame(SDL_Renderer* rendu){
     partieActuelle.perso_actif=0;
     partieActuelle.tour=1;
     partieActuelle.fin=false;
+
+    renduJeu(rendu);
 
     /*
     Affichage SDL

@@ -37,7 +37,7 @@ Page afficher_chargement(SDL_Renderer *rendu) {
         SDL_RenderClear(rendu);
         SDL_RenderCopy(rendu, fond, NULL, NULL);
 
-        SDL_SetRenderDrawColor(rendu, 255, 220, 0, 255);
+        SDL_SetRenderDrawColor(rendu, 0 + i * 5, 0 + i, 0, 255);
         for (int j = 0; j < i; j++) {
             SDL_Rect bloc = {
                 zone_barre.x + j * (largeur_bloc + marge),
