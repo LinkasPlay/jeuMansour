@@ -7,30 +7,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+AttaqueSpecial* toutes_les_attaques[NB_ATTAQUES_TOTAL];
 
 
 // Le tableau global de tous les personnages
-
-AttaqueSpecial Test1 = {
-    .nom = "Bonjour",
-    .description = "J fais kk dans d avioli",
-    .id = 0,
-    .cout = 3,
-};
-
-AttaqueSpecial Test2 = {
-    .nom = "Bonjour69",
-    .description = "J fais kk dans d avioli",
-    .id = 1,
-    .cout = 3,
-};
-
-AttaqueSpecial Test3 = {
-    .nom = "Bonjour3",
-    .description = "J fais kk dans d avioli",
-    .id = 2,
-    .cout = 3,
-};
 
 AttaqueSpecial affutageMortal = {
     .nom = "affûtage mortal",
@@ -43,7 +23,7 @@ AttaqueSpecial affutageMortal = {
 AttaqueSpecial assautTranchant ={
     .nom = "assaut tranchant",
     .description = "2 frappes à 60 pourcent chacune.",
-    .id = 2,
+    .id = ATQ_ASSAUT_TRANCHANT,
     .cout = 4,
 };
 
