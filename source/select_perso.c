@@ -1,6 +1,8 @@
 #include "data.h"
 #include "logic.h"
 #include "interface.h"
+#include "son.h"
+
 
 
 #include <string.h>
@@ -188,85 +190,85 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
 
                                 case 0:
                                     strcpy(persoChoisi[a].nom,"darkshadow");
-                                    persoChoisi[a].actu_pv=zoro.actu_pv;
-                                    persoChoisi[a].max_pv=zoro.max_pv;
-                                    persoChoisi[a].attaque=zoro.attaque;
-                                    persoChoisi[a].defense=zoro.defense;
-                                    persoChoisi[a].agilite=zoro.agilite;
-                                    persoChoisi[a].vitesse=zoro.vitesse;
-                                    persoChoisi[a].element=zoro.element;
+                                    persoChoisi[a].actu_pv=darkshadow.actu_pv;
+                                    persoChoisi[a].max_pv=darkshadow.max_pv;
+                                    persoChoisi[a].attaque=darkshadow.attaque;
+                                    persoChoisi[a].defense=darkshadow.defense;
+                                    persoChoisi[a].agilite=darkshadow.agilite;
+                                    persoChoisi[a].vitesse=darkshadow.vitesse;
+                                    persoChoisi[a].element=darkshadow.element;
                             
                                     break;
                                
                                 case 1:
                                 
                                     strcpy(persoChoisi[a].nom,"hitsugaya");
-                                    persoChoisi[a].actu_pv=zoro.actu_pv;
-                                    persoChoisi[a].max_pv=zoro.max_pv;
-                                    persoChoisi[a].attaque=zoro.attaque;
-                                    persoChoisi[a].defense=zoro.defense;
-                                    persoChoisi[a].agilite=zoro.agilite;
-                                    persoChoisi[a].vitesse=zoro.vitesse;
-                                    persoChoisi[a].element=zoro.element;
+                                    persoChoisi[a].actu_pv=hitsugaya.actu_pv;
+                                    persoChoisi[a].max_pv=hitsugaya.max_pv;
+                                    persoChoisi[a].attaque=hitsugaya.attaque;
+                                    persoChoisi[a].defense=hitsugaya.defense;
+                                    persoChoisi[a].agilite=hitsugaya.agilite;
+                                    persoChoisi[a].vitesse=hitsugaya.vitesse;
+                                    persoChoisi[a].element=hitsugaya.element;
                                     break;
                                 case 2:
                                 
                                     strcpy(persoChoisi[a].nom,"incassable");
-                                    persoChoisi[a].actu_pv=zoro.actu_pv;
-                                    persoChoisi[a].max_pv=zoro.max_pv;
-                                    persoChoisi[a].attaque=zoro.attaque;
-                                    persoChoisi[a].defense=zoro.defense;
-                                    persoChoisi[a].agilite=zoro.agilite;
-                                    persoChoisi[a].vitesse=zoro.vitesse;
-                                    persoChoisi[a].element=zoro.element;
+                                    persoChoisi[a].actu_pv=incassable.actu_pv;
+                                    persoChoisi[a].max_pv=incassable.max_pv;
+                                    persoChoisi[a].attaque=incassable.attaque;
+                                    persoChoisi[a].defense=incassable.defense;
+                                    persoChoisi[a].agilite=incassable.agilite;
+                                    persoChoisi[a].vitesse=incassable.vitesse;
+                                    persoChoisi[a].element=incassable.element;
                                     break;
                                 
                                 case 3:
                                     
                                     strcpy(persoChoisi[a].nom,"katara");
-                                    persoChoisi[a].actu_pv=zoro.actu_pv;
-                                    persoChoisi[a].max_pv=zoro.max_pv;
-                                    persoChoisi[a].attaque=zoro.attaque;
-                                    persoChoisi[a].defense=zoro.defense;
-                                    persoChoisi[a].agilite=zoro.agilite;
-                                    persoChoisi[a].vitesse=zoro.vitesse;
-                                    persoChoisi[a].element=zoro.element;
+                                    persoChoisi[a].actu_pv=katara.actu_pv;
+                                    persoChoisi[a].max_pv=katara.max_pv;
+                                    persoChoisi[a].attaque=katara.attaque;
+                                    persoChoisi[a].defense=katara.defense;
+                                    persoChoisi[a].agilite=katara.agilite;
+                                    persoChoisi[a].vitesse=katara.vitesse;
+                                    persoChoisi[a].element=katara.element;
                                     break;
                                 
                                 case 4:
                                 
                                     strcpy(persoChoisi[a].nom,"kirua");
-                                    persoChoisi[a].actu_pv=zoro.actu_pv;
-                                    persoChoisi[a].max_pv=zoro.max_pv;
-                                    persoChoisi[a].attaque=zoro.attaque;
-                                    persoChoisi[a].defense=zoro.defense;
-                                    persoChoisi[a].agilite=zoro.agilite;
-                                    persoChoisi[a].vitesse=zoro.vitesse;
-                                    persoChoisi[a].element=zoro.element;
+                                    persoChoisi[a].actu_pv=kirua.actu_pv;
+                                    persoChoisi[a].max_pv=kirua.max_pv;
+                                    persoChoisi[a].attaque=kirua.attaque;
+                                    persoChoisi[a].defense=kirua.defense;
+                                    persoChoisi[a].agilite=kirua.agilite;
+                                    persoChoisi[a].vitesse=kirua.vitesse;
+                                    persoChoisi[a].element=kirua.element;
                                     break;
                                     
                                 case 5:
                                 
                                     strcpy(persoChoisi[a].nom,"rengoku");
-                                    persoChoisi[a].actu_pv=zoro.actu_pv;
-                                    persoChoisi[a].max_pv=zoro.max_pv;
-                                    persoChoisi[a].attaque=zoro.attaque;
-                                    persoChoisi[a].defense=zoro.defense;
-                                    persoChoisi[a].agilite=zoro.agilite;
-                                    persoChoisi[a].vitesse=zoro.vitesse;
-                                    persoChoisi[a].element=zoro.element;
+                                    persoChoisi[a].actu_pv=rengoku.actu_pv;
+                                    persoChoisi[a].max_pv=rengoku.max_pv;
+                                    persoChoisi[a].attaque=rengoku.attaque;
+                                    persoChoisi[a].defense=rengoku.defense;
+                                    persoChoisi[a].agilite=rengoku.agilite;
+                                    persoChoisi[a].vitesse=rengoku.vitesse;
+                                    persoChoisi[a].element=rengoku.element;
                                     break;
                                     
                                 case 6:
                                     
                                     strcpy(persoChoisi[a].nom,"temari");
-                                    persoChoisi[a].actu_pv=zoro.actu_pv;
-                                    persoChoisi[a].max_pv=zoro.max_pv;
-                                    persoChoisi[a].attaque=zoro.attaque;
-                                    persoChoisi[a].defense=zoro.defense;
-                                    persoChoisi[a].agilite=zoro.agilite;
-                                    persoChoisi[a].vitesse=zoro.vitesse;
-                                    persoChoisi[a].element=zoro.element;
+                                    persoChoisi[a].actu_pv=temari.actu_pv;
+                                    persoChoisi[a].max_pv=temari.max_pv;
+                                    persoChoisi[a].attaque=temari.attaque;
+                                    persoChoisi[a].defense=temari.defense;
+                                    persoChoisi[a].agilite=temari.agilite;
+                                    persoChoisi[a].vitesse=temari.vitesse;
+                                    persoChoisi[a].element=temari.element;
                                     break;
                                     
                                 case 7:
@@ -286,13 +288,13 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
 
                                 default :
                                     strcpy(persoChoisi[a].nom,"lukas");
-                                    persoChoisi[a].actu_pv=zoro.actu_pv;
-                                    persoChoisi[a].max_pv=zoro.max_pv;
-                                    persoChoisi[a].attaque=zoro.attaque;
-                                    persoChoisi[a].defense=zoro.defense;
-                                    persoChoisi[a].agilite=zoro.agilite;
-                                    persoChoisi[a].vitesse=zoro.vitesse;
-                                    persoChoisi[a].element=zoro.element;
+                                    persoChoisi[a].actu_pv=lukas.actu_pv;
+                                    persoChoisi[a].max_pv=lukas.max_pv;
+                                    persoChoisi[a].attaque=lukas.attaque;
+                                    persoChoisi[a].defense=lukas.defense;
+                                    persoChoisi[a].agilite=lukas.agilite;
+                                    persoChoisi[a].vitesse=lukas.vitesse;
+                                    persoChoisi[a].element=lukas.element;
                                     break;
                             }
 

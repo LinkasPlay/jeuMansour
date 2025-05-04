@@ -2,6 +2,8 @@
 #include "data.h"
 #include "logic.h"
 #include "interface.h"
+#include "son.h"
+
 #include <stdlib.h>
 #include <string.h>
 
@@ -244,7 +246,7 @@ Fighter katara={
     .element = ELEMENT_EAU
 };
 
-Fighter dark_shadow={
+Fighter darkshadow={
     .nom = "dark_shadow",
     .actu_pv = 240,
     .max_pv =240,
@@ -285,6 +287,17 @@ Fighter incassable={
     .defense = 40,
     .agilite = 10,
     .vitesse = 30,
+    .element = ELEMENT_CRISTAL
+};
+
+Fighter lukas={
+    .nom = "LoukasCocasse",
+    .actu_pv = 69696969,
+    .max_pv =69696969,
+    .attaque = 69696969,
+    .defense = 69696969,
+    .agilite = 69696969,
+    .vitesse = 69696969,
     .element = ELEMENT_CRISTAL
 };
 

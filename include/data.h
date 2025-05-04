@@ -112,7 +112,16 @@ typedef struct {
 } Button;
 
 
+extern Fighter darkshadow;
+extern Fighter hitsugaya;
+extern Fighter incassable;
+extern Fighter katara;
+extern Fighter kirua;
+extern Fighter rengoku;
+extern Fighter temari;
 extern Fighter zoro;
+extern Fighter lukas;
+
 extern Joueur equipe1;
 extern Partie partieActuelle;
 extern Fighter persoChoisi[];
