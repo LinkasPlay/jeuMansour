@@ -91,6 +91,7 @@ void executer_attaque(int id, Fighter* utilisateur, Fighter* cible) {
     }
 }
 
+//structure avec le nom de l'effet et un cool down
 
 
 void attaque_affutage_mortal(Fighter* attaquant, Fighter* cible) {
