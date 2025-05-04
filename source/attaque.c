@@ -91,8 +91,101 @@ void executer_attaque(int id, Fighter* utilisateur, Fighter* cible) {
     }
 }
 
-void attaque_affutage_mortal(Fighter* u, Fighter* c) {
-    SDL_Log("affutage mortal utilisé");
+
+
+void attaque_affutage_mortal(Fighter* attaquant, Fighter* cible) {
+    SDL_Log("attaque_affutage_mortal");
 }
 
-void attaque_X(Fighter* utilisateur, Fighter* cible);
+void attaque_assaut_tranchant(Fighter* attaquant, Fighter* cible) {
+    SDL_Log("attaque_assaut_tranchant");
+}
+
+void attaque_eveil_du_sabre(Fighter* attaquant, Fighter* cible) {
+    SDL_Log("attaque_eveil_du_sabre");
+}
+
+void attaque_flammes_solaires(Fighter* attaquant, Fighter* cible) {
+    SDL_Log("attaque_flammes_solaires");
+}
+
+void attaque_explosion_ardente(Fighter* attaquant, Fighter* cible) {
+    SDL_Log("attaque_explosion_ardente");
+}
+
+void attaque_esprit_flamboyant(Fighter* attaquant, Fighter* cible) {
+    SDL_Log("attaque_esprit_flamboyant");
+}
+
+void attaque_prison_de_givre(Fighter* attaquant, Fighter* cible) {
+    SDL_Log("attaque_prison_de_givre");
+}
+
+void attaque_blizzard(Fighter* attaquant, Fighter* cible) {
+    SDL_Log("attaque_blizzard");
+}
+
+void attaque_glace_curative(Fighter* attaquant, Fighter* cible) {
+    SDL_Log("attaque_glace_curative");
+}
+
+void attaque_lien_de_sang(Fighter* attaquant, Fighter* cible) {
+    SDL_Log("attaque_lien_de_sang");
+}
+
+void attaque_vague_guerisseuse(Fighter* attaquant, Fighter* cible) {
+    SDL_Log("attaque_vague_guerisseuse");
+}
+
+void attaque_eveil_lunaire(Fighter* attaquant, Fighter* cible) {
+    SDL_Log("attaque_eveil_lunaire");
+}
+
+void attaque_crepuscule(Fighter* attaquant, Fighter* cible) {
+    SDL_Log("attaque_crepuscule");
+}
+
+void attaque_hurlement_noir(Fighter* attaquant, Fighter* cible) {
+    SDL_Log("attaque_hurlement_noir");
+}
+
+void attaque_brume_protectrice(Fighter* attaquant, Fighter* cible) {
+    SDL_Log("attaque_brume_protectrice");
+}
+
+void attaque_danse_du_vent(Fighter* attaquant, Fighter* cible) {
+    SDL_Log("attaque_danse_du_vent");
+}
+
+void attaque_vent_percant(Fighter* attaquant, Fighter* cible) {
+    SDL_Log("attaque_vent_percant");
+}
+
+void attaque_souffle_de_vie(Fighter* attaquant, Fighter* cible) {
+    SDL_Log("attaque_souffle_de_vie");
+}
+
+void attaque_fulgurance(Fighter* attaquant, Fighter* cible) {
+    SDL_Log("attaque_fulgurance");
+}
+
+void attaque_foudre_enchainee(Fighter* attaquant, Fighter* cible) {
+    SDL_Log("attaque_foudre_enchainee");
+}
+
+void attaque_execution_rapide(Fighter* attaquant, Fighter* cible) {
+    SDL_Log("attaque_execution_rapide");
+}
+
+void attaque_mur_vivant(Fighter* attaquant, Fighter* cible) {
+    SDL_Log("attaque_mur_vivant");
+}
+
+void attaque_barriere_de_pierre(Fighter* attaquant, Fighter* cible) {
+    SDL_Log("attaque_barriere_de_pierre");
+}
+
+void attaque_rugissement_d_acier(Fighter* attaquant, Fighter* cible) {
+    SDL_Log("attaque_rugissement_d_acier");
+}
+
