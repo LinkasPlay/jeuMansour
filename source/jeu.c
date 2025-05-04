@@ -192,7 +192,7 @@ bool isMouseOver(Button* btn, int x, int y) {
 }
 
 void actionPerso(SDL_Renderer* renderer, Fighter persoActuel, int equipeAdverse) {
-    TTF_Font* font = TTF_OpenFont("ressource/langue/Police/arial.ttf", 32);
+    TTF_Font* font = TTF_OpenFont("ressource/langue/police/arial.ttf", 32);
     if (!font) {
         SDL_Log("Erreur chargement police: %s", TTF_GetError());
         return;
