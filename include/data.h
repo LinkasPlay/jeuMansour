@@ -1,0 +1,133 @@
+// Include/data.h
+#ifndef DATA_H
+#define DATA_H
+
+#include <time.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_mixer.h>
+
+
+
+
+extern SDL_Window* fenetre;
+
+
+// ==== Définition des éléments ====
+typedef enum {
+    ELEMENT_NONE,
+    ELEMENT_CRISTAL,
+    ELEMENT_GLACE,
+    ELEMENT_FEU,
+    ELEMENT_ECLAIR,
+    ELEMENT_VENT,
+    ELEMENT_EAU,
+    ELEMENT_OMBRE
+} ElementType;
+
+// ==== Bonus de map ====
+typedef struct {
+    int bonus_attaque;
+    int bonus_defense;
+    int bonus_vitesse;
+    int bonus_agilite;
+    int bonus_pv;
+} BonusMap;
+
+// ==== Statuts d'effet ====
+typedef enum {
+    Aucun = 0,
+    BRULE,
+    PARALYSIE,
+    GEL,
+    SAIGNEMENT,
+    BOOST_DEF,
+    BOOST_PV,
+    BOOST_VIT
+} StatutEffet;
+
+// ==== Attaques spéciales ====
+#define MAX_NOM_ATTAQUE 50
+#define MAX_DESCRIPTION 300
+#define MAX_SPECIAL 3
+#define MAX_EFFETS 3
+
+typedef struct {
+    char nom[MAX_NOM_ATTAQUE];
+    char description[MAX_DESCRIPTION];
+    int id;
+    int cout;
+} AttaqueSpecial;
+
+// ==== Fighters ====
+#define MAX_NOM_PERSO 50
+typedef struct {
+    char nom[MAX_NOM_PERSO];
+    int actu_pv;
+    int max_pv;
+    int attaque;
+    int defense;
+    int agilite;
+    int vitesse;
+    ElementType element;
+    AttaqueSpecial spe_atq1;
+    AttaqueSpecial spe_atq2;
+    AttaqueSpecial spe_atq3;
+} Fighter;
+
+
+
+typedef struct {
+    Fighter fighter1;
+    Fighter fighter2;
+    Fighter fighter3;
+
+} Joueur;
+
+
+
+typedef struct{
+    Joueur joueur1;
+    Joueur joueur2;
+
+    int perso_actif; 
+    int tour;
+    bool fin;
+
+    int mapType; // 1 = feu, 2 = glace, etc
+    bool nuit;
+
+} Partie;
+
+
+
+typedef struct {
+    SDL_Rect rect;
+    SDL_Color baseColor;
+    SDL_Color hoverColor;
+    bool hovered;
+    const char* text;
+} Button;
+
+
+extern Fighter zoro;
+extern Joueur equipe1;
+extern Partie partieActuelle;
+extern Fighter persoChoisi[];
+
+extern AttaqueSpecial Test1;
+extern AttaqueSpecial Test2;
+extern AttaqueSpecial Test3;
+
+void attaqueClassique(Fighter attaquant, Fighter cible);
+void runGame(SDL_Renderer* rendu);
+
+
+Fighter        creer_fighter   (const char* nom, int actu_pv, int max_pv, int attaque,
+                                int defense, int agilite, int vitesse, ElementType element,
+                                AttaqueSpecial** attaques);
+void           appliquer_buffs (Fighter* perso, BonusMap bonus);
+
+#endif // DATA_H
