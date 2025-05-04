@@ -40,16 +40,16 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
     SDL_Texture* btn_retour_texture = IMG_LoadTexture(rendu, "ressource/image/utilité/retour.png");
     SDL_Rect btn_retour_rect = {20, HAUTEUR_FENETRE - 100, 80, 80}; // Nom de variable corrigé
 
-    // --- PORTRAITS DES PERSONNAGES ---
+    // --- PORTRAITS DES personnages ---
     const char* noms_portraits[8] = {
-        "ressource/image/Personnages_pp/pp_droite/pp_darkshadow.png",
-        "ressource/image/Personnages_pp/pp_droite/pp_hitsugaya.png",
-        "ressource/image/Personnages_pp/pp_droite/pp_incassable.png",
-        "ressource/image/Personnages_pp/pp_droite/pp_katara.png",
-        "ressource/image/Personnages_pp/pp_droite/pp_kirua.png",
-        "ressource/image/Personnages_pp/pp_droite/pp_rengoku.png",
-        "ressource/image/Personnages_pp/pp_droite/pp_temari.png",
-        "ressource/image/Personnages_pp/pp_droite/pp_zoro.png"
+        "ressource/image/personnages_pp/pp_droite/pp_darkshadow.png",
+        "ressource/image/personnages_pp/pp_droite/pp_hitsugaya.png",
+        "ressource/image/personnages_pp/pp_droite/pp_incassable.png",
+        "ressource/image/personnages_pp/pp_droite/pp_katara.png",
+        "ressource/image/personnages_pp/pp_droite/pp_kirua.png",
+        "ressource/image/personnages_pp/pp_droite/pp_rengoku.png",
+        "ressource/image/personnages_pp/pp_droite/pp_temari.png",
+        "ressource/image/personnages_pp/pp_droite/pp_zoro.png"
     };
 
     SDL_Texture* portraits[8] = {NULL};
@@ -314,7 +314,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
         SDL_RenderCopy(rendu, fond_texture, NULL, NULL);
         SDL_RenderCopy(rendu, logo_versus_texture, NULL, &dest_logo);
 
-        // Personnages disponibles
+        // personnages disponibles
         for (int i = 0; i < 8; i++) {
             if (!perso_disponible[i] || !portraits[i]) continue;
             
