@@ -103,14 +103,14 @@ AttaqueSpecial lienDeSang ={
     .cout = 6,
 };
 
-AttaqueSpecial vague guerisseuse ={
+AttaqueSpecial vagueGuerisseuse ={
     .nom = "Vague guérisseuse",
     .description = "Restaure 20 pourcent PV max à un allié.",
     .id = 2,
     .cout = 4,
 };
 
-AttaqueSpecial eveil lunaire ={
+AttaqueSpecial eveilLunaire ={
     .nom = "Éveil lunaire",
     .description = "Change le cycle en Nuit",
     .id = 3,
