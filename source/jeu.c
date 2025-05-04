@@ -14,6 +14,21 @@
 
 #define ECARTEMENT_PONT 20
 
+AttaqueSauvegarde tableauAttaqueDuTour [NB_PERSOS_EQUIPE * 2];
+
+Fighter* get_fighter(int equipe, int numero) {
+    if (equipe == 1) {
+        if (numero == 0) return &partieActuelle.joueur1.fighter1;
+        if (numero == 1) return &partieActuelle.joueur1.fighter2;
+        if (numero == 2) return &partieActuelle.joueur1.fighter3;
+    } else {
+        if (numero == 0) return &partieActuelle.joueur2.fighter1;
+        if (numero == 1) return &partieActuelle.joueur2.fighter2;
+        if (numero == 2) return &partieActuelle.joueur2.fighter3;
+    }
+    return NULL;
+}
+
 void renduJeu(SDL_Renderer* rendu) {
     TTF_Font* font = TTF_OpenFont("ressource/langue/police/arial.ttf", 32);
     if (!font) {
@@ -156,10 +171,6 @@ Fighter choisirCible(SDL_Renderer* rendu, int equipeAdverse){
 
 }
 
-
-
-
-
 int screenWidth = 0;
 int screenHeight = 0;
 
@@ -266,16 +277,16 @@ void actionPerso(SDL_Renderer* renderer, Fighter persoActuel, int equipeAdverse)
             } else if (event.type == SDL_MOUSEBUTTONDOWN &&
                 event.button.button == SDL_BUTTON_LEFT) {
                     if(btnAttaque.hovered) {
+                        
                         attaqueClassique(persoActuel, choisirCible(renderer,equipeAdverse));
                         SDL_Log("Attaque terminée");
                         quit = true;
                         break;
 
                 } else if (btnDefense.hovered) {
-                    //if (sonClick) Mix_PlayChannel(CHANNEL_CLICK, sonClick, 0);
-                   // afficherOptions(renderer);
-                } else if (btnComp1.hovered) {
                     
+                } else if (btnComp1.hovered) {
+                    tableauAttaqueDuTour[partieActuelle.perso_actif].idAttaque;
                 }
             }
         }
@@ -287,7 +298,6 @@ void actionPerso(SDL_Renderer* renderer, Fighter persoActuel, int equipeAdverse)
 
 void runGame(SDL_Renderer* rendu){
     SDL_GetWindowSize(fenetre, &screenWidth, &screenHeight);
-
 
     partieActuelle.joueur1.fighter1=persoChoisi[0];
     partieActuelle.joueur1.fighter2=persoChoisi[2];
@@ -301,16 +311,50 @@ void runGame(SDL_Renderer* rendu){
     partieActuelle.tour=1;
     partieActuelle.fin=false;
 
+    for (int i = 0; i < NB_PERSOS_EQUIPE * 2; i++){
+        tableauAttaqueDuTour[i].idAttaque = 0;
+        tableauAttaqueDuTour[i].utilisateurEquipe = 0;
+        tableauAttaqueDuTour[i].utilisateurNum = 0;
+        tableauAttaqueDuTour[i].cibleEquipe = 0;
+        tableauAttaqueDuTour[i].cibleNum = 0;
+    }
+    
+
     partieActuelle.mapType = 1;
 
     renduJeu(rendu);
 
-    /*
-    Affichage SDL
-    
-    */
-
+    //EQUIPE 1
     actionPerso(rendu,partieActuelle.joueur1.fighter1,2);
+    partieActuelle.perso_actif++;
+    actionPerso(rendu,partieActuelle.joueur1.fighter2,2);
+    partieActuelle.perso_actif++;
+    actionPerso(rendu,partieActuelle.joueur1.fighter3,2);
+    partieActuelle.perso_actif++;
+
+    //EQUIPE 2
+    actionPerso(rendu,partieActuelle.joueur2.fighter1,1);
+    partieActuelle.perso_actif++;
+    actionPerso(rendu,partieActuelle.joueur2.fighter2,1);
+    partieActuelle.perso_actif++;
+    actionPerso(rendu,partieActuelle.joueur2.fighter3,1);
+    partieActuelle.perso_actif = 0;
+
+    // Execution du tour par vitesse
+    int tabIdVitesse[6] = {0,1,2,3,4,5}; // a trieeeeeeeeeeqzieqidhrqoiuhfdiohqjGHFLKHJGLKJzshbf
+    for (int i = 0; i < NB_PERSOS_EQUIPE * 2; i++) {
+        int index = tabIdVitesse[i];
+        AttaqueSauvegarde action = tableauAttaqueDuTour[index];
+        Fighter* utilisateur = get_fighter(action.utilisateurEquipe, action.utilisateurNum);
+        Fighter* cible = get_fighter(action.cibleEquipe, action.cibleNum);
+
+        if (utilisateur && cible && action.idAttaque >= 0 && action.idAttaque < NB_ATTAQUES_TOTAL) {
+            fonctions_attaques[action.idAttaque](utilisateur, cible);
+        } else {
+            SDL_Log("Erreur : attaque id %d invalide ou cible/utilisateur manquant", action.idAttaque);
+        }
+
+    }    
     
 
 }

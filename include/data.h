@@ -111,6 +111,47 @@ typedef struct {
     const char* text;
 } Button;
 
+typedef struct{
+    int idAttaque;
+    int utilisateurNum;
+    int utilisateurEquipe;
+    int cibleNum;
+    int cibleEquipe;
+} AttaqueSauvegarde;
+
+extern AttaqueSpecial* toutes_les_attaques[NB_ATTAQUES_TOTAL];
+extern void (*fonctions_attaques[NB_ATTAQUES_TOTAL])(Fighter*, Fighter*);
+
+typedef enum {
+    ATQ_AFFUTAGE_MORTAL,
+    ATQ_ASSAUT_TRANCHANT,
+    ATQ_EVEIL_SABRE,
+    ATQ_FLAMMES_SOLAIRES,
+    ATQ_EXPLOSION_ARDENTE,
+    ATQ_ESPRIT_FLAMBOYANT,
+    ATQ_PRISON_DE_GIVRE,
+    ATQ_BLIZZARD,
+    ATQ_GLACE_CURATIVE,
+    ATQ_LIEN_DE_SANG,
+    ATQ_VAGUE_GUERISSEUSE,
+    ATQ_EVEIL_LUNAIRE,
+    ATQ_CREPUSCULE,
+    ATQ_HURLEMENT_NOIR,
+    ATQ_BRUME_PROTECTRICE,
+    ATQ_DANSE_DU_VENT,
+    ATQ_VENT_PERCANT,
+    ATQ_SOUFFLE_DE_VIE,
+    ATQ_FULGURANCE,
+    ATQ_FOUDRE_ENCHAINEE,
+    ATQ_EXECUTION_RAPIDE,
+    ATQ_MUR_VIVANT,
+    ATQ_BARRIERE_DE_PIERRE,
+    ATQ_RUGISSEMENT_D_ACIER,
+
+    NB_ATTAQUES_TOTAL
+} AttaqueID;
+
+
 
 extern Fighter darkshadow;
 extern Fighter hitsugaya;
@@ -132,6 +173,7 @@ extern AttaqueSpecial Test3;
 
 void attaqueClassique(Fighter attaquant, Fighter cible);
 void runGame(SDL_Renderer* rendu);
+void executer_attaque(int id, Fighter* utilisateur, Fighter* cible);
 
 
 Fighter        creer_fighter   (const char* nom, int actu_pv, int max_pv, int attaque,
