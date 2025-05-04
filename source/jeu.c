@@ -342,6 +342,28 @@ void runGame(SDL_Renderer* rendu){
 
     // Execution du tour par vitesse
     int tabIdVitesse[6] = {0,1,2,3,4,5}; // a trieeeeeeeeeeqzieqidhrqoiuhfdiohqjGHFLKHJGLKJzshbf
+    
+    
+    //trie
+    void trier_par_vitesse(int tabIdVitesse[6], Fighter persoChoisi[6]) {
+        for (int i = 0; i < 5; i++) {
+            for (int j = i + 1; j < 6; j++) {
+                if (persoChoisi[tabIdVitesse[j]].vitesse > persoChoisi[tabIdVitesse[i]].vitesse) {
+                    int tmp = tabIdVitesse[i];
+                    tabIdVitesse[i] = tabIdVitesse[j];
+                    tabIdVitesse[j] = tmp;
+                }
+            }
+        }
+    }
+    
+
+    
+    
+    
+    
+    
+    
     for (int i = 0; i < NB_PERSOS_EQUIPE * 2; i++) {
         int index = tabIdVitesse[i];
         AttaqueSauvegarde action = tableauAttaqueDuTour[index];
