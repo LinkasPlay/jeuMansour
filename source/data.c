@@ -203,7 +203,7 @@ Fighter zoro={
     .attaque = 30,
     .defense = 15,
     .agilite = 20,
-    .vitesse = 10,
+    .vitesse = 5,
     .element = ELEMENT_NONE,
     .pt = 0
 };
@@ -215,7 +215,7 @@ Fighter rengoku={
     .attaque = 20,
     .defense = 35,
     .agilite = 10,
-    .vitesse = 30,
+    .vitesse = 10,
     .element = ELEMENT_FEU,
     .pt = 0
 };
@@ -227,7 +227,7 @@ Fighter hitsugaya={
     .attaque = 20,
     .defense = 30,
     .agilite = 15,
-    .vitesse = 30,
+    .vitesse = 20,
     .element = ELEMENT_GLACE,
     .pt = 0
 };
@@ -239,7 +239,7 @@ Fighter katara={
     .attaque = 20,
     .defense = 20,
     .agilite = 15,
-    .vitesse = 50,
+    .vitesse = 30,
     .element = ELEMENT_EAU,
     .pt = 0
 };
@@ -263,7 +263,7 @@ Fighter temari={
     .attaque = 15,
     .defense = 20,
     .agilite = 40,
-    .vitesse = 50,
+    .vitesse = 40,
     .element = ELEMENT_VENT,
     .pt = 0
 };
@@ -287,7 +287,7 @@ Fighter incassable={
     .attaque = 10,
     .defense = 40,
     .agilite = 10,
-    .vitesse = 30,
+    .vitesse = 1,
     .element = ELEMENT_CRISTAL,
     .pt = 0
 };
