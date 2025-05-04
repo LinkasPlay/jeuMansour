@@ -1,16 +1,18 @@
 #include <string.h>
+#include <stdio.h>
+#include <stdbool.h>
+
 #include "data.h"
 #include "logic.h"
 #include "interface.h"
+#include "son.h"
 
 //test//
 // Variables globales réelles
 int mode_choisi = 0;
 int chemin_retour = 0;
-int musique_lancee = 0;
-Mix_Music* musique_global = NULL;
 int perso_choisi = -1;
-
+bool phraseJouee = false;
 
 // === CHARGEMENT ===
 Page afficher_chargement(SDL_Renderer *rendu) {
@@ -108,11 +110,13 @@ Page afficher_histoire(SDL_Renderer* rendu) {
             memset(affichage[phrase], 0, sizeof(affichage[phrase]));
             strncpy(affichage[phrase], phrases[phrase], lettres[phrase]);
 
-            if (lettres[phrase] == 1 && son_phrase) {
+            if (lettres[phrase] == 1 && son_phrase && !phraseJouee) {
                 int volume = 30 + rand() % 35;
                 Mix_VolumeChunk(son_phrase, volume);
                 Mix_PlayChannel(-1, son_phrase, 0);
+                phraseJouee = true;
             }
+            
         }
 
         SDL_RenderClear(rendu);
@@ -142,6 +146,7 @@ Page afficher_histoire(SDL_Renderer* rendu) {
         if (lettres[phrase] == strlen(phrases[phrase])) {
             SDL_Delay(1000);
             phrase++;
+            phraseJouee = false;
         }
 
         while (SDL_PollEvent(&event)) {
@@ -166,36 +171,10 @@ Page afficher_histoire(SDL_Renderer* rendu) {
     return PAGE_MENU;
 }
 
-// === LECTEUR DE MUSIQUE GLOBAL ===
-void jouer_musique(const char* chemin, int volume) {
-    // Si la musique est déjà lancée et est en train de jouer, on ne fait rien
-    if (musique_lancee && Mix_PlayingMusic()) {
-        return;
-    }
-
-    // Sinon, on arrête l'ancienne musique si elle existe
-    if (musique_global) {
-        Mix_HaltMusic();
-        Mix_FreeMusic(musique_global);
-        musique_global = NULL;
-    }
-
-    // Chargement de la nouvelle musique
-    musique_global = Mix_LoadMUS(chemin);
-    if (musique_global) {
-        Mix_VolumeMusic(volume);
-        Mix_PlayMusic(musique_global, -1);
-        musique_lancee = 1;
-    } else {
-        SDL_Log("Erreur musique : %s", Mix_GetError());
-    }
-}
-
-
 
 // === MENU PRINCIPAL ===
 Page afficher_menu(SDL_Renderer* rendu) {
-    //jouer_musique("ressource/musique/Wav/menu.wav", 20);
+    jouerMusique("ressource/musique/Wav/menu.wav", 20);
 
     SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/fonds/fond_menu.png");
     SDL_Texture* cadre_titre = IMG_LoadTexture(rendu, "ressource/image/cadres/cadre_titre.png");

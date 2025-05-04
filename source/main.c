@@ -1,6 +1,7 @@
 // ----- src/main.c -----
 #include "logic.h"
 #include "interface.h"
+#include "son.h"
 
 
 #include <time.h>
@@ -137,8 +138,8 @@ int main(int argc, char* argv[]) {
     }
 
     // Nettoyage
-    if (musique_global) {
-        Mix_FreeMusic(musique_global);
+    if (jouerMusique) {
+        Mix_FreeMusic(jouerMusique);
     }
     for (int i = 0; i < NB_PERSOS_EQUIPE; i++) {
         if (selections_j1[i]) SDL_DestroyTexture(selections_j1[i]);
