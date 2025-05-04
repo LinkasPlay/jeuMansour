@@ -7,6 +7,8 @@
 typedef void (*FonctionAttaque)(Fighter*, Fighter*);
 
 FonctionAttaque fonctions_attaques[NB_ATTAQUES_TOTAL] = {
+    [ATTAQUE_BASIQUE]       = attaqueClassique,
+    [DEFENSE]       = defense,
     [ATQ_AFFUTAGE_MORTAL]       = attaque_affutage_mortal,
     [ATQ_ASSAUT_TRANCHANT]      = attaque_assaut_tranchant,
     [ATQ_EVEIL_SABRE]           = attaque_eveil_du_sabre,
@@ -35,21 +37,16 @@ FonctionAttaque fonctions_attaques[NB_ATTAQUES_TOTAL] = {
 
 
 //Attque classique 
-void attaqueClassique(Fighter attaquant, Fighter cible) {
-    int degats = attaquant.attaque * 2 - cible.defense;
-    //SDL_Log("Salope");
+void attaqueClassique(Fighter* attaquant, Fighter* cible) {
+    int degats = attaquant->attaque * 2 - cible->defense;
     
     if (degats < 0) degats = 0;
 
-    cible.actu_pv -= degats;
-    if (cible.actu_pv < 0) cible.actu_pv = 0;
+    cible->actu_pv -= degats;
+    if (cible->actu_pv < 0) cible->actu_pv = 0;
 
-    printf("%s attaque %s (-%d PV)\n", attaquant.nom, cible.nom, degats);
-
+    printf("%s attaque %s (-%d PV)\n", attaquant->nom, cible->nom, degats);
 }
-
-
-
 
 // Effet de soin
 void soin_effet(Fighter lanceur, Fighter cible, int quantite) {
@@ -72,26 +69,9 @@ void defense_effet(Fighter lanceur, Fighter cible, int bonus) {
     printf("%s augmente la défense de %s (+%d DEF)\n", lanceur.nom, cible.nom, cible.defense - ancienne_def);
 }
 
-
-void executer_attaque(int id, Fighter* utilisateur, Fighter* cible) {
-    switch (id) {
-        case 0:
-            attaque_feu(utilisateur, cible);
-            break;
-        case 1:
-            attaque_soin(utilisateur, cible);
-            break;
-        case 2:
-            attaque_paralyse(utilisateur, cible);
-            break;
-        // Ajoute d'autres attaques ici
-        default:
-            SDL_Log("ID d'attaque inconnu : %d", id);
-            break;
-    }
+void defense(Fighter* attaquant, Fighter* cible) {
+    SDL_Log("attaque_affutage_mortal");
 }
-
-
 
 void attaque_affutage_mortal(Fighter* attaquant, Fighter* cible) {
     SDL_Log("attaque_affutage_mortal");

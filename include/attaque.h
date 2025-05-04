@@ -1,14 +1,14 @@
 
-// ----- attaque.h -----
 #ifndef ATTAQUE_H
 #define ATTAQUE_H
 
 #include <stdio.h>
 #include <string.h>
 
-#include "data.h"  // À adapter selon où tu déclares Combattant
+#include "data.h" 
 
-void attaque_classique(Fighter *attaquant, Fighter *cible);
+void attaqueClassique(Fighter *attaquant, Fighter *cible);
+void defense(Fighter* attaquant, Fighter* cible);
 
 void attaque_affutage_mortal(Fighter*, Fighter*);
 void attaque_assaut_tranchant(Fighter*, Fighter*);
@@ -35,5 +35,32 @@ void attaque_mur_vivant(Fighter*, Fighter*);
 void attaque_barriere_de_pierre(Fighter*, Fighter*);
 void attaque_rugissement_d_acier(Fighter*, Fighter*);
 
+extern AttaqueSpecial useAttaque;
+extern AttaqueSpecial useDefense;
+// Déclarations externes des attaques spéciales
+extern AttaqueSpecial affutageMortal;
+extern AttaqueSpecial assautTranchant;
+extern AttaqueSpecial eveilDuSabre;
+extern AttaqueSpecial flammesSolaires;
+extern AttaqueSpecial explosionArdente;
+extern AttaqueSpecial espritFlamboyant;
+extern AttaqueSpecial prisonDeGivre;
+extern AttaqueSpecial blizzard;
+extern AttaqueSpecial glaceCurative;
+extern AttaqueSpecial lienDeSang;
+extern AttaqueSpecial vagueGuerisseuse;
+extern AttaqueSpecial eveilLunaire;
+extern AttaqueSpecial crepuscule;
+extern AttaqueSpecial hurlementNoir;
+extern AttaqueSpecial brumeProtectrice;
+extern AttaqueSpecial danseDuVent;
+extern AttaqueSpecial sentPercant;
+extern AttaqueSpecial souffleDeVie;
+extern AttaqueSpecial fulgurance;
+extern AttaqueSpecial foudreEnchainee;
+extern AttaqueSpecial executionRapide;
+extern AttaqueSpecial murVivant;
+extern AttaqueSpecial barriereDePierre;
+extern AttaqueSpecial rugissementDacier;
 
 #endif
