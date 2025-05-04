@@ -97,7 +97,7 @@ Fighter choisirCible(SDL_Renderer* rendu, int equipeAdverse){
     
     bool choisi=false;
     SDL_Event event;
-    int selection;
+    int selection = 0;
     
     SDL_Log("Ennemi %d séléctionné !",selection + 1);
     
@@ -110,6 +110,7 @@ Fighter choisirCible(SDL_Renderer* rendu, int equipeAdverse){
             if(event.type==SDL_KEYDOWN && event.key.keysym.sym == SDLK_TAB) {
                 selection = (selection + 1) % 3;
                 SDL_Log("Ennemi %d séléctionné !",selection + 1);
+                
             }
 
             else if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_LEFT){

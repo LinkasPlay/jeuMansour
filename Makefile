@@ -1,18 +1,18 @@
 CC       = gcc
-CFLAGS   = -Wall -IInclude `sdl2-config --cflags`
+CFLAGS   = -Wall -Iinclude `sdl2-config --cflags`
 LIBS     = `sdl2-config --libs` -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 
 SRC = \
-    Source/attaque.c \
-    Source/data.c \
-    Source/interface.c \
-    Source/jeu.c \
-    Source/langue.c \
-    Source/logique.c \
-    Source/main.c \
-    Source/maps.c \
-    Source/menu.c \
-    Source/select_perso.c
+    source/attaque.c \
+    source/data.c \
+    source/interface.c \
+    source/jeu.c \
+    source/langue.c \
+    source/logique.c \
+    source/main.c \
+    source/maps.c \
+    source/menu.c \
+    source/select_perso.c
 
 
 

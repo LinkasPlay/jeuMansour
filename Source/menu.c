@@ -89,7 +89,7 @@ Page afficher_histoire(SDL_Renderer* rendu) {
     TTF_Font* police = TTF_OpenFont("ressource/langue/Police/arial.ttf", 32);
     SDL_Color blanc = {255, 255, 255, 255};
 
-    SDL_Texture* skip_btn = IMG_LoadTexture(rendu, "ressource/image/Utilité/avance.png");
+    SDL_Texture* skip_btn = IMG_LoadTexture(rendu, "ressource/image/utilité/avance.png");
     SDL_Rect skip_rect = {LARGEUR_FENETRE - 120, 20, 80, 80};
 
     Mix_Chunk* son_phrase = Mix_LoadWAV("ressource/musique/Wav/phrase.wav");
@@ -198,8 +198,8 @@ Page afficher_menu(SDL_Renderer* rendu) {
     //jouer_musique("ressource/musique/Wav/menu.wav", 20);
 
     SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/Fonds/fond_menu.png");
-    SDL_Texture* cadre_titre = IMG_LoadTexture(rendu, "ressource/image/Cadres/cadre_titre.png");
-    SDL_Texture* cadre_bouton = IMG_LoadTexture(rendu, "ressource/image/Cadres/cadre_texte.png");
+    SDL_Texture* cadre_titre = IMG_LoadTexture(rendu, "ressource/image/cadres/cadre_titre.png");
+    SDL_Texture* cadre_bouton = IMG_LoadTexture(rendu, "ressource/image/cadres/cadre_texte.png");
 
     TTF_Font* police = TTF_OpenFont("ressource/langue/Police/arial.ttf", 40);
     SDL_Color noir = {0, 0, 0, 255};
@@ -261,8 +261,8 @@ Page afficher_menu(SDL_Renderer* rendu) {
 // === OPTIONS ===
 Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
     SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/Fonds/fond_menu.png");
-    SDL_Texture* cadre_bouton = IMG_LoadTexture(rendu, "ressource/image/Cadres/cadre_texte.png");
-    SDL_Texture* bouton_retour = IMG_LoadTexture(rendu, "ressource/image/Utilité/retour.png");
+    SDL_Texture* cadre_bouton = IMG_LoadTexture(rendu, "ressource/image/cadres/cadre_texte.png");
+    SDL_Texture* bouton_retour = IMG_LoadTexture(rendu, "ressource/image/utilité/retour.png");
 
     const char* textes[] = {"Sauvegarde", "Langue", "Son"};
     SDL_Color noir = {0, 0, 0, 255};
@@ -386,8 +386,8 @@ Page afficher_jeu(SDL_Renderer* rendu, SDL_Texture* selections_j1[3], SDL_Textur
 // === PAGE DE SÉLECTION MODE ===
 Page afficher_selec_mode(SDL_Renderer* rendu) {
     SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/Fonds/fond_menu.png");
-    SDL_Texture* cadre_bouton = IMG_LoadTexture(rendu, "ressource/image/Cadres/cadre_texte_carre.png");
-    SDL_Texture* bouton_retour = IMG_LoadTexture(rendu, "ressource/image/Utilité/retour.png");
+    SDL_Texture* cadre_bouton = IMG_LoadTexture(rendu, "ressource/image/cadres/cadre_texte_carre.png");
+    SDL_Texture* bouton_retour = IMG_LoadTexture(rendu, "ressource/image/utilité/retour.png");
 
     TTF_Font* police = TTF_OpenFont("ressource/langue/Police/arial.ttf", 80);
     TTF_SetFontStyle(police, TTF_STYLE_BOLD);
@@ -472,8 +472,8 @@ Page afficher_selec_mode(SDL_Renderer* rendu) {
 // === PAGE DE SÉLECTION DIFFICULTÉ ===
 Page afficher_selec_difficulte(SDL_Renderer* rendu) {
     SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/Fonds/fond_menu.png");
-    SDL_Texture* cadre_bouton = IMG_LoadTexture(rendu, "ressource/image/Cadres/cadre_texte_carre.png");
-    SDL_Texture* bouton_retour = IMG_LoadTexture(rendu, "ressource/image/Utilité/retour.png");
+    SDL_Texture* cadre_bouton = IMG_LoadTexture(rendu, "ressource/image/cadres/cadre_texte_carre.png");
+    SDL_Texture* bouton_retour = IMG_LoadTexture(rendu, "ressource/image/utilité/retour.png");
 
     TTF_Font* police = TTF_OpenFont("ressource/langue/Police/arial.ttf", 40);
     SDL_Color noir = {0, 0, 0, 255};

@@ -22,7 +22,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
     }
 
     // --- LOGO VERSUS ---
-    SDL_Texture* logo_versus_texture = IMG_LoadTexture(rendu, "ressource/image/Utilité/versus.png");
+    SDL_Texture* logo_versus_texture = IMG_LoadTexture(rendu, "ressource/image/utilité/versus.png");
     if (!logo_versus_texture) {
         SDL_Log("Erreur chargement logo: %s", SDL_GetError());
         SDL_DestroyTexture(fond_texture);
@@ -37,7 +37,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
     };
 
     // --- BOUTON RETOUR ---
-    SDL_Texture* btn_retour_texture = IMG_LoadTexture(rendu, "ressource/image/Utilité/retour.png");
+    SDL_Texture* btn_retour_texture = IMG_LoadTexture(rendu, "ressource/image/utilité/retour.png");
     SDL_Rect btn_retour_rect = {20, HAUTEUR_FENETRE - 100, 80, 80}; // Nom de variable corrigé
 
     // --- PORTRAITS DES PERSONNAGES ---
@@ -391,9 +391,9 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
 Page afficher_confirmation_perso(SDL_Renderer* rendu, SDL_Texture* equipe1[3], SDL_Texture* equipe2[3]) {
     // Chargement des textures
     SDL_Texture* fond_texture = IMG_LoadTexture(rendu, "ressource/image/Fonds/fond_selection_perso.png");
-    SDL_Texture* btn_avancer_texture = IMG_LoadTexture(rendu, "ressource/image/Utilité/avance.png");
-    SDL_Texture* btn_retour_texture = IMG_LoadTexture(rendu, "ressource/image/Utilité/retour.png");
-    SDL_Texture* vs_texture = IMG_LoadTexture(rendu, "ressource/image/Utilité/versus_recap.png");
+    SDL_Texture* btn_avancer_texture = IMG_LoadTexture(rendu, "ressource/image/utilité/avance.png");
+    SDL_Texture* btn_retour_texture = IMG_LoadTexture(rendu, "ressource/image/utilité/retour.png");
+    SDL_Texture* vs_texture = IMG_LoadTexture(rendu, "ressource/image/utilité/versus_recap.png");
 
     if (!fond_texture || !btn_avancer_texture || !btn_retour_texture || !vs_texture) {
         if (fond_texture) SDL_DestroyTexture(fond_texture);
