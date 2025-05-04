@@ -15,7 +15,7 @@ void runGame(SDL_Renderer* rendu);
 Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3], SDL_Texture* selections_j2[3]) {
 
     // --- CHARGEMENT DES TEXTURES ---
-    SDL_Texture* fond_texture = IMG_LoadTexture(rendu, "ressource/image/Fonds/fond_selection_perso.png");
+    SDL_Texture* fond_texture = IMG_LoadTexture(rendu, "ressource/image/fonds/fond_selection_perso.png");
     if (!fond_texture) {
         SDL_Log("Erreur chargement fond: %s", SDL_GetError());
         return PAGE_QUITTER;
@@ -390,7 +390,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
 
 Page afficher_confirmation_perso(SDL_Renderer* rendu, SDL_Texture* equipe1[3], SDL_Texture* equipe2[3]) {
     // Chargement des textures
-    SDL_Texture* fond_texture = IMG_LoadTexture(rendu, "ressource/image/Fonds/fond_selection_perso.png");
+    SDL_Texture* fond_texture = IMG_LoadTexture(rendu, "ressource/image/fonds/fond_selection_perso.png");
     SDL_Texture* btn_avancer_texture = IMG_LoadTexture(rendu, "ressource/image/utilité/avance.png");
     SDL_Texture* btn_retour_texture = IMG_LoadTexture(rendu, "ressource/image/utilité/retour.png");
     SDL_Texture* vs_texture = IMG_LoadTexture(rendu, "ressource/image/utilité/versus_recap.png");

@@ -14,7 +14,7 @@ int perso_choisi = -1;
 
 // === CHARGEMENT ===
 Page afficher_chargement(SDL_Renderer *rendu) {
-    SDL_Surface *image_fond = IMG_Load("ressource/image/Fonds/fond_chargement.png");
+    SDL_Surface *image_fond = IMG_Load("ressource/image/fonds/fond_chargement.png");
     SDL_Texture *fond = SDL_CreateTextureFromSurface(rendu, image_fond);
     SDL_FreeSurface(image_fond);
 
@@ -84,7 +84,7 @@ Page afficher_histoire(SDL_Renderer* rendu) {
     char affichage[NB_PHRASES][256] = {{0}};
     int lettres[NB_PHRASES] = {0};
 
-    SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/Fonds/fond_histoire.png");
+    SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/fonds/fond_histoire.png");
 
     TTF_Font* police = TTF_OpenFont("ressource/langue/Police/arial.ttf", 32);
     SDL_Color blanc = {255, 255, 255, 255};
@@ -197,7 +197,7 @@ void jouer_musique(const char* chemin, int volume) {
 Page afficher_menu(SDL_Renderer* rendu) {
     //jouer_musique("ressource/musique/Wav/menu.wav", 20);
 
-    SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/Fonds/fond_menu.png");
+    SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/fonds/fond_menu.png");
     SDL_Texture* cadre_titre = IMG_LoadTexture(rendu, "ressource/image/cadres/cadre_titre.png");
     SDL_Texture* cadre_bouton = IMG_LoadTexture(rendu, "ressource/image/cadres/cadre_texte.png");
 
@@ -260,7 +260,7 @@ Page afficher_menu(SDL_Renderer* rendu) {
 
 // === OPTIONS ===
 Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
-    SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/Fonds/fond_menu.png");
+    SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/fonds/fond_menu.png");
     SDL_Texture* cadre_bouton = IMG_LoadTexture(rendu, "ressource/image/cadres/cadre_texte.png");
     SDL_Texture* bouton_retour = IMG_LoadTexture(rendu, "ressource/image/utilité/retour.png");
 
@@ -385,7 +385,7 @@ Page afficher_jeu(SDL_Renderer* rendu, SDL_Texture* selections_j1[3], SDL_Textur
 
 // === PAGE DE SÉLECTION MODE ===
 Page afficher_selec_mode(SDL_Renderer* rendu) {
-    SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/Fonds/fond_menu.png");
+    SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/fonds/fond_menu.png");
     SDL_Texture* cadre_bouton = IMG_LoadTexture(rendu, "ressource/image/cadres/cadre_texte_carre.png");
     SDL_Texture* bouton_retour = IMG_LoadTexture(rendu, "ressource/image/utilité/retour.png");
 
@@ -471,7 +471,7 @@ Page afficher_selec_mode(SDL_Renderer* rendu) {
 
 // === PAGE DE SÉLECTION DIFFICULTÉ ===
 Page afficher_selec_difficulte(SDL_Renderer* rendu) {
-    SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/Fonds/fond_menu.png");
+    SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/fonds/fond_menu.png");
     SDL_Texture* cadre_bouton = IMG_LoadTexture(rendu, "ressource/image/cadres/cadre_texte_carre.png");
     SDL_Texture* bouton_retour = IMG_LoadTexture(rendu, "ressource/image/utilité/retour.png");
 
