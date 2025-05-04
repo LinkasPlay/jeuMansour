@@ -2,7 +2,7 @@
 #include "logic.h"
 #include "interface.h"
 #include "son.h"
-
+#include "attaque.h"
 
 
 #include <string.h>
@@ -185,7 +185,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
 
                             }                                
                             perso_disponible[i] = false;
-                            
+                            persoChoisi[a].pt= 0;
                             switch(i){
 
                                 case 0:
@@ -197,6 +197,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                                     persoChoisi[a].agilite=darkshadow.agilite;
                                     persoChoisi[a].vitesse=darkshadow.vitesse;
                                     persoChoisi[a].element=darkshadow.element;
+                                    
                             
                                     break;
                                
@@ -281,9 +282,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                                     persoChoisi[a].agilite=zoro.agilite;
                                     persoChoisi[a].vitesse=zoro.vitesse;
                                     persoChoisi[a].element=zoro.element;
-                                    persoChoisi[a].spe_atq1 = Test1;
-                                    persoChoisi[a].spe_atq2 = Test2;
-                                    persoChoisi[a].spe_atq3 = Test3;
+
                                     break;
 
                                 default :
@@ -297,6 +296,10 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                                     persoChoisi[a].element=lukas.element;
                                     break;
                             }
+                            
+                            persoChoisi[a].spe_atq1 = affutageMortal;
+                            persoChoisi[a].spe_atq2 = assautTranchant;
+                            persoChoisi[a].spe_atq3 = eveilDuSabre;
 
                             if(tour_j1) SDL_Log("Perso %d l'équipe 1 est : %s",a + 1, persoChoisi[a].nom);
                             else SDL_Log("Perso %d de l'équipe 2 est : %s",a + 1, persoChoisi[a].nom);

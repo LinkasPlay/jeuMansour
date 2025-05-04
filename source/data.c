@@ -9,16 +9,28 @@
 
 AttaqueSpecial* toutes_les_attaques[NB_ATTAQUES_TOTAL];
 
+//attaque classique et defenzse
+AttaqueSpecial useAttaque = {
+    .nom = "attaque",
+    .description = "Une simple attaque physique",
+    .id = ATTAQUE_BASIQUE,
+    .cout = 0,
+};
+AttaqueSpecial useDefense = {
+    .nom = "defense",
+    .description = "Se défendre pour se tour",
+    .id = DEFENSE,
+    .cout = 0,
+};
 
 // Le tableau global de tous les personnages
 
 AttaqueSpecial affutageMortal = {
     .nom = "affûtage mortal",
     .description = "Applique Saignement sur attaques normales pendant 3 tours.",
-    .id = 1,
+    .id = ATQ_ASSAUT_TRANCHANT,
     .cout = 5,
 };
-
 
 AttaqueSpecial assautTranchant ={
     .nom = "assaut tranchant",
@@ -30,91 +42,91 @@ AttaqueSpecial assautTranchant ={
 AttaqueSpecial eveilDuSabre ={
     .nom = "éveil du sabre",
     .description = "+ 25 pourcent attaque pour 2 tours.",
-    .id = 3,
+    .id = ATQ_ASSAUT_TRANCHANT,
     .cout = 6,
 };
 
 AttaqueSpecial flammesSolaires ={
     .nom = "flammes solaires",
     .description = "Change le cycle en Jour",
-    .id = 1,
+    .id = ATQ_ASSAUT_TRANCHANT,
     .cout = 5,
 };
 
 AttaqueSpecial explosionArdente ={
     .nom = "explosion ardente",
     .description = "150 pourcent attaque magique + Brûlure.",
-    .id = 2,
+    .id = ATQ_ASSAUT_TRANCHANT,
     .cout = 8,
 };
 
 AttaqueSpecial espritFlamboyant ={
     .nom = "esprit flamboyant",
     .description = "Boost attaque/défense alliées +25 pourcent pour 2 tours.",
-    .id = 3,
+    .id = ATQ_ASSAUT_TRANCHANT,
     .cout = 7,
 };
 
 AttaqueSpecial prisonDeGivre ={
     .nom = "Prison de givre",
     .description = "Gel : -30 pourcent défense/agilité d'un ennemi pour 2 tours.",
-    .id = 1,
+    .id = ATQ_ASSAUT_TRANCHANT,
     .cout = 5,
 };
 
 AttaqueSpecial blizzard ={
     .nom = "Blizzard",
     .description = "AoE physique (30 pourcent puissance) + 50 pourcent chance de Gel.",
-    .id = 2,
+    .id = ATQ_ASSAUT_TRANCHANT,
     .cout = 7,
 };
 
 AttaqueSpecial glaceCurative ={
     .nom = "Glace curative",
     .description = "Soigne un allié de 20 pourcent PV max.",
-    .id = 3,
+    .id = ATQ_ASSAUT_TRANCHANT,
     .cout = 4,
 };
 
 AttaqueSpecial lienDeSang ={
     .nom = "Lien de Sang",
     .description = "Immobilise un ennemi tant qu'il n'est pas blessé. Katara aussi.",
-    .id = 1,
+    .id = ATQ_ASSAUT_TRANCHANT,
     .cout = 6,
 };
 
 AttaqueSpecial vagueGuerisseuse ={
     .nom = "Vague guérisseuse",
     .description = "Restaure 20 pourcent PV max à un allié.",
-    .id = 2,
+    .id = ATQ_ASSAUT_TRANCHANT,
     .cout = 4,
 };
 
 AttaqueSpecial eveilLunaire ={
     .nom = "Éveil lunaire",
     .description = "Change le cycle en Nuit",
-    .id = 3,
+    .id = ATQ_ASSAUT_TRANCHANT,
     .cout = 5,
 };
 
 AttaqueSpecial crepuscule ={
     .nom = "Éveil lunaire",
     .description = "Change le cycle en Nuit",
-    .id = 1,
+    .id = ATQ_ASSAUT_TRANCHANT,
     .cout = 5,
 };
 
 AttaqueSpecial hurlementNoir ={
     .nom = "Hurlement noir",
     .description = "AoE magique (70 pourcent magie).",
-    .id = 2,
+    .id = ATQ_ASSAUT_TRANCHANT,
     .cout = 6,
 };
 
 AttaqueSpecial brumeProtectrice ={
     .nom = "Brume protectrice",
     .description = "Protège un allié (réduction dégâts -30 pourcent, 2 tours).",
-    .id = 3,
+    .id = ATQ_ASSAUT_TRANCHANT,
     .cout = 4,
 };
 
@@ -122,65 +134,67 @@ AttaqueSpecial brumeProtectrice ={
 AttaqueSpecial danseDuVent ={
     .nom = "Danse du vent",
     .description = "Réduit l'attaque ennemie de 25 pourcent pour 2 tours.",
-    .id = 1,
+    .id = ATQ_ASSAUT_TRANCHANT,
     .cout = 5,
 };
 
 AttaqueSpecial sentPercant ={
     .nom = "Vent perçant",
     .description = "AoE magique (70 pourcent magie)",
-    .id = 2,
+    .id = ATQ_ASSAUT_TRANCHANT,
     .cout = 5,
 };
 
 AttaqueSpecial souffleDeVie ={
     .nom = "Souffle de vie",
     .description = "Restaure 20 pourcent PV max à un allié.",
-    .id = 3,
+    .id = ATQ_ASSAUT_TRANCHANT,
     .cout = 4,
 };
 
 AttaqueSpecial fulgurance ={
     .nom = "Fulgurance",
     .description = "Ignore 50 pourcent de la défense sur l'attaque.",
-    .id = 1,
+    .id = ATQ_ASSAUT_TRANCHANT,
     .cout = 5,
 };
 
 AttaqueSpecial foudreEnchainee ={
     .nom = "Foudre enchaînée",
     .description = "AoE physique (40 pourcent attaque)",
-    .id = 2,
+    .id = ATQ_ASSAUT_TRANCHANT,
     .cout = 6,
 };
 
 AttaqueSpecial executionRapide ={
     .nom = "Exécution rapide",
     .description = "Inflige 200 pourcent attaque si cible <30 pourcent PV.",
-    .id = 3,
+    .id = ATQ_ASSAUT_TRANCHANT,
     .cout = 7,
 };
 
 AttaqueSpecial murVivant ={
     .nom = "Mur vivant",
     .description = "Protège un allié : subit 100 pourcent de ses dégâts.",
-    .id = 1,
+    .id = ATQ_ASSAUT_TRANCHANT,
     .cout = 5,
 };
 
 AttaqueSpecial barriereDePierre ={
     .nom = "Barrière de pierre",
     .description = "Augmente sa propre défense de 50 pourcent pour 2 tours.",
-    .id = 2,
+    .id = ATQ_ASSAUT_TRANCHANT,
     .cout = 4,
 };
 
 AttaqueSpecial rugissementDacier ={
     .nom = "Rugissement d'acier",
     .description = "Boost défense alliée +25 pourcent pour 2 tours.",
-    .id = 3,
+    .id = ATQ_ASSAUT_TRANCHANT,
     .cout = 5,
 };
+
+//figthrtertee
 
 Fighter zoro={
     .nom ="zoro",
@@ -189,8 +203,9 @@ Fighter zoro={
     .attaque = 30,
     .defense = 15,
     .agilite = 20,
-    .vitesse = 10,
-    .element = ELEMENT_NONE
+    .vitesse = 5,
+    .element = ELEMENT_NONE,
+    .pt = 0
 };
 
 Fighter rengoku={
@@ -200,8 +215,9 @@ Fighter rengoku={
     .attaque = 20,
     .defense = 35,
     .agilite = 10,
-    .vitesse = 30,
-    .element = ELEMENT_FEU
+    .vitesse = 10,
+    .element = ELEMENT_FEU,
+    .pt = 0
 };
 
 Fighter hitsugaya={
@@ -211,8 +227,9 @@ Fighter hitsugaya={
     .attaque = 20,
     .defense = 30,
     .agilite = 15,
-    .vitesse = 30,
-    .element = ELEMENT_GLACE
+    .vitesse = 20,
+    .element = ELEMENT_GLACE,
+    .pt = 0
 };
 
 Fighter katara={
@@ -222,8 +239,9 @@ Fighter katara={
     .attaque = 20,
     .defense = 20,
     .agilite = 15,
-    .vitesse = 50,
-    .element = ELEMENT_EAU
+    .vitesse = 30,
+    .element = ELEMENT_EAU,
+    .pt = 0
 };
 
 Fighter darkshadow={
@@ -234,7 +252,8 @@ Fighter darkshadow={
     .defense = 20,
     .agilite = 20,
     .vitesse = 35,
-    .element = ELEMENT_OMBRE
+    .element = ELEMENT_OMBRE,
+    .pt = 0
 };
 
 Fighter temari={
@@ -244,8 +263,9 @@ Fighter temari={
     .attaque = 15,
     .defense = 20,
     .agilite = 40,
-    .vitesse = 50,
-    .element = ELEMENT_VENT
+    .vitesse = 40,
+    .element = ELEMENT_VENT,
+    .pt = 0
 };
 
 Fighter kirua={
@@ -256,7 +276,8 @@ Fighter kirua={
     .defense = 10,
     .agilite = 25,
     .vitesse = 50,
-    .element = ELEMENT_ECLAIR
+    .element = ELEMENT_ECLAIR,
+    .pt = 0
 };
 
 Fighter incassable={
@@ -266,8 +287,9 @@ Fighter incassable={
     .attaque = 10,
     .defense = 40,
     .agilite = 10,
-    .vitesse = 30,
-    .element = ELEMENT_CRISTAL
+    .vitesse = 1,
+    .element = ELEMENT_CRISTAL,
+    .pt = 0
 };
 
 Fighter lukas={
@@ -278,7 +300,8 @@ Fighter lukas={
     .defense = 69696969,
     .agilite = 69696969,
     .vitesse = 69696969,
-    .element = ELEMENT_CRISTAL
+    .element = ELEMENT_CRISTAL,
+    .pt = 0
 };
 
 
