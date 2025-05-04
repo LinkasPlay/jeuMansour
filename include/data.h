@@ -15,21 +15,6 @@
 extern SDL_Window* fenetre;
 
 
-// ==== Définition des maps disponibles ====
-typedef enum {
-    MAP_CRISTAL = 0,
-    MAP_GLACE,
-    MAP_FEU,
-    MAP_ECLAIR,
-    MAP_VENT,
-    MAP_EAU,
-    MAP_OMBRE,
-    MAP_NEUTRE,
-    MAP_TEMPS,
-    MAP_MYSTERE,
-    NB_MAPS
-} MapType;
-
 // ==== Définition des éléments ====
 typedef enum {
     ELEMENT_NONE,
@@ -50,10 +35,6 @@ typedef struct {
     int bonus_agilite;
     int bonus_pv;
 } BonusMap;
-
-// Prototypes map logic
-int booste_sur_map(ElementType element_perso, MapType map_actuelle);
-BonusMap obtenir_bonus_map(MapType map_actuelle, ElementType element_perso);
 
 // ==== Statuts d'effet ====
 typedef enum {
@@ -114,6 +95,9 @@ typedef struct{
     int perso_actif; 
     int tour;
     bool fin;
+
+    int mapType; // 1 = feu, 2 = glace, etc
+    bool nuit;
 
 } Partie;
 

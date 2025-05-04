@@ -14,20 +14,25 @@
 
 
 void renduJeu(SDL_Renderer* rendu) {
-    TTF_Font* font = TTF_OpenFont("Ressource/langue/Police/arial.ttf", 32);
+    TTF_Font* font = TTF_OpenFont("ressource/langue/police/arial.ttf", 32);
     if (!font) {
         SDL_Log("Erreur police: %s", TTF_GetError());
         return;
     }
 
-    SDL_SetRenderDrawColor(rendu, 20, 20, 20, 255);
-    SDL_RenderClear(rendu);
+    // === Affichage du fond ===
+    char fondPath[128];
+    snprintf(fondPath, sizeof(fondPath), "ressource/image/fonds/maps/map_%d.png", partieActuelle.mapType);
+    SDL_Texture* fond_texture = IMG_LoadTexture(rendu, fondPath);
+    if (!fond_texture) {
+        SDL_Log("Erreur chargement fond de map : %s", SDL_GetError());
+    } else {
+        SDL_RenderCopy(rendu, fond_texture, NULL, NULL); // plein écran
+    }
 
     const int largeur_perso = 100;
     const int hauteur_perso = 100;
     const int espacement = 30;
-
-    // Position Y fixe au centre vertical
     const int y_perso = (HAUTEUR_FENETRE - hauteur_perso) / 2;
 
     Fighter* perso1[3] = {
@@ -47,26 +52,26 @@ void renduJeu(SDL_Renderer* rendu) {
         int x = 100 + i * (largeur_perso + espacement);
         int y = y_perso + i * 30;
         SDL_Rect dest = {x, y, largeur_perso, hauteur_perso};
-    
+
         char path[128];
-        snprintf(path, sizeof(path), "Ressource/image/Personnages_pixel/%s.png", perso1[i]->nom);
+        snprintf(path, sizeof(path), "ressource/image/personnages_pixel/%s.png", perso1[i]->nom);
         SDL_Texture* tex = IMG_LoadTexture(rendu, path);
-    
+
         if (tex) SDL_RenderCopy(rendu, tex, NULL, &dest);
-    
+
         char infos[64];
         snprintf(infos, sizeof(infos), "PV: %d/%d", perso1[i]->actu_pv, perso1[i]->max_pv);
         SDL_Surface* surf = TTF_RenderUTF8_Blended(font, infos, (SDL_Color){255, 255, 255, 255});
         SDL_Texture* txt = SDL_CreateTextureFromSurface(rendu, surf);
-    
+
         SDL_Rect txtRect = {dest.x + (largeur_perso - surf->w)/2, dest.y - surf->h - 5, surf->w, surf->h};
         SDL_RenderCopy(rendu, txt, NULL, &txtRect);
-    
+
         SDL_FreeSurface(surf);
         SDL_DestroyTexture(txt);
         if (tex) SDL_DestroyTexture(tex);
     }
-    
+
     // === ÉQUIPE 2 ===
     for (int i = 0; i < 3; i++) {
         int x = LARGEUR_FENETRE - 100 - largeur_perso - i * (largeur_perso + espacement);
@@ -74,7 +79,7 @@ void renduJeu(SDL_Renderer* rendu) {
         SDL_Rect dest = {x, y, largeur_perso, hauteur_perso};
 
         char path[128];
-        snprintf(path, sizeof(path), "Ressource/image/Personnages_pixel/%s_reverse.png", perso2[i]->nom);
+        snprintf(path, sizeof(path), "ressource/image/personnages_pixel/%s_reverse.png", perso2[i]->nom);
         SDL_Texture* tex = IMG_LoadTexture(rendu, path);
 
         if (tex) SDL_RenderCopy(rendu, tex, NULL, &dest);
@@ -91,13 +96,17 @@ void renduJeu(SDL_Renderer* rendu) {
         SDL_DestroyTexture(txt);
         if (tex) SDL_DestroyTexture(tex);
     }
+
+    // Libération du fond
+    if (fond_texture) SDL_DestroyTexture(fond_texture);
+
 }
 
 Fighter choisirCible(SDL_Renderer* rendu, int equipeAdverse){
     
     bool choisi=false;
     SDL_Event event;
-    int selection;
+    int selection = 0;
     
     SDL_Log("Ennemi %d séléctionné !",selection + 1);
     
@@ -110,6 +119,7 @@ Fighter choisirCible(SDL_Renderer* rendu, int equipeAdverse){
             if(event.type==SDL_KEYDOWN && event.key.keysym.sym == SDLK_TAB) {
                 selection = (selection + 1) % 3;
                 SDL_Log("Ennemi %d séléctionné !",selection + 1);
+                
             }
 
             else if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_LEFT){
@@ -182,7 +192,7 @@ bool isMouseOver(Button* btn, int x, int y) {
 }
 
 void actionPerso(SDL_Renderer* renderer, Fighter persoActuel, int equipeAdverse) {
-    TTF_Font* font = TTF_OpenFont("Ressource/langue/Police/arial.ttf", 32);
+    TTF_Font* font = TTF_OpenFont("ressource/langue/Police/arial.ttf", 32);
     if (!font) {
         SDL_Log("Erreur chargement police: %s", TTF_GetError());
         return;
@@ -289,6 +299,8 @@ void runGame(SDL_Renderer* rendu){
     partieActuelle.perso_actif=0;
     partieActuelle.tour=1;
     partieActuelle.fin=false;
+
+    partieActuelle.mapType = 1;
 
     renduJeu(rendu);
 

@@ -15,14 +15,14 @@ void runGame(SDL_Renderer* rendu);
 Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3], SDL_Texture* selections_j2[3]) {
 
     // --- CHARGEMENT DES TEXTURES ---
-    SDL_Texture* fond_texture = IMG_LoadTexture(rendu, "Ressource/image/Fonds/fond_selection_perso.png");
+    SDL_Texture* fond_texture = IMG_LoadTexture(rendu, "ressource/image/fonds/fond_selection_perso.png");
     if (!fond_texture) {
         SDL_Log("Erreur chargement fond: %s", SDL_GetError());
         return PAGE_QUITTER;
     }
 
     // --- LOGO VERSUS ---
-    SDL_Texture* logo_versus_texture = IMG_LoadTexture(rendu, "Ressource/image/Utilité/versus.png");
+    SDL_Texture* logo_versus_texture = IMG_LoadTexture(rendu, "ressource/image/utilité/versus.png");
     if (!logo_versus_texture) {
         SDL_Log("Erreur chargement logo: %s", SDL_GetError());
         SDL_DestroyTexture(fond_texture);
@@ -37,19 +37,19 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
     };
 
     // --- BOUTON RETOUR ---
-    SDL_Texture* btn_retour_texture = IMG_LoadTexture(rendu, "Ressource/image/Utilité/retour.png");
+    SDL_Texture* btn_retour_texture = IMG_LoadTexture(rendu, "ressource/image/utilité/retour.png");
     SDL_Rect btn_retour_rect = {20, HAUTEUR_FENETRE - 100, 80, 80}; // Nom de variable corrigé
 
-    // --- PORTRAITS DES PERSONNAGES ---
+    // --- PORTRAITS DES personnages ---
     const char* noms_portraits[8] = {
-        "Ressource/image/Personnages_pp/pp_droite/pp_darkshadow.png",
-        "Ressource/image/Personnages_pp/pp_droite/pp_hitsugaya.png",
-        "Ressource/image/Personnages_pp/pp_droite/pp_incassable.png",
-        "Ressource/image/Personnages_pp/pp_droite/pp_katara.png",
-        "Ressource/image/Personnages_pp/pp_droite/pp_kirua.png",
-        "Ressource/image/Personnages_pp/pp_droite/pp_rengoku.png",
-        "Ressource/image/Personnages_pp/pp_droite/pp_temari.png",
-        "Ressource/image/Personnages_pp/pp_droite/pp_zoro.png"
+        "ressource/image/personnages_pp/pp_droite/pp_darkshadow.png",
+        "ressource/image/personnages_pp/pp_droite/pp_hitsugaya.png",
+        "ressource/image/personnages_pp/pp_droite/pp_incassable.png",
+        "ressource/image/personnages_pp/pp_droite/pp_katara.png",
+        "ressource/image/personnages_pp/pp_droite/pp_kirua.png",
+        "ressource/image/personnages_pp/pp_droite/pp_rengoku.png",
+        "ressource/image/personnages_pp/pp_droite/pp_temari.png",
+        "ressource/image/personnages_pp/pp_droite/pp_zoro.png"
     };
 
     SDL_Texture* portraits[8] = {NULL};
@@ -89,7 +89,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
     const int espacement_selections = 10;
 
     // --- TEXTE TOUR ---
-    TTF_Font* police = TTF_OpenFont("Ressource/langue/Police/arial.ttf", 24);
+    TTF_Font* police = TTF_OpenFont("ressource/langue/Police/arial.ttf", 24);
     if (!police) {
         SDL_Log("Erreur chargement police: %s", TTF_GetError());
         for (int i = 0; i < 8; i++) {
@@ -285,7 +285,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                                     break;
 
                                 default :
-                                    strcpy(persoChoisi[a].nom,"N/A");
+                                    strcpy(persoChoisi[a].nom,"lukas");
                                     persoChoisi[a].actu_pv=zoro.actu_pv;
                                     persoChoisi[a].max_pv=zoro.max_pv;
                                     persoChoisi[a].attaque=zoro.attaque;
@@ -314,7 +314,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
         SDL_RenderCopy(rendu, fond_texture, NULL, NULL);
         SDL_RenderCopy(rendu, logo_versus_texture, NULL, &dest_logo);
 
-        // Personnages disponibles
+        // personnages disponibles
         for (int i = 0; i < 8; i++) {
             if (!perso_disponible[i] || !portraits[i]) continue;
             
@@ -390,10 +390,10 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
 
 Page afficher_confirmation_perso(SDL_Renderer* rendu, SDL_Texture* equipe1[3], SDL_Texture* equipe2[3]) {
     // Chargement des textures
-    SDL_Texture* fond_texture = IMG_LoadTexture(rendu, "Ressource/image/Fonds/fond_selection_perso.png");
-    SDL_Texture* btn_avancer_texture = IMG_LoadTexture(rendu, "Ressource/image/Utilité/avance.png");
-    SDL_Texture* btn_retour_texture = IMG_LoadTexture(rendu, "Ressource/image/Utilité/retour.png");
-    SDL_Texture* vs_texture = IMG_LoadTexture(rendu, "Ressource/image/Utilité/versus_recap.png");
+    SDL_Texture* fond_texture = IMG_LoadTexture(rendu, "ressource/image/fonds/fond_selection_perso.png");
+    SDL_Texture* btn_avancer_texture = IMG_LoadTexture(rendu, "ressource/image/utilité/avance.png");
+    SDL_Texture* btn_retour_texture = IMG_LoadTexture(rendu, "ressource/image/utilité/retour.png");
+    SDL_Texture* vs_texture = IMG_LoadTexture(rendu, "ressource/image/utilité/versus_recap.png");
 
     if (!fond_texture || !btn_avancer_texture || !btn_retour_texture || !vs_texture) {
         if (fond_texture) SDL_DestroyTexture(fond_texture);

@@ -142,6 +142,7 @@ void appliquer_buffs(Fighter* perso, BonusMap bonus) {
     perso->actu_pv = perso->max_pv;
 }
 
+/*
 // Retourne 1 si l’élément du perso est avantageux sur la map, 0 sinon
 int booste_sur_map(ElementType element_perso, MapType map_actuelle) {
     switch (map_actuelle) {
@@ -183,3 +184,4 @@ BonusMap obtenir_bonus_map(MapType map_actuelle, ElementType element_perso) {
     }
     return bonus;
 }
+*/
