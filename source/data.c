@@ -30,18 +30,180 @@ AttaqueSpecial Test3 = {
     .cout = 3,
 };
 
-AttaqueSpecial Onigiri = {
-    .nom = "Bonjour3",
-    .description = "J fais kk dans d avioli",
+AttaqueSpecial affutageMortal = {
+    .nom = "affûtage mortal",
+    .description = "Applique Saignement sur attaques normales pendant 3 tours.",
     .id = 1,
-    .cout = 3,
+    .cout = 5,
 };
 
 
+AttaqueSpecial assautTranchant ={
+    .nom = "assaut tranchant",
+    .description = "2 frappes à 60 pourcent chacune.",
+    .id = 2,
+    .cout = 4,
+};
+
+AttaqueSpecial eveilDuSabre ={
+    .nom = "éveil du sabre",
+    .description = "+ 25 pourcent attaque pour 2 tours.",
+    .id = 3,
+    .cout = 6,
+};
+
+AttaqueSpecial flammesSolaires ={
+    .nom = "flammes solaires",
+    .description = "Change le cycle en Jour",
+    .id = 1,
+    .cout = 5,
+};
+
+AttaqueSpecial explosionArdente ={
+    .nom = "explosion ardente",
+    .description = "150 pourcent attaque magique + Brûlure.",
+    .id = 2,
+    .cout = 8,
+};
+
+AttaqueSpecial espritFlamboyant ={
+    .nom = "esprit flamboyant",
+    .description = "Boost attaque/défense alliées +25 pourcent pour 2 tours.",
+    .id = 3,
+    .cout = 7,
+};
+
+AttaqueSpecial prisonDeGivre ={
+    .nom = "Prison de givre",
+    .description = "Gel : -30 pourcent défense/agilité d'un ennemi pour 2 tours.",
+    .id = 1,
+    .cout = 5,
+};
+
+AttaqueSpecial blizzard ={
+    .nom = "Blizzard",
+    .description = "AoE physique (30 pourcent puissance) + 50 pourcent chance de Gel.",
+    .id = 2,
+    .cout = 7,
+};
+
+AttaqueSpecial glaceCurative ={
+    .nom = "Glace curative",
+    .description = "Soigne un allié de 20 pourcent PV max.",
+    .id = 3,
+    .cout = 4,
+};
+
+AttaqueSpecial lienDeSang ={
+    .nom = "Lien de Sang",
+    .description = "Immobilise un ennemi tant qu'il n'est pas blessé. Katara aussi.",
+    .id = 1,
+    .cout = 6,
+};
+
+AttaqueSpecial vague guerisseuse ={
+    .nom = "Vague guérisseuse",
+    .description = "Restaure 20 pourcent PV max à un allié.",
+    .id = 2,
+    .cout = 4,
+};
+
+AttaqueSpecial eveil lunaire ={
+    .nom = "Éveil lunaire",
+    .description = "Change le cycle en Nuit",
+    .id = 3,
+    .cout = 5,
+};
+
+AttaqueSpecial crepuscule ={
+    .nom = "Éveil lunaire",
+    .description = "Change le cycle en Nuit",
+    .id = 1,
+    .cout = 5,
+};
+
+AttaqueSpecial hurlementNoir ={
+    .nom = "Hurlement noir",
+    .description = "AoE magique (70 pourcent magie).",
+    .id = 2,
+    .cout = 6,
+};
+
+AttaqueSpecial brumeProtectrice ={
+    .nom = "Brume protectrice",
+    .description = "Protège un allié (réduction dégâts -30 pourcent, 2 tours).",
+    .id = 3,
+    .cout = 4,
+};
+
+
+AttaqueSpecial danseDuVent ={
+    .nom = "Danse du vent",
+    .description = "Réduit l'attaque ennemie de 25 pourcent pour 2 tours.",
+    .id = 1,
+    .cout = 5,
+};
+
+AttaqueSpecial sentPercant ={
+    .nom = "Vent perçant",
+    .description = "AoE magique (70 pourcent magie)",
+    .id = 2,
+    .cout = 5,
+};
+
+AttaqueSpecial souffleDeVie ={
+    .nom = "Souffle de vie",
+    .description = "Restaure 20 pourcent PV max à un allié.",
+    .id = 3,
+    .cout = 4,
+};
+
+AttaqueSpecial fulgurance ={
+    .nom = "Fulgurance",
+    .description = "Ignore 50 pourcent de la défense sur l'attaque.",
+    .id = 1,
+    .cout = 5,
+};
+
+AttaqueSpecial foudreEnchainee ={
+    .nom = "Foudre enchaînée",
+    .description = "AoE physique (40 pourcent attaque)",
+    .id = 2,
+    .cout = 6,
+};
+
+AttaqueSpecial executionRapide ={
+    .nom = "Exécution rapide",
+    .description = "Inflige 200 pourcent attaque si cible <30 pourcent PV.",
+    .id = 3,
+    .cout = 7,
+};
+
+AttaqueSpecial murVivant ={
+    .nom = "Mur vivant",
+    .description = "Protège un allié : subit 100 pourcent de ses dégâts.",
+    .id = 1,
+    .cout = 5,
+};
+
+AttaqueSpecial barriereDePierre ={
+    .nom = "Barrière de pierre",
+    .description = "Augmente sa propre défense de 50 pourcent pour 2 tours.",
+    .id = 2,
+    .cout = 4,
+};
+
+AttaqueSpecial rugissementDacier ={
+    .nom = "Rugissement d'acier",
+    .description = "Boost défense alliée +25 pourcent pour 2 tours.",
+    .id = 3,
+    .cout = 5,
+};
+
 Fighter zoro={
     .nom ="zoro",
-    .actu_pv =300,
-    .max_pv =300,
+    .actu_pv =250,
+    .max_pv =250,
     .attaque = 30,
     .defense = 15,
     .agilite = 20,
@@ -52,7 +214,7 @@ Fighter zoro={
 Fighter rengoku={
     .nom = "rengoku",
     .actu_pv = 280,
-    .max_pv =300,
+    .max_pv =280,
     .attaque = 20,
     .defense = 35,
     .agilite = 10,
