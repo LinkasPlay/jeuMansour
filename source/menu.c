@@ -13,6 +13,7 @@ int mode_choisi = 0;
 int chemin_retour = 0;
 int perso_choisi = -1;
 bool phraseJouee = false;
+int musiqueRes=1;
 
 // === CHARGEMENT ===
 Page afficher_chargement(SDL_Renderer *rendu) {
@@ -94,7 +95,7 @@ Page afficher_histoire(SDL_Renderer* rendu) {
     SDL_Texture* skip_btn = IMG_LoadTexture(rendu, "ressource/image/utilité/avance.png");
     SDL_Rect skip_rect = {LARGEUR_FENETRE - 120, 20, 80, 80};
 
-    Mix_Chunk* son_phrase = Mix_LoadWAV("ressource/musique/Wav/phrase.wav");
+    Mix_Chunk* son_phrase = Mix_LoadWAV("ressource/musique/wav/phrase.wav");
     if (!son_phrase) SDL_Log("ERREUR chargement son phrase : %s", Mix_GetError());
 
     Uint32 last_char = SDL_GetTicks();
@@ -167,14 +168,20 @@ Page afficher_histoire(SDL_Renderer* rendu) {
     if (skip_btn) SDL_DestroyTexture(skip_btn);
     if (son_phrase) Mix_FreeChunk(son_phrase);
     TTF_CloseFont(police);
-
     return PAGE_MENU;
 }
 
 
 // === MENU PRINCIPAL ===
-Page afficher_menu(SDL_Renderer* rendu) {
-    jouerMusique("ressource/musique/Wav/menu.wav", 20);
+Page afficher_menu(SDL_Renderer* rendu){
+
+    
+    if(musiqueRes==1){
+        jouerMusique("ressource/musique/ogg/menu.ogg", 20);
+    }
+    //Lancer la musique qu'une fois dans tout le menu
+    musiqueRes=0;
+
 
     SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/fonds/fond_menu.png");
     SDL_Texture* cadre_titre = IMG_LoadTexture(rendu, "ressource/image/cadres/cadre_titre.png");

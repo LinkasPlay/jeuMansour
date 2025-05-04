@@ -1,3 +1,4 @@
+// ----- Source/son.c -----
 #include <SDL2/SDL_mixer.h>
 #include <stdio.h>
 
@@ -19,7 +20,7 @@ void jouerMusique(const char* chemin, int volume) {
     }
 
     Mix_VolumeMusic(volume);
-    Mix_PlayMusic(musique_actuelle, -1); // -1 : boucle infinie
+    Mix_PlayMusic(musique_actuelle, -1);  // -1 = boucle infinie
 }
 
 void arreter_musique() {
@@ -38,8 +39,8 @@ void jouer_effet(const char* chemin, int volume) {
     }
 
     Mix_VolumeChunk(effet, volume);
-    Mix_PlayChannel(-1, effet, 0); // 0 = jouer une seule fois
+    Mix_PlayChannel(-1, effet, 0); // 0 = jouer une fois
 
-    // Libération automatique après usage
+    // Libération immédiate après lecture
     Mix_FreeChunk(effet);
 }

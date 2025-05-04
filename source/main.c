@@ -1,8 +1,6 @@
-// ----- src/main.c -----
 #include "logic.h"
 #include "interface.h"
 #include "son.h"
-
 
 #include <time.h>
 #include <stdio.h>
@@ -10,64 +8,51 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
 
-
 SDL_Window* fenetre;
 
 int main(int argc, char* argv[]) {
-    
-
-    // Initialisation des variables
-    SDL_Texture* selections_j1[NB_PERSOS_EQUIPE] = { NULL, NULL, NULL };
-    SDL_Texture* selections_j2[NB_PERSOS_EQUIPE] = { NULL, NULL, NULL };
+    SDL_Texture* selections_j1[NB_PERSOS_EQUIPE] = { NULL };
+    SDL_Texture* selections_j2[NB_PERSOS_EQUIPE] = { NULL };
     Page page = PAGE_MENU;
     int quit = 0;
+    int musique_menu_jouee = 0;
 
-    // Initialisation SDL
+    // SDL
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
-        printf("Erreur initialisation SDL : %s\n", SDL_GetError());
+        printf("Erreur SDL : %s\n", SDL_GetError());
         return 1;
     }
 
-    // Initialisation SDL_ttf
+    // TTF
     if (TTF_Init() != 0) {
-        printf("Erreur initialisation TTF : %s\n", TTF_GetError());
+        printf("Erreur TTF : %s\n", TTF_GetError());
         SDL_Quit();
         return 1;
     }
 
-    // Initialisation SDL_mixer
+    // MIXER
     if (Mix_OpenAudio(48000, MIX_DEFAULT_FORMAT, 2, 1024) != 0) {
-        printf("Erreur initialisation Mixer : %s\n", Mix_GetError());
+        printf("Erreur Audio : %s\n", Mix_GetError());
         TTF_Quit();
         SDL_Quit();
         return 1;
     }
 
-    // Création de la fenêtre
-    
-    fenetre = SDL_CreateWindow(
-        "Project Shōnen Smash",
-        SDL_WINDOWPOS_CENTERED,
-        SDL_WINDOWPOS_CENTERED,
-        LARGEUR_FENETRE,
-        HAUTEUR_FENETRE,
-        SDL_WINDOW_SHOWN
-    );
+    // Fenêtre
+    fenetre = SDL_CreateWindow("Project Shōnen Smash", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                               LARGEUR_FENETRE, HAUTEUR_FENETRE, SDL_WINDOW_SHOWN);
     if (!fenetre) {
-        printf("Erreur création fenêtre : %s\n", SDL_GetError());
+        printf("Erreur fenêtre : %s\n", SDL_GetError());
         Mix_CloseAudio();
         TTF_Quit();
         SDL_Quit();
         return 1;
     }
 
-    // Création du renderer
-    SDL_Renderer* rendu = SDL_CreateRenderer(
-        fenetre, -1,
-        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
-    );
+    // Renderer
+    SDL_Renderer* rendu = SDL_CreateRenderer(fenetre, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (!rendu) {
-        printf("Erreur création renderer : %s\n", SDL_GetError());
+        printf("Erreur renderer : %s\n", SDL_GetError());
         SDL_DestroyWindow(fenetre);
         Mix_CloseAudio();
         TTF_Quit();
@@ -75,13 +60,17 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    // Chargement initial
+    // Chargement
     page = afficher_chargement(rendu);
 
     // Boucle principale
     while (!quit) {
         switch (page) {
             case PAGE_MENU:
+                if (!musique_menu_jouee) {
+                    jouerMusique("ressource/musique/ogg/menu.ogg", 20);
+                    musique_menu_jouee = 1;
+                }
                 page = afficher_menu(rendu);
                 break;
 
@@ -94,12 +83,8 @@ int main(int argc, char* argv[]) {
                 break;
 
             case PAGE_SELECTION_PERSO: {
-                SDL_Texture* old_j1[NB_PERSOS_EQUIPE] = {
-                    selections_j1[0], selections_j1[1], selections_j1[2]
-                };
-                SDL_Texture* old_j2[NB_PERSOS_EQUIPE] = {
-                    selections_j2[0], selections_j2[1], selections_j2[2]
-                };
+                SDL_Texture* old_j1[NB_PERSOS_EQUIPE] = { selections_j1[0], selections_j1[1], selections_j1[2] };
+                SDL_Texture* old_j2[NB_PERSOS_EQUIPE] = { selections_j2[0], selections_j2[1], selections_j2[2] };
 
                 page = afficher_selection_perso(rendu, selections_j1, selections_j2);
                 if (page == PAGE_CONFIRMATION_PERSO) {
@@ -115,6 +100,8 @@ int main(int argc, char* argv[]) {
             }
 
             case PAGE_COMBAT:
+                arreter_musique();
+                musique_menu_jouee = 0;
                 page = afficher_jeu(rendu, selections_j1, selections_j2);
                 break;
 
@@ -123,6 +110,8 @@ int main(int argc, char* argv[]) {
                 break;
 
             case PAGE_HISTOIRE:
+                arreter_musique();
+                musique_menu_jouee = 0;
                 page = afficher_histoire(rendu);
                 break;
 
@@ -135,16 +124,18 @@ int main(int argc, char* argv[]) {
                 quit = 1;
                 break;
         }
+
+        SDL_Delay(5); // Petit délai pour éviter de trop surcharger le CPU/audio
     }
 
-    // Nettoyage
-    if (jouerMusique) {
-        Mix_FreeMusic(jouerMusique);
-    }
+    // Libération des textures
     for (int i = 0; i < NB_PERSOS_EQUIPE; i++) {
         if (selections_j1[i]) SDL_DestroyTexture(selections_j1[i]);
         if (selections_j2[i]) SDL_DestroyTexture(selections_j2[i]);
     }
+
+    arreter_musique();
+
     SDL_DestroyRenderer(rendu);
     SDL_DestroyWindow(fenetre);
     Mix_CloseAudio();
