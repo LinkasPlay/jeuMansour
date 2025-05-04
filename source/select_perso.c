@@ -89,7 +89,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
     const int espacement_selections = 10;
 
     // --- TEXTE TOUR ---
-    TTF_Font* police = TTF_OpenFont("ressource/langue/Police/arial.ttf", 24);
+    TTF_Font* police = TTF_OpenFont("ressource/langue/police/arial.ttf", 24);
     if (!police) {
         SDL_Log("Erreur chargement police: %s", TTF_GetError());
         for (int i = 0; i < 8; i++) {
@@ -187,7 +187,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                             switch(i){
 
                                 case 0:
-                                    strcpy(persoChoisi[a].nom,"darkShadow");
+                                    strcpy(persoChoisi[a].nom,"darkshadow");
                                     persoChoisi[a].actu_pv=zoro.actu_pv;
                                     persoChoisi[a].max_pv=zoro.max_pv;
                                     persoChoisi[a].attaque=zoro.attaque;
@@ -211,7 +211,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                                     break;
                                 case 2:
                                 
-                                    strcpy(persoChoisi[a].nom,"Incassable");
+                                    strcpy(persoChoisi[a].nom,"incassable");
                                     persoChoisi[a].actu_pv=zoro.actu_pv;
                                     persoChoisi[a].max_pv=zoro.max_pv;
                                     persoChoisi[a].attaque=zoro.attaque;

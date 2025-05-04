@@ -18,7 +18,7 @@ Page afficher_chargement(SDL_Renderer *rendu) {
     SDL_Texture *fond = SDL_CreateTextureFromSurface(rendu, image_fond);
     SDL_FreeSurface(image_fond);
 
-    TTF_Font *police = TTF_OpenFont("ressource/langue/Police/arial.ttf", 28);
+    TTF_Font *police = TTF_OpenFont("ressource/langue/police/arial.ttf", 28);
     SDL_Color blanc = {255, 255, 255, 255};
 
     // === CADRE DE TITRE SEUL ===
@@ -86,7 +86,7 @@ Page afficher_histoire(SDL_Renderer* rendu) {
 
     SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/fonds/fond_histoire.png");
 
-    TTF_Font* police = TTF_OpenFont("ressource/langue/Police/arial.ttf", 32);
+    TTF_Font* police = TTF_OpenFont("ressource/langue/police/arial.ttf", 32);
     SDL_Color blanc = {255, 255, 255, 255};
 
     SDL_Texture* skip_btn = IMG_LoadTexture(rendu, "ressource/image/utilité/avance.png");
@@ -201,7 +201,7 @@ Page afficher_menu(SDL_Renderer* rendu) {
     SDL_Texture* cadre_titre = IMG_LoadTexture(rendu, "ressource/image/cadres/cadre_titre.png");
     SDL_Texture* cadre_bouton = IMG_LoadTexture(rendu, "ressource/image/cadres/cadre_texte.png");
 
-    TTF_Font* police = TTF_OpenFont("ressource/langue/Police/arial.ttf", 40);
+    TTF_Font* police = TTF_OpenFont("ressource/langue/police/arial.ttf", 40);
     SDL_Color noir = {0, 0, 0, 255};
 
     SDL_Rect zone_titre = {262, 0, 500, 250};
@@ -266,7 +266,7 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
 
     const char* textes[] = {"Sauvegarde", "Langue", "Son"};
     SDL_Color noir = {0, 0, 0, 255};
-    TTF_Font* police = TTF_OpenFont("ressource/langue/Police/arial.ttf", 40);
+    TTF_Font* police = TTF_OpenFont("ressource/langue/police/arial.ttf", 40);
 
     SDL_Rect boutons[3] = {
         {370, 160, 280, 190},
@@ -347,7 +347,7 @@ Page afficher_jeu(SDL_Renderer* rendu, SDL_Texture* selections_j1[3], SDL_Textur
     }
 
     // Texte "JEU EN COURS..."
-    TTF_Font* police = TTF_OpenFont("ressource/langue/Police/arial.ttf", 40);
+    TTF_Font* police = TTF_OpenFont("ressource/langue/police/arial.ttf", 40);
     if (police) {
         SDL_Color blanc = {255, 255, 255, 255};
         SDL_Surface* surf = TTF_RenderUTF8_Solid(police, "JEU EN COURS...", blanc);
@@ -389,7 +389,7 @@ Page afficher_selec_mode(SDL_Renderer* rendu) {
     SDL_Texture* cadre_bouton = IMG_LoadTexture(rendu, "ressource/image/cadres/cadre_texte_carre.png");
     SDL_Texture* bouton_retour = IMG_LoadTexture(rendu, "ressource/image/utilité/retour.png");
 
-    TTF_Font* police = TTF_OpenFont("ressource/langue/Police/arial.ttf", 80);
+    TTF_Font* police = TTF_OpenFont("ressource/langue/police/arial.ttf", 80);
     TTF_SetFontStyle(police, TTF_STYLE_BOLD);
 
     SDL_Color noir = {0, 0, 0, 255};
@@ -475,7 +475,7 @@ Page afficher_selec_difficulte(SDL_Renderer* rendu) {
     SDL_Texture* cadre_bouton = IMG_LoadTexture(rendu, "ressource/image/cadres/cadre_texte_carre.png");
     SDL_Texture* bouton_retour = IMG_LoadTexture(rendu, "ressource/image/utilité/retour.png");
 
-    TTF_Font* police = TTF_OpenFont("ressource/langue/Police/arial.ttf", 40);
+    TTF_Font* police = TTF_OpenFont("ressource/langue/police/arial.ttf", 40);
     SDL_Color noir = {0, 0, 0, 255};
 
     int marge = 30;
