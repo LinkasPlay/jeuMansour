@@ -30,6 +30,13 @@ AttaqueSpecial Test3 = {
     .cout = 3,
 };
 
+AttaqueSpecial Onigiri = {
+    .nom = "Bonjour3",
+    .description = "J fais kk dans d avioli",
+    .id = 1,
+    .cout = 3,
+};
+
 
 Fighter zoro={
     .nom ="zoro",
