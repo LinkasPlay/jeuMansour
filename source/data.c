@@ -12,7 +12,7 @@
 AttaqueSpecial Test1 = {
     .nom = "Bonjour",
     .description = "J fais kk dans d avioli",
-    .id = 1,
+    .id = 0,
     .cout = 3,
 };
 
@@ -26,7 +26,7 @@ AttaqueSpecial Test2 = {
 AttaqueSpecial Test3 = {
     .nom = "Bonjour3",
     .description = "J fais kk dans d avioli",
-    .id = 1,
+    .id = 2,
     .cout = 3,
 };
 

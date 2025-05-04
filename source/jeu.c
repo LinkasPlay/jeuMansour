@@ -11,7 +11,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
 
-
+#define ECARTEMENT_PONT 20
 
 void renduJeu(SDL_Renderer* rendu) {
     TTF_Font* font = TTF_OpenFont("ressource/langue/police/arial.ttf", 32);
@@ -50,7 +50,7 @@ void renduJeu(SDL_Renderer* rendu) {
     // === ÉQUIPE 1 ===
     for (int i = 0; i < 3; i++) {
         int x = 100 + i * (largeur_perso + espacement);
-        int y = y_perso + i * 30;
+        int y = y_perso + i * 30 +ECARTEMENT_PONT;
         SDL_Rect dest = {x, y, largeur_perso, hauteur_perso};
 
         char path[128];
@@ -75,7 +75,7 @@ void renduJeu(SDL_Renderer* rendu) {
     // === ÉQUIPE 2 ===
     for (int i = 0; i < 3; i++) {
         int x = LARGEUR_FENETRE - 100 - largeur_perso - i * (largeur_perso + espacement);
-        int y = y_perso + i * 30;
+        int y = y_perso + i * 30+ECARTEMENT_PONT;
         SDL_Rect dest = {x, y, largeur_perso, hauteur_perso};
 
         char path[128];
