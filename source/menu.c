@@ -190,11 +190,16 @@ Page afficher_menu(SDL_Renderer* rendu){
     TTF_Font* police = TTF_OpenFont("ressource/langue/police/arial.ttf", 40);
     SDL_Color noir = {0, 0, 0, 255};
 
-    SDL_Rect zone_titre = {262, 0, 500, 250};
+    int tailleTitre = 250;
+    int tailleBouton = 190;
+    int largeurBouton = 280;
+    int largeurTitre = 500;
+
+    SDL_Rect zone_titre = {LARGEUR_FENETRE/2 - largeurTitre/2, 10, largeurTitre, tailleTitre};
     SDL_Rect boutons[3] = {
-        {370, 160, 280, 190},
-        {370, 280, 280, 190},
-        {370, 400, 280, 190}
+        {LARGEUR_FENETRE/2 - largeurBouton/2, 200, largeurBouton, tailleBouton},
+        {LARGEUR_FENETRE/2 - largeurBouton/2, 350, largeurBouton, tailleBouton},
+        {LARGEUR_FENETRE/2 - largeurBouton/2, 500, largeurBouton, tailleBouton}
     };
     const char* textes[] = {"Jouer", "Options", "Quitter"};
 
@@ -244,21 +249,35 @@ Page afficher_menu(SDL_Renderer* rendu){
     return PAGE_MENU;
 }
 
+/*
+Page affiche_son(SDL_Renderer* rendu, Page page_prec){
+    SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/fonds/fond_menu.png");
+
+
+}
+*/
+
+
 // === OPTIONS ===
 Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
     SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/fonds/fond_menu.png");
     SDL_Texture* cadre_bouton = IMG_LoadTexture(rendu, "ressource/image/cadres/cadre_texte.png");
     SDL_Texture* bouton_retour = IMG_LoadTexture(rendu, "ressource/image/utilité/retour.png");
 
-    const char* textes[] = {"Sauvegarde", "Langue", "Son"};
+    const char* textes[] = {"Crédit", "Langue", "Son", "Musique"};
     SDL_Color noir = {0, 0, 0, 255};
     TTF_Font* police = TTF_OpenFont("ressource/langue/police/arial.ttf", 40);
 
-    SDL_Rect boutons[3] = {
-        {370, 160, 280, 190},
-        {370, 280, 280, 190},
-        {370, 400, 280, 190}
+    int tailleBouton = 350;
+    int largeurBouton = 280;
+
+    SDL_Rect boutons[4] = {
+        {0, -50, largeurBouton, tailleBouton},
+        {0, 150, largeurBouton, tailleBouton},
+        {0, 350, largeurBouton, tailleBouton},
+        {0, 550, largeurBouton, tailleBouton} // ← Bouton "Musique"
     };
+
     SDL_Rect retour_rect = {20, HAUTEUR_FENETRE - 100, 80, 80};
 
     SDL_Event event;
@@ -266,7 +285,7 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
         SDL_RenderClear(rendu);
         SDL_RenderCopy(rendu, fond, NULL, NULL);
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             SDL_RenderCopy(rendu, cadre_bouton, NULL, &boutons[i]);
             SDL_Surface* surf = TTF_RenderUTF8_Solid(police, textes[i], noir);
             SDL_Texture* tex = SDL_CreateTextureFromSurface(rendu, surf);
@@ -288,13 +307,22 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
             if (event.type == SDL_QUIT) return PAGE_QUITTER;
             if (event.type == SDL_MOUSEBUTTONDOWN) {
                 int x = event.button.x, y = event.button.y;
+
                 if (x >= retour_rect.x && x <= retour_rect.x + retour_rect.w &&
                     y >= retour_rect.y && y <= retour_rect.y + retour_rect.h)
                     return page_prec;
+
+                // (Optionnel) Tu peux ajouter ici un printf pour tester le bouton "Musique"
+                if (x >= boutons[3].x && x <= boutons[3].x + boutons[3].w &&
+                    y >= boutons[3].y && y <= boutons[3].y + boutons[3].h) {
+                    printf("Bouton Musique cliqué !\n");
+                }
             }
         }
     }
 }
+
+
 
 // === PAGE DE JEU ===
 Page afficher_jeu(SDL_Renderer* rendu, SDL_Texture* selections_j1[3], SDL_Texture* selections_j2[3]) {

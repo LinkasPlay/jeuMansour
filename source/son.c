@@ -4,6 +4,10 @@
 
 #include "son.h"
 
+
+int musique_selection_jouee = 0;
+
+
 static Mix_Music* musique_actuelle = NULL;
 
 static char chemin_actuel[256] = ""; // stocke le chemin actuel
