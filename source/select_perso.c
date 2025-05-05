@@ -44,10 +44,10 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
     }
 
     SDL_Rect dest_logo = {
-        (LARGEUR_FENETRE - 80) / 2,
+        (LARGEUR_FENETRE - 200) / 2,
         10,
-        80,
-        80
+        200,
+        200
     };
 
     // --- BOUTON RETOUR ---
@@ -124,35 +124,36 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
     int a = 0;
     
     while (running && (nb_selections_j1 < 3 || nb_selections_j2 < 3)) {
-        // Mise à jour texte tour
+        // Mise à jour texte tour avec contour et gras
         if (surface_tour) SDL_FreeSurface(surface_tour);
         if (texture_tour) SDL_DestroyTexture(texture_tour);
-        
+    
         const char* texte_tour = tour_j1 ? "Tour du Joueur 1" : "Tour du Joueur 2";
         SDL_Color couleur_texte = tour_j1 ? (SDL_Color){213, 38, 35, 255} : (SDL_Color){25, 118, 210, 255};
-	surface_tour = TTF_RenderText_Blended(police, texte_tour, couleur_texte);
-
-        if (!surface_tour) {
-            SDL_Log("Erreur création surface texte: %s", TTF_GetError());
-            continue;
-        }
-        
+        SDL_Color noir = {0, 0, 0, 255};
+    
+        // Mettre en gras
+        TTF_SetFontStyle(police, TTF_STYLE_BOLD);
+    
+        // Création contour noir
+        TTF_SetFontOutline(police, 4);
+        SDL_Surface* surface_outline = TTF_RenderText_Blended(police, texte_tour, noir);
+        SDL_Texture* texture_outline = SDL_CreateTextureFromSurface(rendu, surface_outline);
+    
+        // Création texte coloré
+        TTF_SetFontOutline(police, 0);
+        surface_tour = TTF_RenderText_Blended(police, texte_tour, couleur_texte);
         texture_tour = SDL_CreateTextureFromSurface(rendu, surface_tour);
-        if (!texture_tour) {
-            SDL_Log("Erreur création texture texte: %s", SDL_GetError());
-            SDL_FreeSurface(surface_tour);
-            continue;
-        }
-        
+    
         SDL_Rect rect_tour = {
-
             (LARGEUR_FENETRE - surface_tour->w) / 2,
-            marge_haut + mini_size + 20,
+            marge_haut + mini_size + 80,
             surface_tour->w,
             surface_tour->h
         };
-
+    
         SDL_Event event;
+    
         
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
@@ -434,18 +435,28 @@ Page afficher_confirmation_perso(SDL_Renderer* rendu, SDL_Texture* equipe1[3], S
 
     SDL_Texture* textures_pixel[6] = {NULL};
 
-    // Chargement des textures pixelisées depuis les noms
-    for (int i = 0; i < 6; i++) {
-        char chemin[256];
-        if (i < 3) {
-            snprintf(chemin, sizeof(chemin), "ressource/image/personnages_pixel/%s.png", persoChoisi[i].nom);
-        } else {
-            snprintf(chemin, sizeof(chemin), "ressource/image/personnages_pixel/%s_reverse.png", persoChoisi[i].nom);
+    // Chargement des textures pixelisées selon l'ordre de sélection (J1-J2 alterné)
+    for (int i = 0; i < 3; i++) {
+        // Joueur 1 : index pair (0, 2, 4)
+        int idx_j1 = i * 2;
+        if (idx_j1 < 6) {
+            char chemin[256];
+            snprintf(chemin, sizeof(chemin), "ressource/image/personnages_pixel/%s.png", persoChoisi[idx_j1].nom);
+            textures_pixel[i] = IMG_LoadTexture(rendu, chemin);
+            if (!textures_pixel[i]) {
+                SDL_Log("Erreur chargement image %s : %s", chemin, SDL_GetError());
+            }
         }
 
-        textures_pixel[i] = IMG_LoadTexture(rendu, chemin);
-        if (!textures_pixel[i]) {
-            SDL_Log("Erreur chargement image %s : %s", chemin, SDL_GetError());
+        // Joueur 2 : index impair (1, 3, 5)
+        int idx_j2 = i * 2 + 1;
+        if (idx_j2 < 6) {
+            char chemin[256];
+            snprintf(chemin, sizeof(chemin), "ressource/image/personnages_pixel/%s_reverse.png", persoChoisi[idx_j2].nom);
+            textures_pixel[i + 3] = IMG_LoadTexture(rendu, chemin);
+            if (!textures_pixel[i + 3]) {
+                SDL_Log("Erreur chargement image %s : %s", chemin, SDL_GetError());
+            }
         }
     }
 
@@ -526,3 +537,4 @@ Page afficher_confirmation_perso(SDL_Renderer* rendu, SDL_Texture* equipe1[3], S
 
     return PAGE_CONFIRMATION_PERSO;
 }
+
