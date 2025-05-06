@@ -46,7 +46,7 @@ Page afficher_chargement(SDL_Renderer *rendu) {
         30
     };
 
-    SDL_Surface *surf_texte = TTF_RenderUTF8_Solid(police, "Chargement en cours...", blanc);
+    SDL_Surface* surf_texte = TTF_RenderUTF8_Solid(police, getTexte("chargement en cours"), blanc);
     SDL_Texture *texture_texte = SDL_CreateTextureFromSurface(rendu, surf_texte);
     SDL_FreeSurface(surf_texte);
 
@@ -231,7 +231,7 @@ Page afficher_menu(SDL_Renderer* rendu){
         {LARGEUR_FENETRE/2 - largeurBouton/2, 350, largeurBouton, tailleBouton},
         {LARGEUR_FENETRE/2 - largeurBouton/2, 500, largeurBouton, tailleBouton}
     };
-    const char* ids_menu[] = {"jouer", "options", "quitter"};
+    const char* ids_textes[] = {"jouer", "options", "quitter"};
 
     SDL_RenderClear(rendu);
     SDL_RenderCopy(rendu, fond, NULL, NULL);
@@ -239,7 +239,8 @@ Page afficher_menu(SDL_Renderer* rendu){
 
     for (int i = 0; i < 3; i++) {
         SDL_RenderCopy(rendu, cadre_bouton, NULL, &boutons[i]);
-        SDL_Surface* surf = TTF_RenderUTF8_Solid(police, getTexte(ids_menu[i]), noir);
+        SDL_Surface* surf = TTF_RenderUTF8_Solid(police, getTexte(ids_textes[i])
+        , noir);
         SDL_Texture* tex = SDL_CreateTextureFromSurface(rendu, surf);
         SDL_Rect txt = {
             boutons[i].x + (boutons[i].w - surf->w) / 2,
@@ -301,7 +302,7 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
     if (!drapeauAllemand) printf("Erreur: drapeauAllemand.png manquant !\n");
 
     const char* ids_textes[] = {"credit", "langue", "volume", "musique"};
-    const char* noms_musiques[] = {"Musique 1", "Musique 2", "Musique 3"};
+    const char* noms_musiques[] = {"musique_1", "musique_2", "musique_3"};
 
     SDL_Color noir = {255, 0, 0, 0};
     TTF_Font* police = TTF_OpenFont("ressource/langue/police/arial.ttf", 40);
@@ -396,7 +397,7 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
         for (int i = 0; i < 3; i++) {
             SDL_SetRenderDrawColor(rendu, 100, 100, 100, 255);
             SDL_RenderFillRect(rendu, &musiques[i]);
-            SDL_Surface* surf = TTF_RenderUTF8_Solid(police, noms_musiques[i], noir);
+            SDL_Surface* surf = TTF_RenderUTF8_Solid(police, getTexte(noms_musiques[i]), noir);
             SDL_Texture* tex = SDL_CreateTextureFromSurface(rendu, surf);
             SDL_Rect txt = {
                 musiques[i].x + (musiques[i].w - surf->w) / 2,
@@ -500,7 +501,7 @@ Page afficher_jeu(SDL_Renderer* rendu, SDL_Texture* selections_j1[3], SDL_Textur
     TTF_Font* police = TTF_OpenFont("ressource/langue/police/arial.ttf", 40);
     if (police) {
         SDL_Color blanc = {255, 255, 255, 255};
-        SDL_Surface* surf = TTF_RenderUTF8_Solid(police, "JEU EN COURS...", blanc);
+        SDL_Surface* surf = TTF_RenderUTF8_Solid(police, getTexte("jeu_en_cours"), blanc);
         if (surf) {
             SDL_Texture* texte = SDL_CreateTextureFromSurface(rendu, surf);
             if (texte) {

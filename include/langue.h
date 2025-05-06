@@ -2,16 +2,15 @@
 #define LANGUE_H
 
 typedef enum {
-    LANGUE_FR,
-    LANGUE_EN,
-    LANGUE_ES,
-    LANGUE_DE,
-    LANGUE_JP
+    FR,
+    EN,
+    ES,
+    DE
 } Langue;
 
-extern Langue langue_actuelle;
+extern Langue langueActuelle;
 
-void changerLangue(Langue nouvelle_langue);
-const char* getTexte(const char* identifiant);
+void changerLangue(Langue nouvelle);
+const char* getTexte(const char* id);
 
 #endif
