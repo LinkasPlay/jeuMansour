@@ -230,6 +230,7 @@ Fighter zoro={
     .defense = 15,
     .agilite = 20,
     .vitesse = 5,
+    .magie = 15,
     .element = ELEMENT_NONE,
     .pt = 0
 };
@@ -242,6 +243,7 @@ Fighter rengoku={
     .defense = 35,
     .agilite = 10,
     .vitesse = 10,
+    .magie = 15,
     .element = ELEMENT_FEU,
     .pt = 0
 };
@@ -254,6 +256,7 @@ Fighter hitsugaya={
     .defense = 30,
     .agilite = 15,
     .vitesse = 20,
+    .magie = 25,
     .element = ELEMENT_GLACE,
     .pt = 0
 };
@@ -266,6 +269,7 @@ Fighter katara={
     .defense = 20,
     .agilite = 15,
     .vitesse = 30,
+    .magie = 40,
     .element = ELEMENT_EAU,
     .pt = 0
 };
@@ -278,6 +282,7 @@ Fighter darkshadow={
     .defense = 20,
     .agilite = 20,
     .vitesse = 35,
+    .magie = 35,
     .element = ELEMENT_OMBRE,
     .pt = 0
 };
@@ -290,6 +295,7 @@ Fighter temari={
     .defense = 20,
     .agilite = 40,
     .vitesse = 40,
+    .magie = 40,
     .element = ELEMENT_VENT,
     .pt = 0
 };
@@ -302,6 +308,7 @@ Fighter kirua={
     .defense = 10,
     .agilite = 25,
     .vitesse = 50,
+    .magie = 20,
     .element = ELEMENT_ECLAIR,
     .pt = 0
 };
@@ -314,6 +321,7 @@ Fighter incassable={
     .defense = 40,
     .agilite = 10,
     .vitesse = 1,
+    .magie = 5,
     .element = ELEMENT_CRISTAL,
     .pt = 0
 };
@@ -326,6 +334,7 @@ Fighter lukas={
     .defense = 69696969,
     .agilite = 69696969,
     .vitesse = 69696969,
+    .magie = 69696969,
     .element = ELEMENT_CRISTAL,
     .pt = 0
 };

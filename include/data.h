@@ -90,7 +90,10 @@ typedef struct {
     int defense;
     int agilite;
     int vitesse;
+    int magie;
     int pt;
+    int statutEffet; // 1 = Saignement, 2 = Brulur, 3 = Boost def, 4 = Boost attaque, 5 = Boost vitesse, 6 = Nerf def,
+    // 7 = Nerf attaque , 8 = Nerf vitesse, 9 = Nerf Agilité, 10 = Boost Agilité, 11 = Gel; 12 = paralysie
     ElementType element;
     AttaqueSpecial spe_atq1;
     AttaqueSpecial spe_atq2;
