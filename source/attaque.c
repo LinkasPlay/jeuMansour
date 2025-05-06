@@ -122,7 +122,7 @@ void attaque_explosion_ardente(Fighter* attaquant, Fighter* cible) {
 }
 
 void attaque_esprit_flamboyant(Fighter* attaquant, Fighter* cible) {
-    attaquant->stautEffet = 4;
+    attaquant->statutEffet = 4;
     SDL_Log("attaque_esprit_flamboyant");
 }
 
@@ -133,7 +133,7 @@ void attaque_prison_de_givre(Fighter* attaquant, Fighter* cible) {
 }
 
 void attaque_blizzard(Fighter* attaquant, Fighter* cible) {
-    cibe->statutEffet = 11;  // 50% de chance de ce faire gelé
+    cible->statutEffet = 11;  // 50% de chance de ce faire gelé
     int degats = (attaquant->attaque * 0.30) * 2 - cible->defense;
     
     if (degats < 1) degats = 10;
@@ -155,7 +155,7 @@ void attaque_glace_curative(Fighter* attaquant, Fighter* cible) {
 
     cible->actu_pv = apres;
 
-    printf("%s soigne %s (+%d PV)\n", lanceur->nom, cible->nom, apres - avant);
+    printf("%s soigne %s (+%d PV)\n", attaquant->nom, cible->nom, apres - avant);
     SDL_Log("attaque_glace_curative");
 }
 
@@ -174,7 +174,7 @@ void attaque_vague_guerisseuse(Fighter* attaquant, Fighter* cible) {
 
     cible->actu_pv = apres;
 
-    printf("%s soigne %s (+%d PV)\n", lanceur->nom, cible->nom, apres - avant);
+    printf("%s soigne %s (+%d PV)\n", attaquant->nom, cible->nom, apres - avant);
     SDL_Log("attaque_vague_guerisseuse");
 }
 
@@ -202,7 +202,7 @@ void attaque_hurlement_noir(Fighter* attaquant, Fighter* cible) {
 }
 
 void attaque_brume_protectrice(Fighter* attaquant, Fighter* cible) {
-    cible->statutEffet = 3 // boost la def d'un allié de 30% pendant 2 tours
+    cible->statutEffet = 3; // boost la def d'un allié de 30% pendant 2 tours
     SDL_Log("attaque_brume_protectrice");
 }
 
@@ -233,7 +233,7 @@ void attaque_souffle_de_vie(Fighter* attaquant, Fighter* cible) {
 
     cible->actu_pv = apres;
 
-    printf("%s soigne %s (+%d PV)\n", lanceur->nom, cible->nom, apres - avant);
+    printf("%s soigne %s (+%d PV)\n", attaquant->nom, cible->nom, apres - avant);
     SDL_Log("attaque_souffle_de_vie");
 }
 
