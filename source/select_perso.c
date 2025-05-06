@@ -130,15 +130,9 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
     
         const char* texte_tour = tour_j1 ? "Tour du Joueur 1" : "Tour du Joueur 2";
         SDL_Color couleur_texte = tour_j1 ? (SDL_Color){213, 38, 35, 255} : (SDL_Color){25, 118, 210, 255};
-        SDL_Color noir = {0, 0, 0, 255};
     
         // Mettre en gras
         TTF_SetFontStyle(police, TTF_STYLE_BOLD);
-    
-        // Création contour noir
-        TTF_SetFontOutline(police, 4);
-        SDL_Surface* surface_outline = TTF_RenderText_Blended(police, texte_tour, noir);
-        SDL_Texture* texture_outline = SDL_CreateTextureFromSurface(rendu, surface_outline);
     
         // Création texte coloré
         TTF_SetFontOutline(police, 0);

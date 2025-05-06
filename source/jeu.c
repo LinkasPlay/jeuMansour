@@ -19,6 +19,9 @@ AttaqueSauvegarde tableauAttaqueDuTour [NB_PERSOS_EQUIPE * 2];
 int screenWidth = 0;
 int screenHeight = 0;
 
+
+// ============================ AFFICHAGE =========================================
+
 Fighter* get_fighter(int equipe, int numero) {
     if (equipe == 1) {
         if (numero == 0) return &partieActuelle.joueur1.fighter1;
@@ -32,12 +35,15 @@ Fighter* get_fighter(int equipe, int numero) {
     return NULL;
 }
 
-
 void renduJeu(SDL_Renderer* rendu) {
     TTF_Font* font = TTF_OpenFont("ressource/langue/police/arial.ttf", 32);
     if (!font) {
         SDL_Log("Erreur police: %s", TTF_GetError());
         return;
+    }
+    SDL_Texture* cadreTexte = IMG_LoadTexture(rendu, "ressource/image/cadres/cadre_texte.png");
+    if (!cadreTexte) {
+        SDL_Log("Erreur chargement cadre texte : %s", SDL_GetError());
     }
 
     // === Affichage du fond ===
@@ -49,6 +55,46 @@ void renduJeu(SDL_Renderer* rendu) {
     } else {
         SDL_RenderCopy(rendu, fond_texture, NULL, NULL); // plein écran
     }
+
+    // === Portrait et infos personnage actif ===
+    int equipe = (partieActuelle.perso_actif < 3) ? 1 : 2;
+    int numero = (equipe == 1) ? partieActuelle.perso_actif : partieActuelle.perso_actif - 3;
+    Fighter* actif = get_fighter(equipe, numero);
+
+
+    // Chargement du portrait stylisé
+    char pathPortrait[128];
+    snprintf(pathPortrait, sizeof(pathPortrait), "ressource/image/personnages_pp/pp_%s/pp_%s.png",
+        (equipe == 1 ? "droite" : "gauche"), actif->nom);
+    SDL_Texture* texPortrait = IMG_LoadTexture(rendu, pathPortrait);
+    int portraitX = (equipe == 1) ? 30 : LARGEUR_FENETRE - 330;
+    int portraitY = 30;
+    SDL_Rect destPortrait = {portraitX, portraitY, 200, 200};
+
+    if (texPortrait) {
+        SDL_RenderCopy(rendu, texPortrait, NULL, &destPortrait);
+        SDL_DestroyTexture(texPortrait);
+    }
+
+    // === Texte du tour ===
+    char texteTour[64];
+    snprintf(texteTour, sizeof(texteTour), "Tour %d", partieActuelle.tour);
+    SDL_Surface* surfTour = TTF_RenderUTF8_Blended(font, texteTour, (SDL_Color){255, 255, 255, 255});
+    SDL_Texture* txtTour = SDL_CreateTextureFromSurface(rendu, surfTour);
+    SDL_Rect rectTour = {LARGEUR_FENETRE/2 - surfTour->w/2, 20, surfTour->w, surfTour->h};
+    SDL_RenderCopy(rendu, txtTour, NULL, &rectTour);
+    SDL_FreeSurface(surfTour);
+    SDL_DestroyTexture(txtTour);
+
+    // === Texte joueur actif ===
+    const char* joueurTexte = (equipe == 1) ? "Joueur 1" : "Joueur 2";
+    SDL_Surface* surfJoueur = TTF_RenderUTF8_Blended(font, joueurTexte, (SDL_Color){255, 200, 0, 255});
+    SDL_Texture* txtJoueur = SDL_CreateTextureFromSurface(rendu, surfJoueur);
+    SDL_Rect rectJoueur = {LARGEUR_FENETRE/2 - surfJoueur->w/2, 60, surfJoueur->w, surfJoueur->h};
+    SDL_RenderCopy(rendu, txtJoueur, NULL, &rectJoueur);
+    SDL_FreeSurface(surfJoueur);
+    SDL_DestroyTexture(txtJoueur);
+
 
     const int largeur_perso = 100;
     const int hauteur_perso = 100;
@@ -70,70 +116,286 @@ void renduJeu(SDL_Renderer* rendu) {
     // === ÉQUIPE 1 ===
     for (int i = 0; i < 3; i++) {
         int x = 100 + i * (largeur_perso + espacement);
-        int y = y_perso + i * 30 +ECARTEMENT_PONT;
+        int y = y_perso + i * 30 + ECARTEMENT_PONT;
         SDL_Rect dest = {x, y, largeur_perso, hauteur_perso};
-
+    
         char path[128];
         snprintf(path, sizeof(path), "ressource/image/personnages_pixel/%s.png", perso1[i]->nom);
         SDL_Texture* tex = IMG_LoadTexture(rendu, path);
-
         if (tex) SDL_RenderCopy(rendu, tex, NULL, &dest);
-
-        char infos[64];
-        snprintf(infos, sizeof(infos), "PV: %d/%d", perso1[i]->actu_pv, perso1[i]->max_pv);
-        SDL_Surface* surf = TTF_RenderUTF8_Blended(font, infos, (SDL_Color){255, 255, 255, 255});
-        SDL_Texture* txt = SDL_CreateTextureFromSurface(rendu, surf);
-
-        SDL_Rect txtRect = {dest.x + (largeur_perso - surf->w)/2, dest.y - surf->h - 5, surf->w, surf->h};
-        SDL_RenderCopy(rendu, txt, NULL, &txtRect);
-
-        SDL_FreeSurface(surf);
-        SDL_DestroyTexture(txt);
+    
+        // === Texte PV
+        char infosPV[64];
+        snprintf(infosPV, sizeof(infosPV), "PV: %d/%d", perso1[i]->actu_pv, perso1[i]->max_pv);
+        SDL_Surface* surfPV = TTF_RenderUTF8_Blended(font, infosPV, (SDL_Color){255, 255, 255, 255});
+        SDL_Texture* txtPV = SDL_CreateTextureFromSurface(rendu, surfPV);
+        SDL_Rect txtRectPV = {dest.x + (largeur_perso - surfPV->w) / 2, dest.y - surfPV->h - 10, surfPV->w, surfPV->h};
+    
+        // Cadre autour du texte PV
+        if (cadreTexte) {
+            SDL_Rect cadreRect = {txtRectPV.x - 15, txtRectPV.y - 15, txtRectPV.w + 30, txtRectPV.h + 30};
+            SDL_RenderCopy(rendu, cadreTexte, NULL, &cadreRect);
+        }
+        SDL_RenderCopy(rendu, txtPV, NULL, &txtRectPV);
+        SDL_FreeSurface(surfPV);
+        SDL_DestroyTexture(txtPV);
+    
+        // === Texte PT
+        char infosPT[64];
+        snprintf(infosPT, sizeof(infosPT), "PT: %d", perso1[i]->pt);
+        SDL_Surface* surfPT = TTF_RenderUTF8_Blended(font, infosPT, (SDL_Color){255, 255, 0, 255});
+        SDL_Texture* txtPT = SDL_CreateTextureFromSurface(rendu, surfPT);
+        SDL_Rect txtRectPT = {dest.x + (largeur_perso - surfPT->w) / 2, dest.y + hauteur_perso + 5, surfPT->w, surfPT->h};
+    
+        // Cadre autour du texte PT
+        if (cadreTexte) {
+            SDL_Rect cadreRect = {txtRectPT.x - 15, txtRectPT.y - 15, txtRectPT.w + 30, txtRectPT.h + 30};
+            SDL_RenderCopy(rendu, cadreTexte, NULL, &cadreRect);
+        }
+        SDL_RenderCopy(rendu, txtPT, NULL, &txtRectPT);
+        SDL_FreeSurface(surfPT);
+        SDL_DestroyTexture(txtPT);
+    
         if (tex) SDL_DestroyTexture(tex);
-    }
+    }    
 
     // === ÉQUIPE 2 ===
     for (int i = 0; i < 3; i++) {
         int x = LARGEUR_FENETRE - 100 - largeur_perso - i * (largeur_perso + espacement);
-        int y = y_perso + i * 30+ECARTEMENT_PONT;
+        int y = y_perso + i * 30 + ECARTEMENT_PONT;
         SDL_Rect dest = {x, y, largeur_perso, hauteur_perso};
-
+    
         char path[128];
         snprintf(path, sizeof(path), "ressource/image/personnages_pixel/%s_reverse.png", perso2[i]->nom);
         SDL_Texture* tex = IMG_LoadTexture(rendu, path);
-
         if (tex) SDL_RenderCopy(rendu, tex, NULL, &dest);
-
-        char infos[64];
-        snprintf(infos, sizeof(infos), "PV: %d/%d", perso2[i]->actu_pv, perso2[i]->max_pv);
-        SDL_Surface* surf = TTF_RenderUTF8_Blended(font, infos, (SDL_Color){255, 255, 255, 255});
-        SDL_Texture* txt = SDL_CreateTextureFromSurface(rendu, surf);
-
-        SDL_Rect txtRect = {dest.x + (largeur_perso - surf->w)/2, dest.y - surf->h - 5, surf->w, surf->h};
-        SDL_RenderCopy(rendu, txt, NULL, &txtRect);
-
-        SDL_FreeSurface(surf);
-        SDL_DestroyTexture(txt);
+    
+        // === Texte PV
+        char infosPV[64];
+        snprintf(infosPV, sizeof(infosPV), "PV: %d/%d", perso2[i]->actu_pv, perso2[i]->max_pv);
+        SDL_Surface* surfPV = TTF_RenderUTF8_Blended(font, infosPV, (SDL_Color){255, 255, 255, 255});
+        SDL_Texture* txtPV = SDL_CreateTextureFromSurface(rendu, surfPV);
+        SDL_Rect txtRectPV = {dest.x + (largeur_perso - surfPV->w) / 2, dest.y - surfPV->h - 10, surfPV->w, surfPV->h};
+    
+        if (cadreTexte) {
+            SDL_Rect cadreRect = {txtRectPV.x - 15, txtRectPV.y - 15, txtRectPV.w + 30, txtRectPV.h + 30};
+            SDL_RenderCopy(rendu, cadreTexte, NULL, &cadreRect);
+        }
+        SDL_RenderCopy(rendu, txtPV, NULL, &txtRectPV);
+        SDL_FreeSurface(surfPV);
+        SDL_DestroyTexture(txtPV);
+    
+        // === Texte PT
+        char infosPT[64];
+        snprintf(infosPT, sizeof(infosPT), "PT: %d", perso2[i]->pt);
+        SDL_Surface* surfPT = TTF_RenderUTF8_Blended(font, infosPT, (SDL_Color){255, 255, 0, 255});
+        SDL_Texture* txtPT = SDL_CreateTextureFromSurface(rendu, surfPT);
+        SDL_Rect txtRectPT = {dest.x + (largeur_perso - surfPT->w) / 2, dest.y + hauteur_perso + 5, surfPT->w, surfPT->h};
+    
+        if (cadreTexte) {
+            SDL_Rect cadreRect = {txtRectPT.x - 15, txtRectPT.y - 15, txtRectPT.w + 30, txtRectPT.h + 30};
+            SDL_RenderCopy(rendu, cadreTexte, NULL, &cadreRect);
+        }
+        SDL_RenderCopy(rendu, txtPT, NULL, &txtRectPT);
+        SDL_FreeSurface(surfPT);
+        SDL_DestroyTexture(txtPT);
+    
         if (tex) SDL_DestroyTexture(tex);
-    }
+
+    }    
 
     // Libération du fond
     if (fond_texture) SDL_DestroyTexture(fond_texture);
 
 }
 
+void animationNouveauTour(SDL_Renderer* renderer, int numeroTour) {
+    // Charger police
+    TTF_Font* font = TTF_OpenFont("ressource/langue/police/arial.ttf", 64);
+    if (!font) {
+        SDL_Log("Erreur chargement police: %s", TTF_GetError());
+        return;
+    }
+
+    // Texte principal
+    char texte[64];
+    snprintf(texte, sizeof(texte), "Tour %d", numeroTour);
+    SDL_Color couleur = {255, 255, 255, 255};
+
+    SDL_Surface* surf = TTF_RenderUTF8_Blended(font, texte, couleur);
+    SDL_Texture* textureTexte = SDL_CreateTextureFromSurface(renderer, surf);
+
+    int texW = surf->w;
+    int texH = surf->h;
+    SDL_FreeSurface(surf);
+
+    SDL_Rect posTexte = {
+        (LARGEUR_FENETRE - texW) / 2,
+        (HAUTEUR_FENETRE - texH) / 2,
+        texW,
+        texH
+    };
+
+    Uint32 start = SDL_GetTicks();
+    const Uint32 duree = 2000;
+
+    // Boucle de l’animation
+    while (SDL_GetTicks() - start < duree) {
+        float ratio = (float)(SDL_GetTicks() - start) / duree;
+        Uint8 alpha = (Uint8)(255 * (1 - fabs(2 * ratio - 1)));  // fondu entrant puis sortant
+
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, alpha);
+        SDL_RenderClear(renderer);
+
+        // Rendu de fond noir semi-transparent
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, alpha);
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+        SDL_Rect fond = {0, 0, LARGEUR_FENETRE, HAUTEUR_FENETRE};
+        SDL_RenderFillRect(renderer, &fond);
+
+        // Rendu texte
+        SDL_SetTextureAlphaMod(textureTexte, alpha);
+        SDL_RenderCopy(renderer, textureTexte, NULL, &posTexte);
+
+        SDL_RenderPresent(renderer);
+        SDL_Delay(16);  // ~60 FPS
+    }
+
+    SDL_DestroyTexture(textureTexte);
+    TTF_CloseFont(font);
+}
+
+SDL_Rect get_rect_fighter(Fighter* fighter) {
+    const int largeur = 100;
+    const int hauteur = 100;
+    const int espacement = 30;
+    const int y_perso = (HAUTEUR_FENETRE - hauteur) / 2;
+
+    for (int i = 0; i < 3; i++) {
+        if (fighter == &partieActuelle.joueur1.fighter1 + i) {
+            int x = 100 + i * (largeur + espacement);
+            int y = y_perso + i * 30 + ECARTEMENT_PONT;
+            return (SDL_Rect){x, y, largeur, hauteur};
+        }
+        if (fighter == &partieActuelle.joueur2.fighter1 + i) {
+            int x = LARGEUR_FENETRE - 100 - largeur - i * (largeur + espacement);
+            int y = y_perso + i * 30 + ECARTEMENT_PONT;
+            return (SDL_Rect){x, y, largeur, hauteur};
+        }
+    }
+
+    // Par défaut (au cas où)
+    return (SDL_Rect){0, 0, largeur, hauteur};
+}
+
+void jouerAnimationAttaque(SDL_Renderer* renderer, int type, SDL_Rect lanceur, SDL_Rect cible, ElementType element) {
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+
+    switch (type) {
+        case 1: // Attaque physique
+            for (int i = 0; i < 3; i++) {
+                SDL_SetRenderDrawColor(renderer, 255, 0, 0, 100 + i * 50);
+                SDL_RenderFillRect(renderer, &cible);
+                SDL_RenderPresent(renderer);
+                SDL_Delay(100);
+            }
+            break;
+        case 2: // Défense
+            for (int i = 0; i < 2; i++) {
+                SDL_SetRenderDrawColor(renderer, 0, 100, 255, 150 - i * 50);
+                SDL_RenderDrawRect(renderer, &lanceur);
+                SDL_RenderPresent(renderer);
+                SDL_Delay(150);
+            }
+            break;
+        case 3: // AOE (Zone)
+            for (int frame = 0; frame < 3; frame++) {
+                for (int i = 0; i < 3; i++) {
+                    SDL_Rect aoeCible = get_rect_fighter(get_fighter((lanceur.x < cible.x) ? 2 : 1, i));
+                    SDL_SetRenderDrawColor(renderer, 255, 100, 0, 80 + frame * 50);
+                    SDL_RenderFillRect(renderer, &aoeCible);
+                }
+                SDL_RenderPresent(renderer);
+                SDL_Delay(120);
+            }
+            break;
+        case 4: // Soin
+            for (int i = 0; i < 3; i++) {
+                SDL_SetRenderDrawColor(renderer, 0, 255, 0, 100 + i * 50);
+                SDL_RenderFillRect(renderer, &cible);
+                SDL_RenderPresent(renderer);
+                SDL_Delay(100);
+            }
+            break;
+        case 5: case 6: { // Buff / Debuff
+            SDL_Color color = (type == 5) ? (SDL_Color){255, 255, 0, 150} : (SDL_Color){150, 0, 150, 150};
+            for (int i = 0; i < 3; i++) {
+                SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 150 - i * 30);
+                SDL_RenderDrawRect(renderer, &cible);
+                SDL_RenderPresent(renderer);
+                SDL_Delay(120);
+            }
+            break;
+        }
+        case 9: // Attaque magique
+            for (int i = 0; i < 3; i++) {
+                SDL_SetRenderDrawColor(renderer, 100, 0, 255, 100 + i * 50);
+                SDL_RenderFillRect(renderer, &cible);
+                SDL_RenderPresent(renderer);
+                SDL_Delay(100);
+            }
+            break;
+        default:
+            SDL_Log("Erreur animation\n");
+            break;
+    }
+    SDL_Delay(1000);
+}
+
+
+
+
+
+
+
+
+// ====================== GAMEPLAY ====================
+
 AttaqueSauvegarde choisirCible(SDL_Renderer* rendu, int equipeAdverse, AttaqueSauvegarde attaque) {
     bool choisi = false;
     SDL_Event event;
     int mx, my;
+    
+    // chargement de la flèche
+    SDL_Texture* arrowTexture = IMG_LoadTexture(rendu, "ressource/image/utilité/cibleSelect.png");
+    if (!arrowTexture) {
+        SDL_Log("Erreur chargement flèche : %s", SDL_GetError());
+    }
+
+    int x_start = (equipeAdverse == 1) ? 100 : (LARGEUR_FENETRE - 100 - 100);
+    int direction = (equipeAdverse == 1) ? 1 : -1;
+    Fighter* cibles[3];
+    (void)cibles;
 
     while (!choisi) {
         SDL_GetMouseState(&mx, &my);
         renduJeu(rendu); // affiche les persos
 
-        // Affichage surbrillance (facultatif)
-        Fighter* cibles[3];
-        int x_start, x_end, direction;
+        // surbrillance avec flèche
+        for (int i = 0; i < 3; i++) {
+            int x = x_start + direction * i * (100 + 30);
+            int y = (HAUTEUR_FENETRE - 100) / 2 + i * 30 + ECARTEMENT_PONT;
+            SDL_Rect zone = {x, y, 100, 100};
+
+            if (mx >= zone.x && mx <= zone.x + zone.w &&
+                my >= zone.y && my <= zone.y + zone.h) {
+
+                if (arrowTexture) {
+                    SDL_Rect arrowRect = {zone.x + (zone.w - 30) / 2, zone.y - 35, 30, 30};
+                    SDL_RenderCopy(rendu, arrowTexture, NULL, &arrowRect);
+                }
+            }
+        }
 
         if (equipeAdverse == 1) {
             cibles[0] = &partieActuelle.joueur1.fighter1;
@@ -147,19 +409,6 @@ AttaqueSauvegarde choisirCible(SDL_Renderer* rendu, int equipeAdverse, AttaqueSa
             cibles[2] = &partieActuelle.joueur2.fighter3;
             x_start = LARGEUR_FENETRE - 100 - 100; // marge + largeur
             direction = -1;
-        }
-
-        // surbrillance des personnages
-        for (int i = 0; i < 3; i++) {
-            int x = x_start + direction * i * (100 + 30);
-            int y = (HAUTEUR_FENETRE - 100) / 2 + i * 30 + ECARTEMENT_PONT;
-            SDL_Rect zone = {x, y, 100, 100};
-
-            if (mx >= zone.x && mx <= zone.x + zone.w &&
-                my >= zone.y && my <= zone.y + zone.h) {
-                SDL_SetRenderDrawColor(rendu, 200, 20, 20, 100);
-                SDL_RenderFillRect(rendu, &zone);
-            }
         }
 
         SDL_RenderPresent(rendu);
@@ -187,6 +436,7 @@ AttaqueSauvegarde choisirCible(SDL_Renderer* rendu, int equipeAdverse, AttaqueSa
         SDL_Delay(16);
     }
 
+    if (arrowTexture) SDL_DestroyTexture(arrowTexture);
     return attaque;
 }
 
@@ -254,9 +504,6 @@ void actionPerso(SDL_Renderer* renderer, Fighter* persoActuel, int equipeAdverse
     bool quit = false;
     SDL_Event event;
 
-    SDL_Log("Ce perso a %d pt", persoActuel->pt);
-    SDL_Log("Les comp coûtent : atq1 = %d, atq2 = %d, atq3 = %d\n\n", persoActuel->spe_atq1.cout, persoActuel->spe_atq2.cout, persoActuel->spe_atq3.cout);
-
     while (!quit) {
         int mx, my;
         SDL_GetMouseState(&mx, &my);
@@ -284,8 +531,7 @@ void actionPerso(SDL_Renderer* renderer, Fighter* persoActuel, int equipeAdverse
 
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
-                SDL_Delay(300);
-                quit = true;
+                exit(0);
             } else if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
                 int id = partieActuelle.perso_actif;
                 AttaqueSauvegarde* attaque = &tableauAttaqueDuTour[id];
@@ -339,8 +585,6 @@ void actionPerso(SDL_Renderer* renderer, Fighter* persoActuel, int equipeAdverse
                     *attaque = choisirCible(renderer, equipeAdverse, *attaque);
                     quit = true;
 
-                } else {
-                    SDL_Log("Pas assez de points pour cette compétence.\n\n");
                 }
             }
         }
@@ -352,111 +596,100 @@ void actionPerso(SDL_Renderer* renderer, Fighter* persoActuel, int equipeAdverse
     if (persoActuel->pt < 10) persoActuel->pt += 1;
 }
 
-void runGame(SDL_Renderer* rendu){
+bool equipe_est_morte(int equipe) {
+    for (int i = 0; i < 3; i++) {
+        Fighter* p = get_fighter(equipe, i);
+        if (p->actu_pv > 0) return false;
+    }
+    return true;
+}
+
+void runGame(SDL_Renderer* rendu) {
     SDL_GetWindowSize(fenetre, &screenWidth, &screenHeight);
 
-    partieActuelle.joueur1.fighter1=persoChoisi[0];
-    partieActuelle.joueur1.fighter2=persoChoisi[2];
-    partieActuelle.joueur1.fighter3=persoChoisi[4];
+    partieActuelle.joueur1.fighter1 = persoChoisi[0];
+    partieActuelle.joueur1.fighter2 = persoChoisi[2];
+    partieActuelle.joueur1.fighter3 = persoChoisi[4];
 
-    partieActuelle.joueur2.fighter1=persoChoisi[1];
-    partieActuelle.joueur2.fighter2=persoChoisi[3];
-    partieActuelle.joueur2.fighter3=persoChoisi[5];
+    partieActuelle.joueur2.fighter1 = persoChoisi[1];
+    partieActuelle.joueur2.fighter2 = persoChoisi[3];
+    partieActuelle.joueur2.fighter3 = persoChoisi[5];
 
-    partieActuelle.perso_actif=0;
-    partieActuelle.tour=1;
-    partieActuelle.fin=false;
-
-    for (int i = 0; i < NB_PERSOS_EQUIPE * 2; i++){
-        tableauAttaqueDuTour[i].idAttaque = 0;
-        tableauAttaqueDuTour[i].utilisateurEquipe = 0;
-        tableauAttaqueDuTour[i].utilisateurNum = 0;
-        tableauAttaqueDuTour[i].cibleEquipe = 0;
-        tableauAttaqueDuTour[i].cibleNum = 0;
-    }
-    
-
+    partieActuelle.perso_actif = 0;
+    partieActuelle.tour = 1;
+    partieActuelle.equipeQuiCommence = rand() % 2 + 1;  // 1 ou 2
+    partieActuelle.fin = false;
     partieActuelle.mapType = 1;
 
-    while (!partieActuelle.fin)
-    {
+    for (int i = 0; i < NB_PERSOS_EQUIPE * 2; i++) {
+        tableauAttaqueDuTour[i] = (AttaqueSauvegarde){0, 0, 0, 0, 0};
+    }
 
+    while (!partieActuelle.fin) {
         renduJeu(rendu);
+        SDL_Log("==================================== Tour %d =======================================", partieActuelle.tour);
+        animationNouveauTour(rendu, partieActuelle.tour);
 
-        SDL_Log("==================================== Tour numéro : %d =======================================\n\n",partieActuelle.tour);
-        renduJeu(rendu);
-        //EQUIPE 1
-        SDL_Log("Tour du personnage 1 du joueur 1 : %s\n\n",partieActuelle.joueur1.fighter1);
-        actionPerso(rendu,&partieActuelle.joueur1.fighter1,2);
-        partieActuelle.perso_actif++;
-        SDL_Log("Tour du personnage 2 du joueur 1 : %s\n\n",partieActuelle.joueur1.fighter2);
-        actionPerso(rendu,&partieActuelle.joueur1.fighter2,2);
-        partieActuelle.perso_actif++;
-        SDL_Log("Tour du personnage 3 du joueur 1 : %s\n\n",partieActuelle.joueur1.fighter3);
-        actionPerso(rendu,&partieActuelle.joueur1.fighter3,2);
-        partieActuelle.perso_actif++;
+        int equipeDebut = (partieActuelle.tour % 2 == 0) ? partieActuelle.equipeQuiCommence : 3 - partieActuelle.equipeQuiCommence;
 
-        //EQUIPE 2
-        SDL_Log("Tour du personnage 1 du joueur 2 : %s\n\n",partieActuelle.joueur2.fighter1);
-        actionPerso(rendu,&partieActuelle.joueur2.fighter1,1);
-        partieActuelle.perso_actif++;
-        SDL_Log("Tour du personnage 2 du joueur 1 : %s\n\n",partieActuelle.joueur2.fighter2);
-        actionPerso(rendu,&partieActuelle.joueur2.fighter2,1);
-        partieActuelle.perso_actif++;
-        SDL_Log("Tour du personnage 3 du joueur 2 : %s\n\n",partieActuelle.joueur2.fighter3);
-        actionPerso(rendu,&partieActuelle.joueur2.fighter3,1);
+        for (int i = 0; i < 3; i++) {
+            Fighter* perso = get_fighter(equipeDebut, i);
+            if (perso->actu_pv <= 0) continue;
+            partieActuelle.perso_actif = (equipeDebut == 1) ? i : i + 3;
+            actionPerso(rendu, perso, (equipeDebut == 1) ? 2 : 1);
+        }
+
+        for (int i = 0; i < 3; i++) {
+            Fighter* perso = get_fighter(3 - equipeDebut, i);
+            if (perso->actu_pv <= 0) continue;
+            partieActuelle.perso_actif = (equipeDebut == 1) ? i + 3 : i;
+            actionPerso(rendu, perso, (equipeDebut == 1) ? 1 : 2);
+        }
+
         partieActuelle.perso_actif = 0;
 
-        // Execution du tour par vitesse
-        // Execution du tour par vitesse
-        int tabIdVitesse[6] = {0,1,2,3,4,5};
-        
-        //trie
-        void trier_par_vitesse(int tabIdVitesse[6], Fighter persoChoisi[6]) {
-            for (int i = 0; i < 5; i++) {
-                for (int j = i + 1; j < 6; j++) {
-                    if (persoChoisi[tabIdVitesse[j]].vitesse > persoChoisi[tabIdVitesse[i]].vitesse) {
-                        int tmp = tabIdVitesse[i];
-                        tabIdVitesse[i] = tabIdVitesse[j];
-                        tabIdVitesse[j] = tmp;
-                    }
+        // Tri des attaques par vitesse
+        int tabIdVitesse[6] = {0, 1, 2, 3, 4, 5};
+        for (int i = 0; i < 5; i++) {
+            for (int j = i + 1; j < 6; j++) {
+                if (persoChoisi[tabIdVitesse[j]].vitesse > persoChoisi[tabIdVitesse[i]].vitesse) {
+                    int tmp = tabIdVitesse[i];
+                    tabIdVitesse[i] = tabIdVitesse[j];
+                    tabIdVitesse[j] = tmp;
                 }
             }
         }
-        
+
         for (int i = 0; i < NB_PERSOS_EQUIPE * 2; i++) {
             int index = tabIdVitesse[i];
             AttaqueSauvegarde action = tableauAttaqueDuTour[index];
             Fighter* utilisateur = get_fighter(action.utilisateurEquipe, action.utilisateurNum);
             Fighter* cible = get_fighter(action.cibleEquipe, action.cibleNum);
 
-            if (utilisateur && cible && action.idAttaque >= 0 && action.idAttaque < NB_ATTAQUES_TOTAL) {
+            if (action.idAttaque >= 0 && action.idAttaque < NB_ATTAQUES_TOTAL) {
+                AttaqueSpecial* atq = toutes_les_attaques[action.idAttaque];
+                SDL_Rect rectUtilisateur = get_rect_fighter(utilisateur);
+                SDL_Rect rectCible = get_rect_fighter(cible);
+                jouerAnimationAttaque(rendu, atq->type + 1, rectUtilisateur, rectCible, utilisateur->element);
+                renduJeu(rendu);
                 fonctions_attaques[action.idAttaque](utilisateur, cible);
             } else {
                 SDL_Log("Erreur : attaque id %d invalide ou cible/utilisateur manquant", action.idAttaque);
             }
-
-        }    
-            
-        partieActuelle.tour ++;
-        if (partieActuelle.tour > 4)
-        {
-           partieActuelle.fin = true;
         }
-            
 
+        // Vérification de fin
+        if (equipe_est_morte(1)) {
+            SDL_Log("L'équipe 1 est éliminée. L'équipe 2 remporte la victoire !");
+            partieActuelle.fin = true;
+        } else if (equipe_est_morte(2)) {
+            SDL_Log("L'équipe 2 est éliminée. L'équipe 1 remporte la victoire !");
+            partieActuelle.fin = true;
+        }
+
+        partieActuelle.tour++;
     }
-    SDL_Log("Fin ouga ouga bouga caillou\n\n\n\n");
 
+    SDL_Log("Fin du jeu ! Je susi libre ahahujfgvhlKZjehsBFGVKJBrzlkjfbSKHBFVKHJzsvbf\n khbon moi je vais me préparer pour le theatre orevoir");
+    exit(0);
 }
-
-
-
-
-
-
-
-
-
-
-

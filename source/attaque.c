@@ -40,7 +40,7 @@ FonctionAttaque fonctions_attaques[NB_ATTAQUES_TOTAL] = {
 void attaqueClassique(Fighter* attaquant, Fighter* cible) {
     int degats = attaquant->attaque * 2 - cible->defense;
     
-    if (degats < 0) degats = 0;
+    if (degats < 1) degats = 10;
 
     cible->actu_pv -= degats;
     if (cible->actu_pv < 0) cible->actu_pv = 0;
@@ -117,7 +117,7 @@ void attaque_blizzard(Fighter* attaquant, Fighter* cible) {
 }
 
 void attaque_glace_curative(Fighter* attaquant, Fighter* cible) {
-    soin_effet(&attaquant, &cible, 20);
+    soin_effet(attaquant, cible, 20);
     SDL_Log("attaque_glace_curative");
 }
 

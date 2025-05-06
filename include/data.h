@@ -66,18 +66,6 @@ typedef struct {
     int bonus_pv;
 } BonusMap;
 
-// ==== Statuts d'effet ====
-typedef enum {
-    Aucun = 0,
-    BRULE,
-    PARALYSIE,
-    GEL,
-    SAIGNEMENT,
-    BOOST_DEF,
-    BOOST_PV,
-    BOOST_VIT
-} StatutEffet;
-
 // ==== Attaques spéciales ====
 #define MAX_NOM_ATTAQUE 50
 #define MAX_DESCRIPTION 300
@@ -89,6 +77,7 @@ typedef struct {
     char description[MAX_DESCRIPTION];
     int id;
     int cout;
+    int type;
 } AttaqueSpecial;
 
 // ==== Fighters ====
@@ -125,6 +114,7 @@ typedef struct{
 
     int perso_actif; 
     int tour;
+    int equipeQuiCommence;
     bool fin;
 
     int mapType; // 1 = feu, 2 = glace, etc
