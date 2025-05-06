@@ -1,51 +1,63 @@
-/*
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-//test
+#include "langue.h"
 
-#include "data.h"
-#include "logic.h"
-#include "interface.h"
+Langue langue_actuelle = LANGUE_FR;
 
-#define NB_TEXTES 20
+void changerLangue(Langue nouvelle_langue) {
+    langue_actuelle = nouvelle_langue;
+    // Tu peux aussi charger un fichier texte ici si besoin
+}
 
-typedef struct {
-    char cle[32];
-    char valeur[64];
-} Texte;
-
-static Texte textes[NB_TEXTES];
-
-void charger_langue(const char* chemin) {
-    FILE* fichier = fopen(chemin, "r");
-    if (!fichier) {
-        perror("Erreur ouverture fichier langue");
-        exit(1);
-    }
-
-    char ligne[128];
-    int i = 0;
-
-    while (fgets(ligne, sizeof(ligne), fichier) && i < NB_TEXTES) {
-        char* egal = strchr(ligne, '=');
-        if (egal) {
-            *egal = '\0';
-            strcpy(textes[i].cle, ligne);
-            strcpy(textes[i].valeur, egal + 1);
-            textes[i].valeur[strcspn(textes[i].valeur, "\n")] = '\0'; // supprime \n
-            i++;
+const char* getTexte(const char* id) {
+    if (strcmp(id, "titre_menu") == 0) {
+        switch (langue_actuelle) {
+            case LANGUE_EN: return "Main Menu";
+            case LANGUE_ES: return "Menú Principal";
+            case LANGUE_DE: return "Hauptmenü";
+            case LANGUE_JP: return "メインメニュー";
+            default:        return "Menu Principal";
         }
     }
 
-    fclose(fichier);
-}
-
-const char* get_texte(const char* cle) {
-    for (int i = 0; i < NB_TEXTES; i++) {
-        if (strcmp(textes[i].cle, cle) == 0)
-            return textes[i].valeur;
+    if (strcmp(id, "credit") == 0) {
+        switch (langue_actuelle) {
+            case LANGUE_EN: return "Credit";
+            case LANGUE_ES: return "Crédito";
+            case LANGUE_DE: return "Impressum";
+            case LANGUE_JP: return "クレジット";
+            default:        return "Crédit";
+        }
     }
-    return "[manquant]";
+
+    if (strcmp(id, "langue") == 0) {
+        switch (langue_actuelle) {
+            case LANGUE_EN: return "Language";
+            case LANGUE_ES: return "Idioma";
+            case LANGUE_DE: return "Sprache";
+            case LANGUE_JP: return "言語";
+            default:        return "Langue";
+        }
+    }
+
+    if (strcmp(id, "volume") == 0) {
+        switch (langue_actuelle) {
+            case LANGUE_EN: return "Volume";
+            case LANGUE_ES: return "Volumen";
+            case LANGUE_DE: return "Lautstärke";
+            case LANGUE_JP: return "音量";
+            default:        return "Volume";
+        }
+    }
+
+    if (strcmp(id, "musique") == 0) {
+        switch (langue_actuelle) {
+            case LANGUE_EN: return "Music";
+            case LANGUE_ES: return "Música";
+            case LANGUE_DE: return "Musik";
+            case LANGUE_JP: return "音楽";
+            default:        return "Musique";
+        }
+    }
+
+    return id; // fallback
 }
-*/
