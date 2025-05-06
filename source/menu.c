@@ -6,6 +6,7 @@
 #include "logic.h"
 #include "interface.h"
 #include "son.h"
+#include "langue.h"
 
 
 int volume_global = 64; // entre 0 et 128
@@ -29,12 +30,23 @@ Page afficher_chargement(SDL_Renderer *rendu) {
     TTF_Font *police = TTF_OpenFont("ressource/langue/police/arial.ttf", 28);
     SDL_Color blanc = {255, 255, 255, 255};
 
-    // === CADRE DE TITRE SEUL ===
+    // === Zone de la barre de chargement (étendue) ===
+    int marge_horizontale = 30;
+    SDL_Rect zone_barre = {
+        marge_horizontale,
+        500,
+        LARGEUR_FENETRE - 2 * marge_horizontale,
+        30
+    };
 
-    SDL_Rect zone_barre = {60, 500, 900, 30};
-    SDL_Rect zone_texte = {zone_barre.x, zone_barre.y + 40, 400, 30};
+    SDL_Rect zone_texte = {
+        zone_barre.x,
+        zone_barre.y + 40,
+        400,
+        30
+    };
 
-    SDL_Surface *surf_texte = TTF_RenderUTF8_Solid(police, "Chargement en cours...", blanc);
+    SDL_Surface* surf_texte = TTF_RenderUTF8_Solid(police, getTexte("chargement en cours"), blanc);
     SDL_Texture *texture_texte = SDL_CreateTextureFromSurface(rendu, surf_texte);
     SDL_FreeSurface(surf_texte);
 
@@ -45,7 +57,21 @@ Page afficher_chargement(SDL_Renderer *rendu) {
         SDL_RenderClear(rendu);
         SDL_RenderCopy(rendu, fond, NULL, NULL);
 
-        SDL_SetRenderDrawColor(rendu, 0 + i * 5, 0 + i, 0, 255);
+        // --- Dégradé rouge foncé → orange → vert ---
+        int r, g;
+        if (i <= nb_blocs / 2) {
+            float t = (float)i / (nb_blocs / 2);
+            r = 128 + (int)(127 * t);  // 128 → 255
+            g = (int)(128 * t);        // 0 → 128
+        } else {
+            float t = (float)(i - nb_blocs / 2) / (nb_blocs / 2);
+            r = 255 - (int)(255 * t);  // 255 → 0
+            g = 128 + (int)(127 * t);  // 128 → 255
+        }
+        if (r < 0) r = 0;
+        if (g > 255) g = 255;
+        SDL_SetRenderDrawColor(rendu, r, g, 0, 255);
+
         for (int j = 0; j < i; j++) {
             SDL_Rect bloc = {
                 zone_barre.x + j * (largeur_bloc + marge),
@@ -55,6 +81,7 @@ Page afficher_chargement(SDL_Renderer *rendu) {
             };
             SDL_RenderFillRect(rendu, &bloc);
         }
+
         SDL_RenderCopy(rendu, texture_texte, NULL, &zone_texte);
         SDL_RenderPresent(rendu);
 
@@ -73,8 +100,6 @@ Page afficher_chargement(SDL_Renderer *rendu) {
     TTF_CloseFont(police);
     return PAGE_HISTOIRE;
 }
-
-
 
 
 // === HISTOIRE ===
@@ -206,7 +231,7 @@ Page afficher_menu(SDL_Renderer* rendu){
         {LARGEUR_FENETRE/2 - largeurBouton/2, 350, largeurBouton, tailleBouton},
         {LARGEUR_FENETRE/2 - largeurBouton/2, 500, largeurBouton, tailleBouton}
     };
-    const char* textes[] = {"Jouer", "Options", "Quitter"};
+    const char* ids_textes[] = {"jouer", "options", "quitter"};
 
     SDL_RenderClear(rendu);
     SDL_RenderCopy(rendu, fond, NULL, NULL);
@@ -214,7 +239,8 @@ Page afficher_menu(SDL_Renderer* rendu){
 
     for (int i = 0; i < 3; i++) {
         SDL_RenderCopy(rendu, cadre_bouton, NULL, &boutons[i]);
-        SDL_Surface* surf = TTF_RenderUTF8_Solid(police, textes[i], noir);
+        SDL_Surface* surf = TTF_RenderUTF8_Solid(police, getTexte(ids_textes[i])
+        , noir);
         SDL_Texture* tex = SDL_CreateTextureFromSurface(rendu, surf);
         SDL_Rect txt = {
             boutons[i].x + (boutons[i].w - surf->w) / 2,
@@ -258,13 +284,25 @@ Page afficher_menu(SDL_Renderer* rendu){
 
 
 // === OPTIONS ===
+#include "langue.h" // Ajoute bien ce include en haut de ton fichier
+
 Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
     SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/fonds/fond_menu.png");
     SDL_Texture* cadre_bouton = IMG_LoadTexture(rendu, "ressource/image/cadres/cadre_texte.png");
     SDL_Texture* bouton_retour = IMG_LoadTexture(rendu, "ressource/image/utilité/retour.png");
 
-    const char* textes[] = {"Crédit", "Langue", "Volume", "Musique"};
-    const char* noms_musiques[] = {"Musique 1", "Musique 2", "Musique 3"};
+    SDL_Texture* drapeauAllemand = IMG_LoadTexture(rendu, "ressource/image/utilité/drapeauAllemand.png");
+    SDL_Texture* drapeauAnglais  = IMG_LoadTexture(rendu, "ressource/image/utilité/drapeauAnglais.png");
+    SDL_Texture* drapeauEspagnol = IMG_LoadTexture(rendu, "ressource/image/utilité/drapeauEspagnol.png");
+    SDL_Texture* drapeauFrancais = IMG_LoadTexture(rendu, "ressource/image/utilité/drapeauFrancais.png");
+
+    if (!drapeauFrancais) printf("Erreur: drapeauFrancais.png manquant !\n");
+    if (!drapeauAnglais)  printf("Erreur: drapeauAnglais.png manquant !\n");
+    if (!drapeauEspagnol) printf("Erreur: drapeauEspagnol.png manquant !\n");
+    if (!drapeauAllemand) printf("Erreur: drapeauAllemand.png manquant !\n");
+
+    const char* ids_textes[] = {"credit", "langue", "volume", "musique"};
+    const char* noms_musiques[] = {"musique_1", "musique_2", "musique_3"};
 
     SDL_Color noir = {255, 0, 0, 0};
     TTF_Font* police = TTF_OpenFont("ressource/langue/police/arial.ttf", 40);
@@ -274,8 +312,8 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
 
     SDL_Rect boutons[4] = {
         {0, -50, largeurBouton, tailleBouton},
-        {0, 100, largeurBouton, tailleBouton},
-        {0, 250, largeurBouton, tailleBouton}, // Volume
+        {0, 100, largeurBouton, tailleBouton}, // Langue
+        {0, 250, largeurBouton, tailleBouton},
         {0, 400, largeurBouton, tailleBouton}
     };
 
@@ -288,10 +326,23 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
     SDL_Rect retour_rect = {20, HAUTEUR_FENETRE - 100, 80, 80};
 
     SDL_Rect musiques[3] = {
-        {LARGEUR_FENETRE/2 - 310, barre.y + 150, 200, 60},
-        {LARGEUR_FENETRE/2 - 100, barre.y + 150, 200, 60},
-        {LARGEUR_FENETRE/2 + 110, barre.y + 150, 200, 60}
+        {LARGEUR_FENETRE / 2 - 310, barre.y + 150, 200, 60},
+        {LARGEUR_FENETRE / 2 - 100, barre.y + 150, 200, 60},
+        {LARGEUR_FENETRE / 2 + 110, barre.y + 150, 200, 60}
     };
+
+    // Positionnement des drapeaux
+    int drapeau_taille = 110;
+    int espacement = 60;
+    SDL_Rect drapeaux[5];
+    int base_x = 350;
+    int base_y = boutons[1].y + (boutons[1].h - drapeau_taille) / 2;
+    for (int i = 0; i < 4; i++) {
+        drapeaux[i].x = base_x + i * (drapeau_taille + espacement);
+        drapeaux[i].y = base_y;
+        drapeaux[i].w = drapeau_taille;
+        drapeaux[i].h = drapeau_taille;
+    }
 
     SDL_Event event;
     while (1) {
@@ -301,7 +352,7 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
         // Boutons principaux
         for (int i = 0; i < 4; i++) {
             SDL_RenderCopy(rendu, cadre_bouton, NULL, &boutons[i]);
-            SDL_Surface* surf = TTF_RenderUTF8_Solid(police, textes[i], noir);
+            SDL_Surface* surf = TTF_RenderUTF8_Solid(police, getTexte(ids_textes[i]), noir);
             SDL_Texture* tex = SDL_CreateTextureFromSurface(rendu, surf);
             SDL_Rect txt = {
                 boutons[i].x + (boutons[i].w - surf->w) / 2,
@@ -314,7 +365,13 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
             SDL_DestroyTexture(tex);
         }
 
-        // Barre de volume stylée
+        // Affichage des drapeaux
+        SDL_RenderCopy(rendu, drapeauFrancais, NULL, &drapeaux[0]);
+        SDL_RenderCopy(rendu, drapeauAnglais,  NULL, &drapeaux[1]);
+        SDL_RenderCopy(rendu, drapeauEspagnol, NULL, &drapeaux[2]);
+        SDL_RenderCopy(rendu, drapeauAllemand, NULL, &drapeaux[3]);
+
+        // Barre de volume
         SDL_Rect fond_barre = {barre.x - 2, barre.y - 2, barre.w + 4, barre.h + 4};
         SDL_SetRenderDrawColor(rendu, 50, 50, 50, 255);  SDL_RenderFillRect(rendu, &fond_barre);
         SDL_SetRenderDrawColor(rendu, 30, 30, 30, 255);  SDL_RenderFillRect(rendu, &barre);
@@ -336,11 +393,11 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
             }
         }
 
-        // Boutons Musique 1/2/3
+        // Boutons musique
         for (int i = 0; i < 3; i++) {
             SDL_SetRenderDrawColor(rendu, 100, 100, 100, 255);
             SDL_RenderFillRect(rendu, &musiques[i]);
-            SDL_Surface* surf = TTF_RenderUTF8_Solid(police, noms_musiques[i], noir);
+            SDL_Surface* surf = TTF_RenderUTF8_Solid(police, getTexte(noms_musiques[i]), noir);
             SDL_Texture* tex = SDL_CreateTextureFromSurface(rendu, surf);
             SDL_Rect txt = {
                 musiques[i].x + (musiques[i].w - surf->w) / 2,
@@ -353,24 +410,22 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
             SDL_DestroyTexture(tex);
         }
 
-        // Bouton retour
         SDL_RenderCopy(rendu, bouton_retour, NULL, &retour_rect);
         SDL_RenderPresent(rendu);
 
-        // Gestion des événements
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) return PAGE_QUITTER;
 
             if (event.type == SDL_MOUSEBUTTONDOWN) {
                 int x = event.button.x, y = event.button.y;
 
-                // Retour
+                // Bouton retour
                 if (x >= retour_rect.x && x <= retour_rect.x + retour_rect.w &&
                     y >= retour_rect.y && y <= retour_rect.y + retour_rect.h) {
                     return page_prec;
                 }
 
-                // Clic dans la barre de volume
+                // Volume
                 if (x >= barre.x && x <= barre.x + barre.w &&
                     y >= barre.y && y <= barre.y + barre.h) {
                     volume_global = (x - barre.x) * 128 / barre.w;
@@ -379,7 +434,7 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
                     Mix_VolumeMusic(volume_global);
                 }
 
-                // Boutons Musique 1/2/3
+                // Boutons musique
                 for (int i = 0; i < 3; i++) {
                     if (x >= musiques[i].x && x <= musiques[i].x + musiques[i].w &&
                         y >= musiques[i].y && y <= musiques[i].y + musiques[i].h) {
@@ -389,6 +444,15 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
                         sprintf(chemin, "ressource/musique/ogg/menu_%d.ogg", musique_actuelle);
                         jouerMusique(chemin, volume_global);
                         printf("Musique %d lancée\n", musique_actuelle);
+                    }
+                }
+
+                // Clic sur un drapeau
+                for (int i = 0; i < 4; i++) {
+                    if (x >= drapeaux[i].x && x <= drapeaux[i].x + drapeaux[i].w &&
+                        y >= drapeaux[i].y && y <= drapeaux[i].y + drapeaux[i].h) {
+                        changerLangue((Langue)i);
+                        printf("Langue changée : %d\n", i);
                     }
                 }
             }
@@ -437,7 +501,7 @@ Page afficher_jeu(SDL_Renderer* rendu, SDL_Texture* selections_j1[3], SDL_Textur
     TTF_Font* police = TTF_OpenFont("ressource/langue/police/arial.ttf", 40);
     if (police) {
         SDL_Color blanc = {255, 255, 255, 255};
-        SDL_Surface* surf = TTF_RenderUTF8_Solid(police, "JEU EN COURS...", blanc);
+        SDL_Surface* surf = TTF_RenderUTF8_Solid(police, getTexte("jeu_en_cours"), blanc);
         if (surf) {
             SDL_Texture* texte = SDL_CreateTextureFromSurface(rendu, surf);
             if (texte) {
@@ -569,7 +633,7 @@ Page afficher_selec_difficulte(SDL_Renderer* rendu) {
     int largeur_bouton = LARGEUR_FENETRE - 2 * marge;
     int hauteur_bouton = (HAUTEUR_FENETRE - 4 * marge) / 3;
 
-    const char* textes[] = {"Facile", "Moyen", "Difficile"};
+    const char* ids_difficulte[] = {"facile", "moyen", "difficile"};
 
     SDL_Rect boutons[3] = {
         {marge, marge, largeur_bouton, hauteur_bouton},
@@ -586,7 +650,7 @@ Page afficher_selec_difficulte(SDL_Renderer* rendu) {
 
         for (int i = 0; i < 3; i++) {
             SDL_RenderCopy(rendu, cadre_bouton, NULL, &boutons[i]);
-            SDL_Surface* surf = TTF_RenderUTF8_Solid(police, textes[i], noir);
+            SDL_Surface* surf = TTF_RenderUTF8_Solid(police, getTexte(ids_difficulte[i]), noir);
             SDL_Texture* tex = SDL_CreateTextureFromSurface(rendu, surf);
             SDL_Rect txt = {
                 boutons[i].x + (boutons[i].w - surf->w) / 2,
