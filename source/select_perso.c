@@ -24,7 +24,7 @@ void runGame(SDL_Renderer* rendu);
 
 Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3], SDL_Texture* selections_j2[3]) {
 	
-	arreter_musique("ressource/musique/ogg/menu.ogg");	
+	arreter_musique("ressource/musique/ogg/menu_1.ogg");	
 	jouerMusique("ressource/musique/ogg/selection_personnages.ogg", 40);
 
 
@@ -115,7 +115,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
         return PAGE_QUITTER;
     }
 
-    SDL_Color couleur_blanc = {213, 38, 35, 255};
+    //SDL_Color couleur_blanc = {213, 38, 35, 255};
     SDL_Surface* surface_tour = NULL;
     SDL_Texture* texture_tour = NULL;
 
@@ -169,7 +169,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                     mouseX <= btn_retour_rect.x + btn_retour_rect.w &&
                     mouseY >= btn_retour_rect.y && 
                     mouseY <= btn_retour_rect.y + btn_retour_rect.h) {
-        	    jouerMusique("ressource/musique/ogg/menu.ogg", 20);
+        	    jouerMusique("ressource/musique/ogg/menu_1.ogg", 20);
                     running = false;
                     return PAGE_SELEC_MODE;
                 }

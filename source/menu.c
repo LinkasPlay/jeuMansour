@@ -7,6 +7,11 @@
 #include "interface.h"
 #include "son.h"
 
+
+int volume_global = 64; // entre 0 et 128
+int musique_actuelle = 1; // 1, 2 ou 3
+
+
 //test//
 // Variables globales réelles
 int mode_choisi = 0;
@@ -177,7 +182,7 @@ Page afficher_menu(SDL_Renderer* rendu){
 
     
     if(musiqueRes==1){
-        jouerMusique("ressource/musique/ogg/menu.ogg", 20);
+        jouerMusique("ressource/musique/ogg/menu_1.ogg", 20);
     }
     //Lancer la musique qu'une fois dans tout le menu
     musiqueRes=0;
@@ -249,13 +254,7 @@ Page afficher_menu(SDL_Renderer* rendu){
     return PAGE_MENU;
 }
 
-/*
-Page affiche_son(SDL_Renderer* rendu, Page page_prec){
-    SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/fonds/fond_menu.png");
 
-
-}
-*/
 
 
 // === OPTIONS ===
@@ -264,27 +263,42 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
     SDL_Texture* cadre_bouton = IMG_LoadTexture(rendu, "ressource/image/cadres/cadre_texte.png");
     SDL_Texture* bouton_retour = IMG_LoadTexture(rendu, "ressource/image/utilité/retour.png");
 
-    const char* textes[] = {"Crédit", "Langue", "Son", "Musique"};
-    SDL_Color noir = {0, 0, 0, 255};
+    const char* textes[] = {"Crédit", "Langue", "Volume", "Musique"};
+    const char* noms_musiques[] = {"Musique 1", "Musique 2", "Musique 3"};
+
+    SDL_Color noir = {255, 0, 0, 0};
     TTF_Font* police = TTF_OpenFont("ressource/langue/police/arial.ttf", 40);
 
-    int tailleBouton = 350;
-    int largeurBouton = 280;
+    int tailleBouton = 250;
+    int largeurBouton = 200;
 
     SDL_Rect boutons[4] = {
         {0, -50, largeurBouton, tailleBouton},
-        {0, 150, largeurBouton, tailleBouton},
-        {0, 350, largeurBouton, tailleBouton},
-        {0, 550, largeurBouton, tailleBouton} // ← Bouton "Musique"
+        {0, 100, largeurBouton, tailleBouton},
+        {0, 250, largeurBouton, tailleBouton}, // Volume
+        {0, 400, largeurBouton, tailleBouton}
+    };
+
+    SDL_Rect barre = {
+        (LARGEUR_FENETRE - 300) / 2,
+        boutons[2].y + 100,
+        300, 30
     };
 
     SDL_Rect retour_rect = {20, HAUTEUR_FENETRE - 100, 80, 80};
+
+    SDL_Rect musiques[3] = {
+        {LARGEUR_FENETRE/2 - 310, barre.y + 150, 200, 60},
+        {LARGEUR_FENETRE/2 - 100, barre.y + 150, 200, 60},
+        {LARGEUR_FENETRE/2 + 110, barre.y + 150, 200, 60}
+    };
 
     SDL_Event event;
     while (1) {
         SDL_RenderClear(rendu);
         SDL_RenderCopy(rendu, fond, NULL, NULL);
 
+        // Boutons principaux
         for (int i = 0; i < 4; i++) {
             SDL_RenderCopy(rendu, cadre_bouton, NULL, &boutons[i]);
             SDL_Surface* surf = TTF_RenderUTF8_Solid(police, textes[i], noir);
@@ -300,28 +314,87 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
             SDL_DestroyTexture(tex);
         }
 
+        // Barre de volume stylée
+        SDL_Rect fond_barre = {barre.x - 2, barre.y - 2, barre.w + 4, barre.h + 4};
+        SDL_SetRenderDrawColor(rendu, 50, 50, 50, 255);  SDL_RenderFillRect(rendu, &fond_barre);
+        SDL_SetRenderDrawColor(rendu, 30, 30, 30, 255);  SDL_RenderFillRect(rendu, &barre);
+        float ratio = volume_global / 128.0f;
+        int r = (int)(255 * ratio);
+        int g = (int)(255 * (1 - ratio));
+        SDL_SetRenderDrawColor(rendu, r, g, 0, 255);
+        SDL_Rect niveau = {barre.x, barre.y, volume_global * barre.w / 128, barre.h};
+        SDL_RenderFillRect(rendu, &niveau);
+        int curseur_x = barre.x + niveau.w;
+        int curseur_y = barre.y + barre.h / 2;
+        SDL_SetRenderDrawColor(rendu, 255, 255, 255, 255);
+        for (int w = 0; w < 8; w++) {
+            for (int h = 0; h < 8; h++) {
+                int dx = w - 4;
+                int dy = h - 4;
+                if (dx * dx + dy * dy <= 16)
+                    SDL_RenderDrawPoint(rendu, curseur_x + dx, curseur_y + dy);
+            }
+        }
+
+        // Boutons Musique 1/2/3
+        for (int i = 0; i < 3; i++) {
+            SDL_SetRenderDrawColor(rendu, 100, 100, 100, 255);
+            SDL_RenderFillRect(rendu, &musiques[i]);
+            SDL_Surface* surf = TTF_RenderUTF8_Solid(police, noms_musiques[i], noir);
+            SDL_Texture* tex = SDL_CreateTextureFromSurface(rendu, surf);
+            SDL_Rect txt = {
+                musiques[i].x + (musiques[i].w - surf->w) / 2,
+                musiques[i].y + (musiques[i].h - surf->h) / 2,
+                surf->w,
+                surf->h
+            };
+            SDL_RenderCopy(rendu, tex, NULL, &txt);
+            SDL_FreeSurface(surf);
+            SDL_DestroyTexture(tex);
+        }
+
+        // Bouton retour
         SDL_RenderCopy(rendu, bouton_retour, NULL, &retour_rect);
         SDL_RenderPresent(rendu);
 
+        // Gestion des événements
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) return PAGE_QUITTER;
+
             if (event.type == SDL_MOUSEBUTTONDOWN) {
                 int x = event.button.x, y = event.button.y;
 
+                // Retour
                 if (x >= retour_rect.x && x <= retour_rect.x + retour_rect.w &&
-                    y >= retour_rect.y && y <= retour_rect.y + retour_rect.h)
+                    y >= retour_rect.y && y <= retour_rect.y + retour_rect.h) {
                     return page_prec;
+                }
 
-                // (Optionnel) Tu peux ajouter ici un printf pour tester le bouton "Musique"
-                if (x >= boutons[3].x && x <= boutons[3].x + boutons[3].w &&
-                    y >= boutons[3].y && y <= boutons[3].y + boutons[3].h) {
-                    printf("Bouton Musique cliqué !\n");
+                // Clic dans la barre de volume
+                if (x >= barre.x && x <= barre.x + barre.w &&
+                    y >= barre.y && y <= barre.y + barre.h) {
+                    volume_global = (x - barre.x) * 128 / barre.w;
+                    if (volume_global < 0) volume_global = 0;
+                    if (volume_global > 128) volume_global = 128;
+                    Mix_VolumeMusic(volume_global);
+                }
+
+                // Boutons Musique 1/2/3
+                for (int i = 0; i < 3; i++) {
+                    if (x >= musiques[i].x && x <= musiques[i].x + musiques[i].w &&
+                        y >= musiques[i].y && y <= musiques[i].y + musiques[i].h) {
+                        musique_actuelle = i + 1;
+                        Mix_HaltMusic();
+                        char chemin[128];
+                        sprintf(chemin, "ressource/musique/ogg/menu_%d.ogg", musique_actuelle);
+                        jouerMusique(chemin, volume_global);
+                        printf("Musique %d lancée\n", musique_actuelle);
+                    }
                 }
             }
         }
     }
 }
-
 
 
 // === PAGE DE JEU ===

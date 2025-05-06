@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
         switch (page) {
             case PAGE_MENU:
                 if (!musique_menu_jouee) {
-                    jouerMusique("ressource/musique/ogg/menu.ogg", 20);
+                    jouerMusique("ressource/musique/ogg/menu_1.ogg", 20);
                     musique_menu_jouee = 1;
                 }
                 page = afficher_menu(rendu);

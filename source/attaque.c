@@ -49,24 +49,24 @@ void attaqueClassique(Fighter* attaquant, Fighter* cible) {
 }
 
 // Effet de soin
-void soin_effet(Fighter lanceur, Fighter cible, int quantite) {
-    int avant = cible.actu_pv;
+void soin_effet(Fighter* lanceur, Fighter* cible, int quantite) {
+    int avant = cible->actu_pv;
     int apres = avant + quantite;
 
-    if (apres > cible.max_pv)
-        apres = cible.max_pv;
+    if (apres > cible->max_pv)
+        apres = cible->max_pv;
 
-    cible.actu_pv = apres;
+    cible->actu_pv = apres;
 
-    printf("%s soigne %s (+%d PV)\n", lanceur.nom, cible.nom, apres - avant);
+    printf("%s soigne %s (+%d PV)\n", lanceur->nom, cible->nom, apres - avant);
 }
 
 // Effet de défense
-void defense_effet(Fighter lanceur, Fighter cible, int bonus) {
-    int ancienne_def = cible.defense;
-    cible.defense += bonus;
+void defense_effet(Fighter* lanceur, Fighter* cible, int bonus) {
+    int ancienne_def = cible->defense;
+    cible->defense += bonus;
 
-    printf("%s augmente la défense de %s (+%d DEF)\n", lanceur.nom, cible.nom, cible.defense - ancienne_def);
+    printf("%s augmente la défense de %s (+%d DEF)\n", lanceur->nom, cible->nom, cible->defense - ancienne_def);
 }
 
 void defense(Fighter* attaquant, Fighter* cible) {
@@ -76,7 +76,6 @@ void defense(Fighter* attaquant, Fighter* cible) {
 //structure avec le nom de l'effet et un cool down
 
 
-/**/
 void attaque_affutage_mortal(Fighter* attaquant, Fighter* cible) {
     SDL_Log("attaque_affutage_mortal");
 }
@@ -86,11 +85,7 @@ void attaque_assaut_tranchant(Fighter* attaquant, Fighter* cible) {
     SDL_Log("attaque_assaut_tranchant");
 }
 
-void attaque_explosion_ardente(Fighter* attaquant, Fighter* cible){
-    int degats = attaquant->attaque * 1.5;
-
-}
-
+    
 void attaque_eveil_du_sabre(Fighter* attaquant, Fighter* cible) {
     SDL_Log("attaque_eveil_du_sabre");
 }
@@ -111,18 +106,18 @@ void attaque_esprit_flamboyant(Fighter* attaquant, Fighter* cible) {
 
 void attaque_prison_de_givre(Fighter* attaquant, Fighter* cible) {
     int degats = attaquant->attaque * 0.3;
-    cible.defense -= degats;
+    cible->defense -= degats;
     SDL_Log("attaque_prison_de_givre");
 }
 
 void attaque_blizzard(Fighter* attaquant, Fighter* cible) {
     int degats = attaquant->attaque * 0.3;
-    cible->pv_actu -= degats;
+    cible->actu_pv -= degats;
     SDL_Log("attaque_blizzard");
 }
 
 void attaque_glace_curative(Fighter* attaquant, Fighter* cible) {
-    soin_effet(attaquant, cible, 20);
+    soin_effet(&attaquant, &cible, 20);
     SDL_Log("attaque_glace_curative");
 }
 
@@ -145,7 +140,7 @@ void attaque_crepuscule(Fighter* attaquant, Fighter* cible) {
 
 void attaque_hurlement_noir(Fighter* attaquant, Fighter* cible) {
     int degats = attaquant->attaque * 0.7;
-    cible->pv_actu -= degats; 
+    cible->actu_pv -= degats; 
     SDL_Log("attaque_hurlement_noir");
 }
 
@@ -159,7 +154,7 @@ void attaque_danse_du_vent(Fighter* attaquant, Fighter* cible) {
 
 void attaque_vent_percant(Fighter* attaquant, Fighter* cible) {
     int degats = attaquant->attaque * 0.7;
-    cible->pv_actu -= degats;
+    cible->actu_pv -= degats;
     SDL_Log("attaque_vent_percant");
 }
 
@@ -174,16 +169,16 @@ void attaque_fulgurance(Fighter* attaquant, Fighter* cible) {
 
 void attaque_foudre_enchainee(Fighter* attaquant, Fighter* cible) {
     int degats = attaquant->attaque * 0.4;
-    cible->pv_actu -= degats;
+    cible->actu_pv -= degats;
     SDL_Log("attaque_foudre_enchainee");
 }
 
 void attaque_execution_rapide(Fighter* attaquant, Fighter* cible) {
     int degats = attaquant->attaque * 0.5;
-    if(cible->pv_actu < cible->max_pv - cible->max_pv * 0.7){
+    if(cible->actu_pv < cible->max_pv - cible->max_pv * 0.7){
     	degats = attaquant->attaque * 2;
     }
-    cible->pv_actu -= degats;
+    cible->actu_pv -= degats;
     SDL_Log("attaque_execution_rapide");
 }
 
@@ -193,13 +188,13 @@ void attaque_mur_vivant(Fighter* attaquant, Fighter* cible) {
 }
 
 void attaque_barriere_de_pierre(Fighter* attaquant, Fighter* cible) {
-    int def = attaquant->defense * 0.5
+    int def = attaquant->defense * 0.5;
     defense_effet(attaquant, cible, def);
     SDL_Log("attaque_barriere_de_pierre");
 }
 
 void attaque_rugissement_d_acier(Fighter* attaquant, Fighter* cible) {
-    int def = attaquant->defense * 0.25
+    int def = attaquant->defense * 0.25;
     defense_effet(attaquant, cible, def);
     SDL_Log("attaque_rugissement_d_acier");
 }
