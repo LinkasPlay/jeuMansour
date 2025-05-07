@@ -208,6 +208,9 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                                     persoChoisi[a].agilite=darkshadow.agilite;
                                     persoChoisi[a].vitesse=darkshadow.vitesse;
                                     persoChoisi[a].element=darkshadow.element;
+                                    persoChoisi[a].spe_atq1 = crepuscule;
+                                    persoChoisi[a].spe_atq2 = hurlementNoir;
+                                    persoChoisi[a].spe_atq3 = brumeProtectrice;
                                     index_selection[a] = i;
                                     break;
                                
@@ -221,6 +224,9 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                                     persoChoisi[a].agilite=hitsugaya.agilite;
                                     persoChoisi[a].vitesse=hitsugaya.vitesse;
                                     persoChoisi[a].element=hitsugaya.element;
+                                    persoChoisi[a].spe_atq1 = prisonDeGivre;
+                                    persoChoisi[a].spe_atq2 = blizzard;
+                                    persoChoisi[a].spe_atq3 = glaceCurative;
                                     index_selection[a] = i;
                                     break;
                                 case 2:
@@ -233,6 +239,9 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                                     persoChoisi[a].agilite=incassable.agilite;
                                     persoChoisi[a].vitesse=incassable.vitesse;
                                     persoChoisi[a].element=incassable.element;
+                                    persoChoisi[a].spe_atq1 = murVivant;
+                                    persoChoisi[a].spe_atq2 = barriereDePierre;
+                                    persoChoisi[a].spe_atq3 = rugissementDacier;
                                     index_selection[a] = i;
                                     break;
                                 
@@ -246,6 +255,9 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                                     persoChoisi[a].agilite=katara.agilite;
                                     persoChoisi[a].vitesse=katara.vitesse;
                                     persoChoisi[a].element=katara.element;
+                                    persoChoisi[a].spe_atq1 = lienDeSang;
+                                    persoChoisi[a].spe_atq2 = vagueGuerisseuse;
+                                    persoChoisi[a].spe_atq3 = eveilLunaire;
                                     index_selection[a] = i;
                                     break;
                                 
@@ -259,6 +271,9 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                                     persoChoisi[a].agilite=kirua.agilite;
                                     persoChoisi[a].vitesse=kirua.vitesse;
                                     persoChoisi[a].element=kirua.element;
+                                    persoChoisi[a].spe_atq1 = fulgurance;
+                                    persoChoisi[a].spe_atq2 = foudreEnchainee;
+                                    persoChoisi[a].spe_atq3 = executionRapide;
                                     index_selection[a] = i;
                                     break;
                                     
@@ -272,6 +287,9 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                                     persoChoisi[a].agilite=rengoku.agilite;
                                     persoChoisi[a].vitesse=rengoku.vitesse;
                                     persoChoisi[a].element=rengoku.element;
+                                    persoChoisi[a].spe_atq1 = flammesSolaires;
+                                    persoChoisi[a].spe_atq2 = explosionArdente;
+                                    persoChoisi[a].spe_atq3 = espritFlamboyant;
                                     index_selection[a] = i;
                                     break;
                                     
@@ -285,6 +303,9 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                                     persoChoisi[a].agilite=temari.agilite;
                                     persoChoisi[a].vitesse=temari.vitesse;
                                     persoChoisi[a].element=temari.element;
+                                    persoChoisi[a].spe_atq1 = danseDuVent;
+                                    persoChoisi[a].spe_atq2 = ventPercant;
+                                    persoChoisi[a].spe_atq3 = souffleDeVie;
                                     index_selection[a] = i;
                                     break;
                                     
@@ -298,6 +319,9 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                                     persoChoisi[a].agilite=zoro.agilite;
                                     persoChoisi[a].vitesse=zoro.vitesse;
                                     persoChoisi[a].element=zoro.element;
+                                    persoChoisi[a].spe_atq1 = affutageMortal;
+                                    persoChoisi[a].spe_atq2 = assautTranchant;
+                                    persoChoisi[a].spe_atq3 = eveilDuSabre;
                                     index_selection[a] = i;
                                     break;
 
@@ -314,9 +338,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                                     break;
                             }
                             
-                            persoChoisi[a].spe_atq1 = affutageMortal;
-                            persoChoisi[a].spe_atq2 = assautTranchant;
-                            persoChoisi[a].spe_atq3 = eveilDuSabre;
+                           
 
                             if(tour_j1) SDL_Log("Perso %d l'équipe 1 est : %s",a + 1, persoChoisi[a].nom);
                             else SDL_Log("Perso %d de l'équipe 2 est : %s",a + 1, persoChoisi[a].nom);

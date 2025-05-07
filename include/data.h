@@ -72,7 +72,10 @@ typedef struct {
     int actu_pv, max_pv;
     int attaque, defense, agilite, vitesse, magie;
     int pt;
-    int statutEffet;
+    int statutEffet;        // 1 = Saignement, 2 = Brulur, 3 = Boost def, 4 = Boost attaque, 5 = Boost vitesse, 6 = Nerf def,
+                            // 7 = Nerf attaque , 8 = Nerf vitesse, 9 = Nerf Agilité, 10 = Boost Agilité, 11 = Gel; 12 = paralysie
+    int dureeEffet;         // durée en tours restants
+
     ElementType element;
     AttaqueSpecial spe_atq1, spe_atq2, spe_atq3;
 } Fighter;
@@ -113,6 +116,7 @@ typedef struct {
 } Button;
 
 // === Fonctions utilitaires ===
+Fighter appliquer_modificateurs(Fighter* original);
 Fighter* get_fighter(int equipe, int numero);
 Fighter* get_fighter_by_index(int index);
 int get_equipe_id(int index);

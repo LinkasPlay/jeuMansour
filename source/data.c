@@ -154,7 +154,7 @@ AttaqueSpecial danseDuVent ={
     .type = 6,
 };
 
-AttaqueSpecial sentPercant ={
+AttaqueSpecial ventPercant ={
     .nom = "Vent perçant",
     .description = "AoE magique (70 pourcent magie)",
     .id = ATQ_ASSAUT_TRANCHANT,
