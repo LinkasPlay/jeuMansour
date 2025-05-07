@@ -1,5 +1,4 @@
 #include "data.h"
-#include "logic.h"
 #include "interface.h"
 #include "son.h"
 #include "attaque.h"
@@ -26,7 +25,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
 	
 	arreter_musique("ressource/musique/ogg/menu_1.ogg");	
 	jouerMusique("ressource/musique/ogg/selection_personnages.ogg", 40);
-
+    init_attaques();
 
     // --- CHARGEMENT DES TEXTURES ---
     SDL_Texture* fond_texture = IMG_LoadTexture(rendu, "ressource/image/fonds/fond_selection_perso.png");

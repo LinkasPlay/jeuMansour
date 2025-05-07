@@ -1,6 +1,4 @@
-// ----- src/data.c -----
 #include "data.h"
-#include "logic.h"
 #include "interface.h"
 #include "son.h"
 
