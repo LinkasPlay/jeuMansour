@@ -234,7 +234,7 @@ Page afficher_histoire(SDL_Renderer* rendu) {
 // === MENU PRINCIPAL ===
 Page afficher_menu(SDL_Renderer* rendu) {
     if (musiqueRes == 1) {
-        jouerMusique("ressource/musique/ogg/menu_1.ogg", 20);
+        jouerMusique("ressource/musique/ogg/menu/menu_1.ogg", 20);
         musiqueRes = 0;
     }
 
