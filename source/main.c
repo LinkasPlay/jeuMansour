@@ -101,7 +101,7 @@ int main(int argc, char* argv[]) {
             }
 
             case PAGE_COMBAT:
-                arreter_musique();
+                jouerMusique("ressource/musique/ogg/combat_1.ogg", 20);
                 musique_menu_jouee = 0;
                 page = afficher_jeu(rendu, selections_j1, selections_j2);
                 break;
