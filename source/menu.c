@@ -342,7 +342,7 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
     SDL_Texture* drapeauFrancais = IMG_LoadTexture(rendu, "ressource/image/utilité/drapeauFrancais.png");
 
     const char* ids_textes[] = {"credit", "langue", "volume", "musique"};
-    const char* noms_musiques[] = {"musique_1", "musique_2", "musique_3"};
+    const char* noms_musiques[] = {"musique_1", "musique_2", "musique_3", "musique_4", "musique_5", "musique_6"};
 
     SDL_Color blanc = {255, 255, 255, 255};
     TTF_Font* police = TTF_OpenFont("ressource/langue/police/arial.ttf", 40);
@@ -353,7 +353,7 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
     SDL_Rect boutons[4] = {
         {0, -50, largeurBouton, tailleBouton},
         {0, 100, largeurBouton, tailleBouton},
-        {0, 250, largeurBouton, tailleBouton}, // Volume
+        {0, 250, largeurBouton, tailleBouton},
         {0, 400, largeurBouton, tailleBouton}
     };
 
@@ -365,11 +365,15 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
 
     SDL_Rect retour_rect = {20, HAUTEUR_FENETRE - 100, 80, 80};
 
-    SDL_Rect musiques[3] = {
-        {LARGEUR_FENETRE / 2 - 310, barre.y + 150, 200, 60},
-        {LARGEUR_FENETRE / 2 - 100, barre.y + 150, 200, 60},
-        {LARGEUR_FENETRE / 2 + 110, barre.y + 150, 200, 60}
-    };
+    SDL_Rect musiques[6];
+    for (int i = 0; i < 6; i++) {
+        int ligne = i / 3;
+        int colonne = i % 3;
+        musiques[i].x = LARGEUR_FENETRE / 2 - 310 + colonne * 210;
+        musiques[i].y = barre.y + 150 + ligne * 80;
+        musiques[i].w = 200;
+        musiques[i].h = 60;
+    }
 
     int drapeau_taille = 110;
     int espacement = 60;
@@ -384,8 +388,8 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
     }
 
     bool curseur_actif = false;
-
     SDL_Event event;
+
     while (1) {
         SDL_RenderClear(rendu);
         SDL_RenderCopy(rendu, fond, NULL, NULL);
@@ -410,26 +414,19 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
         SDL_RenderCopy(rendu, drapeauEspagnol, NULL, &drapeaux[2]);
         SDL_RenderCopy(rendu, drapeauAllemand, NULL, &drapeaux[3]);
 
-        // -------- BARRE DE VOLUME STYLISÉE --------
         SDL_Rect fond_barre = {barre.x - 4, barre.y - 4, barre.w + 8, barre.h + 8};
-        SDL_SetRenderDrawColor(rendu, 20, 20, 20, 255);
-        SDL_RenderFillRect(rendu, &fond_barre);
-
-        SDL_SetRenderDrawColor(rendu, 40, 40, 40, 255);
-        SDL_RenderFillRect(rendu, &barre);
-
+        SDL_SetRenderDrawColor(rendu, 20, 20, 20, 255); SDL_RenderFillRect(rendu, &fond_barre);
+        SDL_SetRenderDrawColor(rendu, 40, 40, 40, 255); SDL_RenderFillRect(rendu, &barre);
         float ratio = volume_global / 128.0f;
         int r = (int)(255 * (1 - ratio));
         int g = (int)(255 * ratio);
         SDL_SetRenderDrawColor(rendu, r, g, 60, 255);
         SDL_Rect niveau = {barre.x, barre.y, volume_global * barre.w / 128, barre.h};
         SDL_RenderFillRect(rendu, &niveau);
-
         int curseur_x = barre.x + niveau.w;
         int curseur_y = barre.y + barre.h / 2;
         for (int i = 10; i >= 1; i--) {
-            int alpha = 20 * i;
-            SDL_SetRenderDrawColor(rendu, 255, 255, 255, alpha);
+            SDL_SetRenderDrawColor(rendu, 255, 255, 255, 20 * i);
             SDL_Rect halo = {curseur_x - i, curseur_y - i, 2 * i, 2 * i};
             SDL_RenderFillRect(rendu, &halo);
         }
@@ -447,18 +444,14 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
             surf_volume->w,
             surf_volume->h
         };
-        SDL_Rect cadre_txt = {
-            txt.x - 10, txt.y - 5,
-            txt.w + 20, txt.h + 10
-        };
+        SDL_Rect cadre_txt = {txt.x - 10, txt.y - 5, txt.w + 20, txt.h + 10};
         SDL_SetRenderDrawColor(rendu, 0, 0, 0, 200);
         SDL_RenderFillRect(rendu, &cadre_txt);
         SDL_RenderCopy(rendu, tex_volume, NULL, &txt);
         SDL_FreeSurface(surf_volume);
         SDL_DestroyTexture(tex_volume);
-        // ------------------------------------------
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 6; i++) {
             SDL_SetRenderDrawColor(rendu, 100, 100, 100, 255);
             SDL_RenderFillRect(rendu, &musiques[i]);
             SDL_Surface* surf = TTF_RenderUTF8_Solid(police, getTexte(noms_musiques[i]), blanc);
@@ -503,7 +496,7 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
                     }
                 }
 
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < 6; i++) {
                     if (x >= musiques[i].x && x <= musiques[i].x + musiques[i].w &&
                         y >= musiques[i].y && y <= musiques[i].y + musiques[i].h) {
                         musique_actuelle = i + 1;
@@ -529,6 +522,8 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
         }
     }
 }
+
+
 
 
 
