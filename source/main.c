@@ -1,4 +1,5 @@
-#include "logic.h"
+#include "attaque.h"
+#include "data.h"
 #include "interface.h"
 #include "son.h"
 

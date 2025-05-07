@@ -6,6 +6,36 @@
 
 typedef void (*FonctionAttaque)(Fighter*, Fighter*);
 
+void init_attaques() {
+    toutes_les_attaques[ATTAQUE_BASIQUE] = &useAttaque;
+    toutes_les_attaques[DEFENSE] = &useDefense;
+    toutes_les_attaques[AFFUTAGE_MORTAL] = &affutageMortal;
+    toutes_les_attaques[ASSAUT_TRANCHANT] = &assautTranchant;
+    toutes_les_attaques[EVEIL_DU_SABRE] = &eveilDuSabre;
+    toutes_les_attaques[FLAMMES_SOLAIRES] = &flammesSolaires;
+    toutes_les_attaques[EXPLOSION_ARDENTE] = &explosionArdente;
+    toutes_les_attaques[ESPRIT_FLAMBOYANT] = &espritFlamboyant;
+    toutes_les_attaques[PRISON_DE_GIVRE] = &prisonDeGivre;
+    toutes_les_attaques[BLIZZARD] = &blizzard;
+    toutes_les_attaques[GLACE_CURATIVE] = &glaceCurative;
+    toutes_les_attaques[LIEN_DE_SANG] = &lienDeSang;
+    toutes_les_attaques[VAGUE_GUERISSEUSE] = &vagueGuerisseuse;
+    toutes_les_attaques[EVEIL_LUNAIRE] = &eveilLunaire;
+    toutes_les_attaques[CREPUSCULE] = &crepuscule;
+    toutes_les_attaques[HURLEMENT_NOIR] = &hurlementNoir;
+    toutes_les_attaques[BRUME_PROTECTRICE] = &brumeProtectrice;
+    toutes_les_attaques[DANSE_DU_VENT] = &danseDuVent;
+    toutes_les_attaques[VENT_PERÇANT] = &sentPercant;
+    toutes_les_attaques[SOUFFLE_DE_VIE] = &souffleDeVie;
+    toutes_les_attaques[FULGURANCE] = &fulgurance;
+    toutes_les_attaques[FOUDRE_ENCHAINEE] = &foudreEnchainee;
+    toutes_les_attaques[EXECUTION_RAPIDE] = &executionRapide;
+    toutes_les_attaques[MUR_VIVANT] = &murVivant;
+    toutes_les_attaques[BARRIERE_DE_PIERRE] = &barriereDePierre;
+    toutes_les_attaques[RUGISSEMENT_D_ACIER] = &rugissementDacier;
+}
+
+
 FonctionAttaque fonctions_attaques[NB_ATTAQUES_TOTAL] = {
     [ATTAQUE_BASIQUE]       = attaqueClassique,
     [DEFENSE]       = defense,
@@ -40,7 +70,7 @@ FonctionAttaque fonctions_attaques[NB_ATTAQUES_TOTAL] = {
 void attaqueClassique(Fighter* attaquant, Fighter* cible) {
     int degats = attaquant->attaque * 2 - cible->defense;
     
-    if (degats < 1) degats = 10;
+    if (degats < 10) degats = 10;
 
     cible->actu_pv -= degats;
     if (cible->actu_pv < 0) cible->actu_pv = 0;
@@ -85,7 +115,7 @@ void attaque_affutage_mortal(Fighter* attaquant, Fighter* cible) {
 void attaque_assaut_tranchant(Fighter* attaquant, Fighter* cible) {
     int degats = (attaquant->attaque *0.6) * 2 - cible->defense;
     
-    if (degats < 1) degats = 10;
+    if (degats < 10) degats = 10;
     cible->actu_pv -= degats;
     cible->actu_pv -= degats;
     if (cible->actu_pv < 0) cible->actu_pv = 0;
@@ -136,7 +166,7 @@ void attaque_blizzard(Fighter* attaquant, Fighter* cible) {
     cible->statutEffet = 11;  // 50% de chance de ce faire gelé
     int degats = (attaquant->attaque * 0.30) * 2 - cible->defense;
     
-    if (degats < 1) degats = 10;
+    if (degats < 10) degats = 10;
     cible->actu_pv -= degats;
     if (cible->actu_pv < 0) cible->actu_pv = 0;
     
@@ -191,7 +221,7 @@ void attaque_crepuscule(Fighter* attaquant, Fighter* cible) {
 void attaque_hurlement_noir(Fighter* attaquant, Fighter* cible) {
     int degats = (attaquant->magie * 0.7) * 2 - cible->magie;
     
-    if (degats < 1) degats = 10;
+    if (degats < 10) degats = 10;
     cible->actu_pv -= degats;
     if (cible->actu_pv < 0) cible->actu_pv = 0;
     
@@ -214,7 +244,7 @@ void attaque_danse_du_vent(Fighter* attaquant, Fighter* cible) {
 void attaque_vent_percant(Fighter* attaquant, Fighter* cible) {
     int degats = (attaquant->magie * 0.7) * 2 - cible->magie;
     
-    if (degats < 1) degats = 10;
+    if (degats < 10) degats = 10;
     cible->actu_pv -= degats;
     if (cible->actu_pv < 0) cible->actu_pv = 0;
     
@@ -240,7 +270,7 @@ void attaque_souffle_de_vie(Fighter* attaquant, Fighter* cible) {
 void attaque_fulgurance(Fighter* attaquant, Fighter* cible) {
     int degats = attaquant->attaque * 2 - cible->defense * 0.5;
     
-    if (degats < 1) degats = 10;
+    if (degats < 10) degats = 10;
 
     cible->actu_pv -= degats;
     if (cible->actu_pv < 0) cible->actu_pv = 0;
@@ -252,7 +282,7 @@ void attaque_fulgurance(Fighter* attaquant, Fighter* cible) {
 void attaque_foudre_enchainee(Fighter* attaquant, Fighter* cible) {
     int degats = (attaquant->attaque * 0.4) * 2 - cible->defense;       //attaque physique AOE
     
-    if (degats < 1) degats = 10;
+    if (degats < 10) degats = 10;
 
     cible->actu_pv -= degats;
     if (cible->actu_pv < 0) cible->actu_pv = 0;
@@ -265,7 +295,7 @@ void attaque_execution_rapide(Fighter* attaquant, Fighter* cible) {
     if(cible->actu_pv < cible->max_pv - cible->max_pv * 0.7){
     	int degats = (attaquant->attaque * 2) * 2 - cible->defense;
     
-        if (degats < 1) degats = 10;
+        if (degats < 10) degats = 10;
 
         cible->actu_pv -= degats;
         if (cible->actu_pv < 0) cible->actu_pv = 0;
