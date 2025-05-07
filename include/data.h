@@ -72,7 +72,7 @@ typedef struct {
     int actu_pv, max_pv;
     int attaque, defense, agilite, vitesse, magie;
     int pt;
-    int statutEffet;
+    int statutEffet; 
     ElementType element;
     AttaqueSpecial spe_atq1, spe_atq2, spe_atq3;
 } Fighter;
