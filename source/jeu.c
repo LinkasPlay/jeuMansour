@@ -383,7 +383,7 @@ bool equipe_est_morte(int equipe) {
 }
 
 void runGame(SDL_Renderer* rendu) {
-    arreter_musique("ressource/musique/ogg/menu/selection_personnages.ogg");
+    arreter_musique("ressource/musique/ogg/selection_personnages.ogg");
     
     SDL_GetWindowSize(fenetre, &screenWidth, &screenHeight);
 

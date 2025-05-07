@@ -138,7 +138,7 @@ Page afficher_histoire(SDL_Renderer* rendu) {
     SDL_Texture* skip_btn = IMG_LoadTexture(rendu, "ressource/image/utilité/avance.png");
     SDL_Rect skip_rect = {LARGEUR_FENETRE - 120, 20, 80, 80};
 
-    Mix_Chunk* son_phrase = Mix_LoadWAV("ressource/musique/wav/phrase.wav");
+    Mix_Chunk* son_phrase = Mix_LoadWAV("ressource/musique/ogg/phrase.ogg");
     if (!son_phrase) SDL_Log("ERREUR chargement son phrase : %s", Mix_GetError());
 
     Uint32 last_char = SDL_GetTicks();
@@ -501,7 +501,7 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
                         musique_actuelle = i + 1;
                         Mix_HaltMusic();
                         char chemin[128];
-                        sprintf(chemin, "ressource/musique/ogg/menu_%d.ogg", musique_actuelle);
+                        sprintf(chemin, "ressource/musique/ogg/menu/menu_%d.ogg", musique_actuelle);
                         jouerMusique(chemin, volume_global);
                     }
                 }
