@@ -83,7 +83,7 @@ extern AttaqueSpecial crepuscule;
 extern AttaqueSpecial hurlementNoir;
 extern AttaqueSpecial brumeProtectrice;
 extern AttaqueSpecial danseDuVent;
-extern AttaqueSpecial sentPercant;
+extern AttaqueSpecial ventPercant;
 extern AttaqueSpecial souffleDeVie;
 extern AttaqueSpecial fulgurance;
 extern AttaqueSpecial foudreEnchainee;

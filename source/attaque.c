@@ -25,7 +25,7 @@ void init_attaques() {
     toutes_les_attaques[HURLEMENT_NOIR] = &hurlementNoir;
     toutes_les_attaques[BRUME_PROTECTRICE] = &brumeProtectrice;
     toutes_les_attaques[DANSE_DU_VENT] = &danseDuVent;
-    toutes_les_attaques[VENT_PERÇANT] = &sentPercant;
+    toutes_les_attaques[VENT_PERÇANT] = &ventPercant;
     toutes_les_attaques[SOUFFLE_DE_VIE] = &souffleDeVie;
     toutes_les_attaques[FULGURANCE] = &fulgurance;
     toutes_les_attaques[FOUDRE_ENCHAINEE] = &foudreEnchainee;
