@@ -17,6 +17,71 @@ AttaqueSauvegarde tableauAttaqueDuTour [NB_PERSOS_EQUIPE * 2];
 
 // ====================== GAMEPLAY ====================
 
+Fighter appliquer_modificateurs(Fighter* original) {
+    Fighter copie = *original;
+
+    switch (copie.statutEffet) {
+        case 3: // Boost défense
+            copie.defense += copie.defense * 0.25;
+            break;
+        case 4: // Boost attaque
+            copie.attaque += copie.attaque * 0.25;
+            break;
+        case 5: // Boost vitesse
+            copie.vitesse += copie.vitesse * 0.25;
+            break;
+        case 6: // Nerf défense
+            copie.defense -= copie.defense * 0.25;
+            break;
+        case 7: // Nerf attaque
+            copie.attaque -= copie.attaque * 0.25;
+            break;
+        case 8: // Nerf vitesse
+            copie.vitesse -= copie.vitesse * 0.25;
+            break;
+        case 9: // Nerf agilité
+            copie.agilite -= copie.agilite * 0.25;
+            break;
+        case 10: // Boost agilité
+            copie.agilite += copie.agilite * 0.25;
+            break;
+        case 11: // Gel : nerf général léger
+            copie.attaque  -= copie.attaque  * 0.1;
+            copie.defense  -= copie.defense  * 0.1;
+            copie.vitesse  -= copie.vitesse  * 0.1;
+            copie.agilite  -= copie.agilite  * 0.1;
+            break;
+    }
+
+    return copie;
+}
+
+void appliquer_et_mettre_a_jour_effets(Fighter* perso) {
+    if (perso->dureeEffet <= 0 || perso->statutEffet == 0) return;
+
+    switch (perso->statutEffet) {
+        case 2: { // Brûlure : -5% PV max
+            int perte = perso->max_pv * 0.05;
+            perso->actu_pv -= perte;
+            if (perso->actu_pv < 0) perso->actu_pv = 0;
+            SDL_Log("%s est brûlé (-%d PV)", perso->nom, perte);
+            break;
+        }
+        case 12: { // Paralysie : ne peut pas agir
+            SDL_Log("%s est paralysé et ne peut pas agir ce tour", perso->nom);
+            break;
+        }
+        // Les autres effets (boost/nerf) ne font rien ici : ils seront appliqués dans actionPerso ou combat
+    }
+
+    perso->dureeEffet--;
+
+    if (perso->dureeEffet <= 0) {
+        SDL_Log("L'effet %d de %s a pris fin.", perso->statutEffet, perso->nom);
+        perso->statutEffet = 0;
+    }
+}
+
 AttaqueSauvegarde choisirCible(SDL_Renderer* rendu, int equipeAdverse, AttaqueSauvegarde attaque) {
     bool choisi = false;
     SDL_Event event;
@@ -256,6 +321,7 @@ void actionPerso(SDL_Renderer* renderer, Fighter* persoActuel, int equipeAdverse
                         .utilisateurNum = get_fighter_num(id),
                     };
                     *attaque = choisirCible(renderer, equipeAdverse, *attaque);
+                    if (persoActuel->pt < 10) persoActuel->pt += 1;
                     quit = true;
 
                 } else if (btnDefense.hovered) {
@@ -266,6 +332,8 @@ void actionPerso(SDL_Renderer* renderer, Fighter* persoActuel, int equipeAdverse
                         .cibleEquipe = -1,
                         .cibleNum = -1
                     };
+                    if (persoActuel->pt < 10) persoActuel->pt += 1;
+                    if (persoActuel->pt < 10) persoActuel->pt += 1;
                     quit = true;
 
                 } else if (btnComp1.hovered && persoActuel->pt >= persoActuel->spe_atq1.cout) {
@@ -304,9 +372,6 @@ void actionPerso(SDL_Renderer* renderer, Fighter* persoActuel, int equipeAdverse
 
         SDL_Delay(8);
     }
-
-    // +1 pt en fin de tour (max à gérer ailleurs si besoin)
-    if (persoActuel->pt < 10) persoActuel->pt += 1;
 }
 
 bool equipe_est_morte(int equipe) {
@@ -330,7 +395,7 @@ void runGame(SDL_Renderer* rendu) {
 
     partieActuelle.perso_actif = 0;
     partieActuelle.tour = 1;
-    partieActuelle.equipeQuiCommence = rand() % 2 + 1;  // 1 ou 2
+    partieActuelle.equipeQuiCommence = rand() % 2 + 1;
     partieActuelle.fin = false;
     partieActuelle.mapType = 1;
 
@@ -345,27 +410,35 @@ void runGame(SDL_Renderer* rendu) {
 
         int equipeDebut = (partieActuelle.tour % 2 == 0) ? partieActuelle.equipeQuiCommence : 3 - partieActuelle.equipeQuiCommence;
 
+        // Tour de la première équipe
         for (int i = 0; i < 3; i++) {
             Fighter* perso = get_fighter(equipeDebut, i);
             if (perso->actu_pv <= 0) continue;
+
+            appliquer_et_mettre_a_jour_effets(perso);
             partieActuelle.perso_actif = (equipeDebut == 1) ? i : i + 3;
             actionPerso(rendu, perso, (equipeDebut == 1) ? 2 : 1);
         }
 
+        // Tour de la seconde équipe
         for (int i = 0; i < 3; i++) {
             Fighter* perso = get_fighter(3 - equipeDebut, i);
             if (perso->actu_pv <= 0) continue;
+
+            appliquer_et_mettre_a_jour_effets(perso);
             partieActuelle.perso_actif = (equipeDebut == 1) ? i + 3 : i;
             actionPerso(rendu, perso, (equipeDebut == 1) ? 1 : 2);
         }
 
         partieActuelle.perso_actif = 0;
 
-        // Tri des attaques par vitesse
+        // Tri des attaques par vitesse 
         int tabIdVitesse[6] = {0, 1, 2, 3, 4, 5};
         for (int i = 0; i < 5; i++) {
             for (int j = i + 1; j < 6; j++) {
-                if (persoChoisi[tabIdVitesse[j]].vitesse > persoChoisi[tabIdVitesse[i]].vitesse) {
+                Fighter modI = appliquer_modificateurs(&persoChoisi[tabIdVitesse[i]]);
+                Fighter modJ = appliquer_modificateurs(&persoChoisi[tabIdVitesse[j]]);
+                if (modJ.vitesse > modI.vitesse) {
                     int tmp = tabIdVitesse[i];
                     tabIdVitesse[i] = tabIdVitesse[j];
                     tabIdVitesse[j] = tmp;
@@ -373,40 +446,50 @@ void runGame(SDL_Renderer* rendu) {
             }
         }
 
+
         for (int i = 0; i < NB_PERSOS_EQUIPE * 2; i++) {
             int index = tabIdVitesse[i];
             AttaqueSauvegarde action = tableauAttaqueDuTour[index];
             Fighter* utilisateur = get_fighter(action.utilisateurEquipe, action.utilisateurNum);
             Fighter* cible = get_fighter(action.cibleEquipe, action.cibleNum);
-
+        
             if (action.idAttaque >= 0 && action.idAttaque < NB_ATTAQUES_TOTAL) {
                 if (!toutes_les_attaques[action.idAttaque]) {
                     SDL_Log("Erreur : attaque id %d n'est pas initialisée dans toutes_les_attaques", action.idAttaque);
                     continue;
                 }
+        
                 AttaqueSpecial* atq = toutes_les_attaques[action.idAttaque];            
                 SDL_Rect rectUtilisateur = get_rect_fighter(utilisateur);
                 SDL_Rect rectCible = get_rect_fighter(cible);
                 jouerAnimationAttaque(rendu, atq->type, rectUtilisateur, rectCible, utilisateur->element);
                 renduJeu(rendu);
+
+                if (cible != NULL) {
+                    if (cible->pt < 10) {
+                        cible->pt += 1;
+                    }
+                }
+        
+                
+        
                 fonctions_attaques[action.idAttaque](utilisateur, cible);
             } else {
                 SDL_Log("Erreur : attaque id %d invalide ou cible/utilisateur manquant", action.idAttaque);
             }
-        }
+        }        
 
-        // Vérification de fin
         if (equipe_est_morte(1)) {
-            SDL_Log("L'équipe 1 est éliminée. L'équipe 2 remporte la victoire !");
+            SDL_Log("L'équipe 1 est éliminée. L'équipe 2 gagne !");
             partieActuelle.fin = true;
         } else if (equipe_est_morte(2)) {
-            SDL_Log("L'équipe 2 est éliminée. L'équipe 1 remporte la victoire !");
+            SDL_Log("L'équipe 2 est éliminée. L'équipe 1 gagne !");
             partieActuelle.fin = true;
         }
 
         partieActuelle.tour++;
     }
 
-    SDL_Log("Fin du jeu ! Je susi libre ahahujfgvhlKZjehsBFGVKJBrzlkjfbSKHBFVKHJzsvbf\n khbon moi je vais me préparer pour le theatre orevoir");
+    SDL_Log("Fin du jeu ! Merci d'avoir joué.");
     exit(0);
 }
