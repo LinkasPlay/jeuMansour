@@ -432,7 +432,7 @@ void runGame(SDL_Renderer* rendu) {
         int equipeDebut = (partieActuelle.tour % 2 == 0) ? partieActuelle.equipeQuiCommence : 3 - partieActuelle.equipeQuiCommence;
 
 
-        
+
         // Tour de la première équipe
         for (int i = 0; i < 3; i++) {
             Fighter* perso = get_fighter(equipeDebut, i);
