@@ -399,8 +399,10 @@ void runGame(SDL_Renderer* rendu) {
     partieActuelle.tour = 1;
     partieActuelle.equipeQuiCommence = rand() % 2 + 1;
     partieActuelle.fin = false;
-    partieActuelle.mapType = 3;
-    jouerMusique("ressource/musique/mp3/combat_6.mp3", 20);
+    partieActuelle.mapType = rand()%9;
+    char musiquePath[128];
+    snprintf(musiquePath, sizeof(musiquePath), "ressource/musique/ogg/jeu/combat_%d.ogg", partieActuelle.mapType);
+    jouerMusique(musiquePath, 20);
     for (int i = 0; i < NB_PERSOS_EQUIPE * 2; i++) {
         tableauAttaqueDuTour[i] = (AttaqueSauvegarde){ .idAttaque = -1 };
     }
