@@ -614,7 +614,7 @@ Page afficher_fiche_personnage(SDL_Renderer* rendu, Fighter perso, int joueur) {
 
     TTF_Font* font = TTF_OpenFont("ressource/langue/police/arial.ttf", 28);
     TTF_SetFontStyle(font, TTF_STYLE_BOLD);         // Écriture en gras
-    TTF_SetFontOutline(font, 2);                    // Épaisseur du contour
+    TTF_SetFontOutline(font,1 );                    // Épaisseur du contour
     SDL_Color noir = {0, 0, 0, 255};
     SDL_Surface* surf = NULL;
     SDL_Texture* tex = NULL;
@@ -648,17 +648,22 @@ Page afficher_fiche_personnage(SDL_Renderer* rendu, Fighter perso, int joueur) {
         // --- Texte de présentation avec contour ---
 
         // Couleur de contour (gris foncé)
-        SDL_Color gris = {255, 255, 255, 255};
+        SDL_Color blanc = {255, 255, 255, 255};
         // Texte avec contour
         TTF_SetFontOutline(font, 2);
-        SDL_Surface* surf_contour = TTF_RenderUTF8_Solid(font, presentation, gris);
+        SDL_Surface* surf_contour = TTF_RenderUTF8_Solid(font, presentation, blanc);
         SDL_Texture* tex_contour = SDL_CreateTextureFromSurface(rendu, surf_contour);
-        SDL_Rect r_pres = {500, 60, surf_contour->w, surf_contour->h};
+        SDL_Rect r_pres = {
+            (LARGEUR_FENETRE - surf_contour->w) / 2 + 100,      //permet de gerer la position de la phrase +100 sert a decaler les pixel vers la droite
+            60,
+            surf_contour->w,
+            surf_contour->h
+        };
         SDL_RenderCopy(rendu, tex_contour, NULL, &r_pres);
         SDL_FreeSurface(surf_contour);
         SDL_DestroyTexture(tex_contour);
 
-// Texte plein (noir par-dessus)
+        // Texte plein (noir par-dessus)
         TTF_SetFontOutline(font, 0);
         SDL_Surface* surf_plein = TTF_RenderUTF8_Solid(font, presentation, noir);
         SDL_Texture* tex_plein = SDL_CreateTextureFromSurface(rendu, surf_plein);
