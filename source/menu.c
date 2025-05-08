@@ -838,14 +838,14 @@ Page afficher_selec_mode(SDL_Renderer* rendu) {
     SDL_Texture* cadre_bouton = IMG_LoadTexture(rendu, "ressource/image/cadres/cadre_texte_carre.png");
     SDL_Texture* bouton_retour = IMG_LoadTexture(rendu, "ressource/image/utilité/retour.png");
 
-    TTF_Font* police = TTF_OpenFont("ressource/langue/police/arial.ttf", 80);
+    TTF_Font* police_titre = TTF_OpenFont("ressource/langue/police/arial.ttf", 50);
+    TTF_Font* police = TTF_OpenFont("ressource/langue/police/arial.ttf", 65); // un peu plus petit qu’avant
     TTF_SetFontStyle(police, TTF_STYLE_BOLD);
-
     SDL_Color noir = {0, 0, 0, 255};
 
     int marge = 30;
     int largeur_bouton = (LARGEUR_FENETRE - 3 * marge) / 2;
-    int hauteur_bouton = HAUTEUR_FENETRE - 2 * marge;
+    int hauteur_bouton = HAUTEUR_FENETRE - 2 * marge - 100;
 
     const char* textes[2][3] = {
         {"J1", "VS", "J2"},
@@ -853,16 +853,28 @@ Page afficher_selec_mode(SDL_Renderer* rendu) {
     };
 
     SDL_Rect boutons[2] = {
-        {marge, marge, largeur_bouton, hauteur_bouton},
-        {2 * marge + largeur_bouton, marge, largeur_bouton, hauteur_bouton}
+        {marge, marge + 100, largeur_bouton, hauteur_bouton},
+        {2 * marge + largeur_bouton, marge + 100, largeur_bouton, hauteur_bouton}
     };
 
     SDL_Rect retour = {20, HAUTEUR_FENETRE - 100, 80, 80};
+
+    // Titre "Sélection du mode"
+    SDL_Surface* surf_titre = TTF_RenderUTF8_Solid(police_titre, getTexte("selection mode"), noir);
+    SDL_Texture* tex_titre = SDL_CreateTextureFromSurface(rendu, surf_titre);
+    SDL_Rect rect_titre = {
+        (LARGEUR_FENETRE - surf_titre->w) / 2,
+        30,
+        surf_titre->w,
+        surf_titre->h
+    };
+    SDL_FreeSurface(surf_titre);
 
     SDL_Event event;
     while (1) {
         SDL_RenderClear(rendu);
         SDL_RenderCopy(rendu, fond, NULL, NULL);
+        SDL_RenderCopy(rendu, tex_titre, NULL, &rect_titre);
 
         for (int i = 0; i < 2; i++) {
             SDL_RenderCopy(rendu, cadre_bouton, NULL, &boutons[i]);
@@ -892,20 +904,16 @@ Page afficher_selec_mode(SDL_Renderer* rendu) {
             if (event.type == SDL_MOUSEBUTTONDOWN) {
                 int x = event.button.x, y = event.button.y;
 
-                // 👉 Clique sur le bouton Retour en premier
                 if (x >= retour.x && x <= retour.x + retour.w &&
-                    y >= retour.y && y <= retour.y + retour.h) {
-                    return PAGE_MENU; // 🔥 Retourner au menu principal
-                }
+                    y >= retour.y && y <= retour.y + retour.h)
+                    return PAGE_MENU;
 
-                // 👉 Clique sur J1 vs J2
                 if (x >= boutons[0].x && x <= boutons[0].x + boutons[0].w &&
                     y >= boutons[0].y && y <= boutons[0].y + boutons[0].h) {
                     chemin_retour = 0;
                     return PAGE_SELECTION_PERSO;
                 }
 
-                // 👉 Clique sur J1 vs IA
                 if (x >= boutons[1].x && x <= boutons[1].x + boutons[1].w &&
                     y >= boutons[1].y && y <= boutons[1].y + boutons[1].h) {
                     chemin_retour = 1;
@@ -915,6 +923,9 @@ Page afficher_selec_mode(SDL_Renderer* rendu) {
         }
     }
 }
+
+
+
 
 
 

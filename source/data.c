@@ -273,7 +273,7 @@ Fighter katara={
 };
 
 Fighter darkshadow={
-    .nom = "dark_shadow",
+    .nom = "darkshadow",
     .actu_pv = 240,
     .max_pv =240,
     .attaque = 20,
@@ -336,6 +336,23 @@ Fighter lukas={
     .element = ELEMENT_CRISTAL,
     .pt = 0
 };
+
+
+
+
+Fighter get_fighter_depuis_nom(int index) {
+    switch (index) {
+        case 0: return darkshadow;
+        case 1: return hitsugaya;
+        case 2: return incassable;
+        case 3: return katara;
+        case 4: return kirua;
+        case 5: return rengoku;
+        case 6: return temari;
+        case 7: return zoro;
+        default: return darkshadow;
+    }
+}
 
 
 Joueur equipe1;
