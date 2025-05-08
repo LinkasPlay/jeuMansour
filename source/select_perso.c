@@ -185,8 +185,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                         if (mouseX >= pos_perso.x && mouseX <= pos_perso.x + pos_perso.w &&
                             mouseY >= pos_perso.y && mouseY <= pos_perso.y + pos_perso.h) {
                             
-                            Page retour = afficher_fiche_personnage(rendu, persoChoisi[a], tour_j1 ? 1 : 2);
-                            if (retour == PAGE_SELECTION_PERSO) continue;
+                            
                             jouer_effet("ressource/musique/ogg/persoClique.ogg", 40);  // ← AJOUT ICI
 
                             if (tour_j1 && nb_selections_j1 < 3) {
@@ -340,6 +339,10 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
             
                                     break;
                             }
+                            
+                            //Sauvegarde des choix pour afficher la fiche
+                            Page retour = afficher_fiche_personnage(rendu, persoChoisi[a], tour_j1 ? 1 : 2);
+                            if (retour == PAGE_SELECTION_PERSO) continue;
                             
                            
 
@@ -591,14 +594,6 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
     return PAGE_CONFIRMATION_PERSO;
 }
 
-const char* get_nom_image_depuis_index(int index) {
-    const char* noms[] = {
-        "darkshadow", "hitsugaya", "incassable", "katara",
-        "kirua", "rengoku", "temari", "zoro"
-    };
-    if (index >= 0 && index < 8) return noms[index];
-    return "inconnu";
-}
 
 Page afficher_fiche_personnage(SDL_Renderer* rendu, Fighter perso, int joueur) {
     SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/fonds/fond_selection_perso.png");
@@ -606,17 +601,23 @@ Page afficher_fiche_personnage(SDL_Renderer* rendu, Fighter perso, int joueur) {
     SDL_Texture* bouton_avancer = IMG_LoadTexture(rendu, "ressource/image/utilité/avance.png");
 
     // Corriger le nom pour chargement de sprite
-    const char* vrai_nom = get_nom_image_depuis_index(index_selection[joueur == 1 ? 0 : 1]);
+    const char* vrai_nom = perso.nom;
     char chemin[256];
+    SDL_Log(">> Chargement de %s", perso.nom);
     snprintf(chemin, sizeof(chemin), "ressource/image/personnages_pixel/%s.png", vrai_nom);
     SDL_Texture* sprite_pixel = IMG_LoadTexture(rendu, chemin);
+
 
     SDL_Rect rect_sprite = {50, 0, 400, HAUTEUR_FENETRE};
     SDL_Rect rect_retour = {20, HAUTEUR_FENETRE - 100, 80, 80};
     SDL_Rect rect_avancer = {LARGEUR_FENETRE - 100, HAUTEUR_FENETRE - 100, 80, 80};
 
     TTF_Font* font = TTF_OpenFont("ressource/langue/police/arial.ttf", 28);
+    TTF_SetFontStyle(font, TTF_STYLE_BOLD);         // Écriture en gras
+    TTF_SetFontOutline(font, 2);                    // Épaisseur du contour
     SDL_Color noir = {0, 0, 0, 255};
+    SDL_Surface* surf = NULL;
+    SDL_Texture* tex = NULL;
 
     const char* phrases[] = {
         "zoro",        "Rien... rien du tout. Je n'ai rien à perdre.",
@@ -644,12 +645,27 @@ Page afficher_fiche_personnage(SDL_Renderer* rendu, Fighter perso, int joueur) {
         SDL_RenderCopy(rendu, sprite_pixel, NULL, &rect_sprite);
 
         // Présentation
-        SDL_Surface* surf = TTF_RenderUTF8_Solid(font, presentation, noir);
-        SDL_Texture* tex = SDL_CreateTextureFromSurface(rendu, surf);
-        SDL_Rect r_pres = {500, 60, surf->w, surf->h};
-        SDL_RenderCopy(rendu, tex, NULL, &r_pres);
-        SDL_FreeSurface(surf);
-        SDL_DestroyTexture(tex);
+        // --- Texte de présentation avec contour ---
+
+        // Couleur de contour (gris foncé)
+        SDL_Color gris = {255, 255, 255, 255};
+        // Texte avec contour
+        TTF_SetFontOutline(font, 2);
+        SDL_Surface* surf_contour = TTF_RenderUTF8_Solid(font, presentation, gris);
+        SDL_Texture* tex_contour = SDL_CreateTextureFromSurface(rendu, surf_contour);
+        SDL_Rect r_pres = {500, 60, surf_contour->w, surf_contour->h};
+        SDL_RenderCopy(rendu, tex_contour, NULL, &r_pres);
+        SDL_FreeSurface(surf_contour);
+        SDL_DestroyTexture(tex_contour);
+
+// Texte plein (noir par-dessus)
+        TTF_SetFontOutline(font, 0);
+        SDL_Surface* surf_plein = TTF_RenderUTF8_Solid(font, presentation, noir);
+        SDL_Texture* tex_plein = SDL_CreateTextureFromSurface(rendu, surf_plein);
+        SDL_RenderCopy(rendu, tex_plein, NULL, &r_pres);
+        SDL_FreeSurface(surf_plein);
+        SDL_DestroyTexture(tex_plein);
+
 
         // Stats
         char ligne[128];
