@@ -340,7 +340,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                                     break;
                             }
                             
-                            
+                            //Sauvegarde des choix pour afficher la fiche
                             Page retour = afficher_fiche_personnage(rendu, persoChoisi[a], tour_j1 ? 1 : 2);
                             if (retour == PAGE_SELECTION_PERSO) continue;
                             
@@ -613,7 +613,11 @@ Page afficher_fiche_personnage(SDL_Renderer* rendu, Fighter perso, int joueur) {
     SDL_Rect rect_avancer = {LARGEUR_FENETRE - 100, HAUTEUR_FENETRE - 100, 80, 80};
 
     TTF_Font* font = TTF_OpenFont("ressource/langue/police/arial.ttf", 28);
+    TTF_SetFontStyle(font, TTF_STYLE_BOLD);         // Écriture en gras
+    TTF_SetFontOutline(font, 2);                    // Épaisseur du contour
     SDL_Color noir = {0, 0, 0, 255};
+    SDL_Surface* surf = NULL;
+    SDL_Texture* tex = NULL;
 
     const char* phrases[] = {
         "zoro",        "Rien... rien du tout. Je n'ai rien à perdre.",
@@ -641,12 +645,27 @@ Page afficher_fiche_personnage(SDL_Renderer* rendu, Fighter perso, int joueur) {
         SDL_RenderCopy(rendu, sprite_pixel, NULL, &rect_sprite);
 
         // Présentation
-        SDL_Surface* surf = TTF_RenderUTF8_Solid(font, presentation, noir);
-        SDL_Texture* tex = SDL_CreateTextureFromSurface(rendu, surf);
-        SDL_Rect r_pres = {500, 60, surf->w, surf->h};
-        SDL_RenderCopy(rendu, tex, NULL, &r_pres);
-        SDL_FreeSurface(surf);
-        SDL_DestroyTexture(tex);
+        // --- Texte de présentation avec contour ---
+
+        // Couleur de contour (gris foncé)
+        SDL_Color gris = {255, 255, 255, 255};
+        // Texte avec contour
+        TTF_SetFontOutline(font, 2);
+        SDL_Surface* surf_contour = TTF_RenderUTF8_Solid(font, presentation, gris);
+        SDL_Texture* tex_contour = SDL_CreateTextureFromSurface(rendu, surf_contour);
+        SDL_Rect r_pres = {500, 60, surf_contour->w, surf_contour->h};
+        SDL_RenderCopy(rendu, tex_contour, NULL, &r_pres);
+        SDL_FreeSurface(surf_contour);
+        SDL_DestroyTexture(tex_contour);
+
+// Texte plein (noir par-dessus)
+        TTF_SetFontOutline(font, 0);
+        SDL_Surface* surf_plein = TTF_RenderUTF8_Solid(font, presentation, noir);
+        SDL_Texture* tex_plein = SDL_CreateTextureFromSurface(rendu, surf_plein);
+        SDL_RenderCopy(rendu, tex_plein, NULL, &r_pres);
+        SDL_FreeSurface(surf_plein);
+        SDL_DestroyTexture(tex_plein);
+
 
         // Stats
         char ligne[128];
