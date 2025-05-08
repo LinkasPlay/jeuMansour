@@ -342,7 +342,19 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                             
                             //Sauvegarde des choix pour afficher la fiche
                             Page retour = afficher_fiche_personnage(rendu, persoChoisi[a], tour_j1 ? 1 : 2);
-                            if (retour == PAGE_SELECTION_PERSO) continue;
+                            if (retour == PAGE_SELECTION_PERSO) {
+                                // Annulation de la sélection
+                                perso_disponible[i] = true;
+                                if (tour_j1 && nb_selections_j1 > 0) {
+                                    nb_selections_j1--;
+                                    selections_j1[nb_selections_j1] = NULL;
+                                } else if (!tour_j1 && nb_selections_j2 > 0) {
+                                    nb_selections_j2--;
+                                    selections_j2[nb_selections_j2] = NULL;
+                                }
+                                continue;
+                            }
+
                             
                            
 
