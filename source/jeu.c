@@ -11,7 +11,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
 
-
+int ecartementPont = 40;
 
 AttaqueSauvegarde tableauAttaqueDuTour [NB_PERSOS_EQUIPE * 2];
 
@@ -105,7 +105,7 @@ AttaqueSauvegarde choisirCible(SDL_Renderer* rendu, int equipeAdverse, AttaqueSa
         // surbrillance avec flèche
         for (int i = 0; i < 3; i++) {
             int x = x_start + direction * i * (100 + 30);
-            int y = (HAUTEUR_FENETRE - 100) / 2 + i * 30 + ECARTEMENT_PONT;
+            int y = (HAUTEUR_FENETRE - 100) / 2 + i * 30 + ecartementPont;
             SDL_Rect zone = {x, y, 100, 100};
 
             if (mx >= zone.x && mx <= zone.x + zone.w &&
@@ -140,7 +140,7 @@ AttaqueSauvegarde choisirCible(SDL_Renderer* rendu, int equipeAdverse, AttaqueSa
             } else if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
                 for (int i = 0; i < 3; i++) {
                     int x = x_start + direction * i * (100 + 30);
-                    int y = (HAUTEUR_FENETRE - 100) / 2 + i * 30 + ECARTEMENT_PONT;
+                    int y = (HAUTEUR_FENETRE - 100) / 2 + i * 30 + ecartementPont;
                     SDL_Rect zone = {x, y, 100, 100};
 
                     if (mx >= zone.x && mx <= zone.x + zone.w &&
@@ -399,7 +399,22 @@ void runGame(SDL_Renderer* rendu) {
     partieActuelle.tour = 1;
     partieActuelle.equipeQuiCommence = rand() % 2 + 1;
     partieActuelle.fin = false;
-    partieActuelle.mapType = 3;
+    partieActuelle.mapType = 9;
+
+    switch (partieActuelle.mapType)
+    {
+    case 0:     ecartementPont = -25;    break;
+    case 1:     ecartementPont = 20;    break;
+    case 2:     ecartementPont = -25;    break;
+    case 3:     ecartementPont = -10;    break;
+    case 4:     ecartementPont = -20;    break;
+    case 5:     ecartementPont = 10;    break;
+    case 6:     ecartementPont = -20;    break;
+    case 7:     ecartementPont = 70;    break;
+    case 8:     ecartementPont = -50;    break;    
+    default:
+        break;
+    }
     jouerMusique("ressource/musique/mp3/combat_6.mp3", 20);
     for (int i = 0; i < NB_PERSOS_EQUIPE * 2; i++) {
         tableauAttaqueDuTour[i] = (AttaqueSauvegarde){ .idAttaque = -1 };
