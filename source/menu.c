@@ -8,7 +8,7 @@
 #include "langue.h"
 
 
-int volume_global = 64; // entre 0 et 128
+int volume_global = 20; // entre 0 et 128
 int musique_actuelle = 1; // 1, 2 ou 3
 
 
