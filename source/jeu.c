@@ -17,7 +17,7 @@ AttaqueSauvegarde tableauAttaqueDuTour [NB_PERSOS_EQUIPE * 2];
 
 // ====================== GAMEPLAY ====================
 
-Fighter appliquer_modificateurs(Fighter* original) {
+Fighter appliquer_modificateurs(Fighter* original){
     Fighter copie = *original;
 
     switch (copie.statutEffet) {
@@ -401,6 +401,10 @@ void runGame(SDL_Renderer* rendu) {
     partieActuelle.fin = false;
     partieActuelle.mapType = 9;
 
+    partieActuelle.mapType = rand()%9;
+    char musiquePath[128];
+    snprintf(musiquePath, sizeof(musiquePath), "ressource/musique/ogg/jeu/combat_%d.ogg", partieActuelle.mapType);
+
     switch (partieActuelle.mapType)
     {
     case 0:     ecartementPont = -25;    break;
@@ -415,7 +419,7 @@ void runGame(SDL_Renderer* rendu) {
     default:
         break;
     }
-    jouerMusique("ressource/musique/mp3/combat_6.mp3", 20);
+    jouerMusique(musiquePath, 20);
     for (int i = 0; i < NB_PERSOS_EQUIPE * 2; i++) {
         tableauAttaqueDuTour[i] = (AttaqueSauvegarde){ .idAttaque = -1 };
     }
