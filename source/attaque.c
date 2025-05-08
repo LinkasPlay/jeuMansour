@@ -66,6 +66,7 @@ FonctionAttaque fonctions_attaques[NB_ATTAQUES_TOTAL] = {
 };
 
 // Effet de soin
+
 void soin_effet(Fighter* lanceur, Fighter* cible, int quantite) {
     int avant = cible->actu_pv;
     int apres = avant + quantite;
