@@ -112,6 +112,7 @@ int main(int argc, char* argv[]) {
 
             case PAGE_HISTOIRE:
                 arreter_musique();
+                
                 musique_menu_jouee = 0;
                 page = afficher_histoire(rendu);
                 break;

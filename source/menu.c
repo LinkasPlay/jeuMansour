@@ -241,6 +241,8 @@ Page afficher_menu(SDL_Renderer* rendu) {
     SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/fonds/fond_menu.png");
     SDL_Texture* cadre_titre = IMG_LoadTexture(rendu, "ressource/image/cadres/cadre_titre.png");
     SDL_Texture* cadre_bouton = IMG_LoadTexture(rendu, "ressource/image/cadres/cadre_texte.png");
+    SDL_Texture* image_trophee = IMG_LoadTexture(rendu, "ressource/image/utilité/trophee.png");
+    SDL_Texture* image_manette = IMG_LoadTexture(rendu, "ressource/image/utilité/manette.png");
 
     TTF_Font* police = TTF_OpenFont("ressource/langue/police/arial.ttf", 40);
     SDL_Color noir = {0, 0, 0, 255};
@@ -258,14 +260,26 @@ Page afficher_menu(SDL_Renderer* rendu) {
     };
     const char* ids_textes[] = {"jouer", "options", "quitter"};
 
+    // Position trophée (en bas à droite)
+    SDL_Rect rect_trophee = {
+        LARGEUR_FENETRE - 120,   // x
+        HAUTEUR_FENETRE - 140,   // y
+        100, 100                 // w, h
+    };
+
+    // Position manette (au-dessus du trophée)
+    SDL_Rect rect_manette = {
+        LARGEUR_FENETRE - 120,
+        HAUTEUR_FENETRE - 260,
+        100, 100
+    };
+
     SDL_RenderClear(rendu);
     SDL_RenderCopy(rendu, fond, NULL, NULL);
     SDL_RenderCopy(rendu, cadre_titre, NULL, &zone_titre);
 
-    // Boutons
     for (int i = 0; i < 3; i++) {
         SDL_RenderCopy(rendu, cadre_bouton, NULL, &boutons[i]);
-
         SDL_Surface* surf = TTF_RenderUTF8_Solid(police, getTexte(ids_textes[i]), noir);
         SDL_Texture* tex = SDL_CreateTextureFromSurface(rendu, surf);
         SDL_Rect txt = {
@@ -278,6 +292,10 @@ Page afficher_menu(SDL_Renderer* rendu) {
         SDL_FreeSurface(surf);
         SDL_DestroyTexture(tex);
     }
+
+    // Affichage des icônes
+    SDL_RenderCopy(rendu, image_trophee, NULL, &rect_trophee);
+    SDL_RenderCopy(rendu, image_manette, NULL, &rect_manette);
 
     SDL_RenderPresent(rendu);
 
@@ -326,7 +344,7 @@ Page afficher_menu(SDL_Renderer* rendu) {
 
 
 
-
+Page afficher_credit(SDL_Renderer* rendu, Page page_prec);
 
 
 // === OPTIONS ===
@@ -335,13 +353,19 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
     SDL_Texture* cadre_bouton = IMG_LoadTexture(rendu, "ressource/image/cadres/cadre_texte.png");
     SDL_Texture* bouton_retour = IMG_LoadTexture(rendu, "ressource/image/utilité/retour.png");
 
-    SDL_Texture* drapeauAllemand = IMG_LoadTexture(rendu, "ressource/image/utilité/drapeauAllemand.png");
-    SDL_Texture* drapeauAnglais  = IMG_LoadTexture(rendu, "ressource/image/utilité/drapeauAnglais.png");
-    SDL_Texture* drapeauEspagnol = IMG_LoadTexture(rendu, "ressource/image/utilité/drapeauEspagnol.png");
-    SDL_Texture* drapeauFrancais = IMG_LoadTexture(rendu, "ressource/image/utilité/drapeauFrancais.png");
+    SDL_Texture* drapeauAllemand = IMG_LoadTexture(rendu, "ressource/image/utilité/drapeau/drapeauAllemand.png");
+    SDL_Texture* drapeauAnglais  = IMG_LoadTexture(rendu, "ressource/image/utilité/drapeau/drapeauAnglais.png");
+    SDL_Texture* drapeauEspagnol = IMG_LoadTexture(rendu, "ressource/image/utilité/drapeau/drapeauEspagnol.png");
+    SDL_Texture* drapeauFrancais = IMG_LoadTexture(rendu, "ressource/image/utilité/drapeau/drapeauFrancais.png");
+
+    SDL_Texture* images_musiques[6];
+    for (int i = 0; i < 6; i++) {
+        char chemin[128];
+        sprintf(chemin, "ressource/image/utilité/musique/menu_%d.png", i + 1);
+        images_musiques[i] = IMG_LoadTexture(rendu, chemin);
+    }
 
     const char* ids_textes[] = {"credit", "langue", "volume", "musique"};
-    const char* noms_musiques[] = {"musique_1", "musique_2", "musique_3", "musique_4", "musique_5", "musique_6"};
 
     SDL_Color blanc = {255, 255, 255, 255};
     TTF_Font* police = TTF_OpenFont("ressource/langue/police/arial.ttf", 40);
@@ -368,10 +392,26 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
     for (int i = 0; i < 6; i++) {
         int ligne = i / 3;
         int colonne = i % 3;
-        musiques[i].x = LARGEUR_FENETRE / 2 - 310 + colonne * 210;
-        musiques[i].y = barre.y + 150 + ligne * 80;
-        musiques[i].w = 200;
-        musiques[i].h = 60;
+
+        int largeur = 200;
+        int hauteur = 150;
+        int espacement_base = 280;
+        int decalage_col_1 = 90;
+        int decalage_col_2 = 150;
+
+        musiques[i].w = largeur;
+        musiques[i].h = hauteur;
+
+        int base_x = LARGEUR_FENETRE / 2 - (espacement_base * 3) / 2;
+
+        musiques[i].x = base_x + colonne * espacement_base;
+        if (colonne == 1) musiques[i].x += decalage_col_1;
+        if (colonne == 2) musiques[i].x += decalage_col_2;
+
+        musiques[i].y = barre.y + 100 + ligne * (hauteur + 30);
+
+        if (ligne == 0) musiques[i].y -= 50;
+        if (ligne == 1) musiques[i].y -= 80;
     }
 
     int drapeau_taille = 110;
@@ -451,33 +491,36 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
         SDL_DestroyTexture(tex_volume);
 
         for (int i = 0; i < 6; i++) {
-            SDL_SetRenderDrawColor(rendu, 100, 100, 100, 255);
-            SDL_RenderFillRect(rendu, &musiques[i]);
-            SDL_Surface* surf = TTF_RenderUTF8_Solid(police, getTexte(noms_musiques[i]), blanc);
-            SDL_Texture* tex = SDL_CreateTextureFromSurface(rendu, surf);
-            SDL_Rect txt = {
-                musiques[i].x + (musiques[i].w - surf->w) / 2,
-                musiques[i].y + (musiques[i].h - surf->h) / 2,
-                surf->w,
-                surf->h
-            };
-            SDL_RenderCopy(rendu, tex, NULL, &txt);
-            SDL_FreeSurface(surf);
-            SDL_DestroyTexture(tex);
+            SDL_RenderCopy(rendu, images_musiques[i], NULL, &musiques[i]);
         }
 
         SDL_RenderCopy(rendu, bouton_retour, NULL, &retour_rect);
         SDL_RenderPresent(rendu);
 
         while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) return PAGE_QUITTER;
+            if (event.type == SDL_QUIT) {
+                for (int i = 0; i < 6; i++) SDL_DestroyTexture(images_musiques[i]);
+                return PAGE_QUITTER;
+            }
 
             if (event.type == SDL_MOUSEBUTTONDOWN) {
                 int x = event.button.x, y = event.button.y;
 
+                // Bouton crédit (en haut)
+                if (x >= boutons[0].x && x <= boutons[0].x + boutons[0].w &&
+                    y >= boutons[0].y && y <= boutons[0].y + boutons[0].h) {
+                    Page retour = afficher_credit(rendu, PAGE_OPTIONS);
+                    if (retour == PAGE_QUITTER) {
+                        for (int i = 0; i < 6; i++) SDL_DestroyTexture(images_musiques[i]);
+                        return PAGE_QUITTER;
+                    }
+                }
+
                 if (x >= retour_rect.x && x <= retour_rect.x + retour_rect.w &&
-                    y >= retour_rect.y && y <= retour_rect.y + retour_rect.h)
+                    y >= retour_rect.y && y <= retour_rect.y + retour_rect.h) {
+                    for (int i = 0; i < 6; i++) SDL_DestroyTexture(images_musiques[i]);
                     return page_prec;
+                }
 
                 if (x >= barre.x && x <= barre.x + barre.w &&
                     y >= barre.y && y <= barre.y + barre.h) {
@@ -525,6 +568,181 @@ Page afficher_options(SDL_Renderer* rendu, Page page_prec) {
 
 
 
+
+
+Page afficher_credit(SDL_Renderer* rendu, Page page_prec){
+    SDL_Event event;
+
+    SDL_Texture* bouton_retour = IMG_LoadTexture(rendu, "ressource/image/utilité/retour.png");
+    SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/fonds/credit.png");
+
+    if (!fond) {
+        printf("Erreur chargement fond credit : %s\n", IMG_GetError());
+    }
+
+    SDL_Rect retour_rect = {20, HAUTEUR_FENETRE - 100, 80, 80};
+
+    TTF_Font* font = TTF_OpenFont("ressource/langue/police/arial.ttf", 28);
+    if (!font) {
+        printf("Erreur chargement police : %s\n", TTF_GetError());
+        SDL_DestroyTexture(bouton_retour);
+        SDL_DestroyTexture(fond);
+        return page_prec;
+    }
+
+    const char* lignes[] = {
+        "Project Shonen Smash – Credits",
+        "",
+        "Développement principal :",
+        "Mansour Wajih",
+        "  Intégration SDL2 (affichages, sons, transitions)",
+        "  Programmation du gameplay, des menus, du système de combat",
+        "  Organisation générale du projet",
+        "",
+        "Yanis",
+        "  Développement du gameplay (attaques, tours, effets)",
+        "  Élaboration des interfaces et logique de jeu",
+        "",
+        "Malak",
+        "  Sélection et structuration des personnages jouables",
+        "  Création des attaques spéciales et des effets de statut",
+        "  Équilibrage du système de combat",
+        "",
+        "Collaborations :",
+        "Loukas",
+        "  Contributions techniques sur certains éléments de l’interface SDL2",
+        "  Suggestions sur l’organisation des fichiers et du code",
+        "",
+        "Nemu",
+        "  Création des sprites pixelisés des personnages",
+        "  Contribution au style visuel du jeu",
+        "",
+        "Technologies utilisées :",
+        "  Langage C (standard ANSI)",
+        "  SDL2 – SDL_image – SDL_mixer – SDL_ttf",
+        "  Architecture modulaire : menus, combats, options, transitions...",
+        "",
+        "Contexte :",
+        "  Projet universitaire réalisé à CY Tech",
+        "  Création d’un jeu complet en SDL2 avec gameplay 3v3",
+        "  Année académique 2025",
+        "",
+        "Remerciements :",
+        "  Nos enseignants pour leur accompagnement",
+        "  Les joueurs ayant testé le jeu et partagé leurs retours",
+        "  ChatGPT, notre débugger de l’ombre",
+        "    Qui corrige les erreurs SDL avant même qu’on crie à l’aide",
+        "    Et qui supporte nos boucles infinies à 3h du matin",
+        "  Bon... certaines musiques ne sont pas libres de droits,",
+        "  mais c’était pour la bonne cause : créer une vraie ambiance !",
+        "",
+        "Merci d’avoir joué à Project Shonen Smash !",
+        "Édition 2025 – Forgé entre lignes de code et éclats de pixels",
+        "Le rideau tombe...",
+        "Mais l'aventure, elle, ne fait que commencer !"
+    };
+    
+
+    int nb_lignes = sizeof(lignes) / sizeof(lignes[0]);
+    int y_offset = HAUTEUR_FENETRE;
+
+    Mix_HaltMusic();
+    jouerMusique("ressource/musique/ogg/credit.ogg", volume_global);
+
+    while (1) {
+        SDL_RenderCopy(rendu, fond, NULL, NULL);
+
+        for (int i = 0; i < nb_lignes; i++) {
+            if (!lignes[i] || strlen(lignes[i]) == 0) continue;
+
+            SDL_Color couleur;
+
+            if (strcmp(lignes[i], "Project Shonen Smash – Credits") == 0) {
+                couleur = (SDL_Color){100, 180, 255, 255}; // Bleu
+            } else if (
+                strcmp(lignes[i], "Mansour Wajih") == 0 ||
+                strcmp(lignes[i], "Yanis") == 0 ||
+                strcmp(lignes[i], "Malak") == 0 ||
+                strcmp(lignes[i], "Loukas") == 0 ||
+                strcmp(lignes[i], "Nemu") == 0
+            ) {
+                couleur = (SDL_Color){255, 70, 70, 255}; // Rouge
+            } else if (
+                strcmp(lignes[i], "Developpement principal :") == 0 ||
+                strcmp(lignes[i], "Collaborations :") == 0 ||
+                strcmp(lignes[i], "Technologies utilisees :") == 0 ||
+                strcmp(lignes[i], "Contexte :") == 0 ||
+                strcmp(lignes[i], "Remerciements :") == 0
+            ) {
+                couleur = (SDL_Color){255, 215, 0, 255}; // Jaune
+            } else {
+                couleur = (SDL_Color){255, 255, 255, 255}; // Blanc
+            }
+
+            SDL_Surface* surf = TTF_RenderUTF8_Solid(font, lignes[i], couleur);
+            if (!surf) continue;
+
+            SDL_Texture* tex = SDL_CreateTextureFromSurface(rendu, surf);
+            if (!tex) {
+                SDL_FreeSurface(surf);
+                continue;
+            }
+
+            SDL_Rect rect = {
+                (LARGEUR_FENETRE - surf->w) / 2,
+                y_offset + i * 40,
+                surf->w,
+                surf->h
+            };
+
+            SDL_RenderCopy(rendu, tex, NULL, &rect);
+            SDL_FreeSurface(surf);
+            SDL_DestroyTexture(tex);
+        }
+
+        SDL_RenderCopy(rendu, bouton_retour, NULL, &retour_rect);
+        SDL_RenderPresent(rendu);
+
+        SDL_Delay(30);
+        y_offset -= 5; // Défilement rapide
+
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                SDL_DestroyTexture(bouton_retour);
+                SDL_DestroyTexture(fond);
+                TTF_CloseFont(font);
+                return PAGE_QUITTER;
+            }
+
+            if (event.type == SDL_MOUSEBUTTONDOWN) {
+                int x = event.button.x, y = event.button.y;
+                if (x >= retour_rect.x && x <= retour_rect.x + retour_rect.w &&
+                    y >= retour_rect.y && y <= retour_rect.y + retour_rect.h) {
+
+                    SDL_DestroyTexture(bouton_retour);
+                    SDL_DestroyTexture(fond);
+                    TTF_CloseFont(font);
+
+                    char chemin[128];
+                    sprintf(chemin, "ressource/musique/ogg/menu/menu_%d.ogg", musique_actuelle);
+                    jouerMusique(chemin, volume_global);
+                    return page_prec;
+                }
+            }
+        }
+
+        if (y_offset + nb_lignes * 40 < 0) {
+            SDL_DestroyTexture(bouton_retour);
+            SDL_DestroyTexture(fond);
+            TTF_CloseFont(font);
+
+            char chemin[128];
+            sprintf(chemin, "ressource/musique/ogg/menu/menu_%d.ogg", musique_actuelle);
+            jouerMusique(chemin, volume_global);
+            return page_prec;
+        }
+    }
+}
 
 
 
