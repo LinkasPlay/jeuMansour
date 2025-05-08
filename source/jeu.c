@@ -12,12 +12,11 @@
 #include <SDL2/SDL_mixer.h>
 
 
-
 AttaqueSauvegarde tableauAttaqueDuTour [NB_PERSOS_EQUIPE * 2];
 
 // ====================== GAMEPLAY ====================
 
-Fighter appliquer_modificateurs(Fighter* original) {
+Fighter appliquer_modificateurs(Fighter* original){
     Fighter copie = *original;
 
     switch (copie.statutEffet) {

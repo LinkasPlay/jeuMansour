@@ -992,26 +992,16 @@ Page afficher_selec_difficulte(SDL_Renderer* rendu) {
                 // Clic sur "Facile"
                 if (x >= boutons[0].x && x <= boutons[0].x + boutons[0].w &&
                     y >= boutons[0].y && y <= boutons[0].y + boutons[0].h) {
-                    /*
-                    IA facile
-
-
-                    
-                    */
-                    
+                  
+                        partieActuelle.iaDifficulte=1;
                         return PAGE_SELECTION_PERSO;
                 }
         
                 // Clic sur "Moyen"
                 if (x >= boutons[1].x && x <= boutons[1].x + boutons[1].w &&
                     y >= boutons[1].y && y <= boutons[1].y + boutons[1].h) {
-                    
-                    /*
-                    IA moyen
-                    
-                    
-                    */
-                    
+                  
+                        partieActuelle.iaDifficulte=2;
                         return PAGE_SELECTION_PERSO;
                 }
         
@@ -1019,13 +1009,7 @@ Page afficher_selec_difficulte(SDL_Renderer* rendu) {
                 if (x >= boutons[2].x && x <= boutons[2].x + boutons[2].w &&
                     y >= boutons[2].y && y <= boutons[2].y + boutons[2].h) {
                     
-                    /*
-                    IA difficile
-
-                    
-                    */
-                    
-                    
+                        partieActuelle.iaDifficulte=3;
                         return PAGE_SELECTION_PERSO;
                 }
         
