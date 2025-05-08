@@ -185,8 +185,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                         if (mouseX >= pos_perso.x && mouseX <= pos_perso.x + pos_perso.w &&
                             mouseY >= pos_perso.y && mouseY <= pos_perso.y + pos_perso.h) {
                             
-                            Page retour = afficher_fiche_personnage(rendu, persoChoisi[a], tour_j1 ? 1 : 2);
-                            if (retour == PAGE_SELECTION_PERSO) continue;
+                            
                             jouer_effet("ressource/musique/ogg/persoClique.ogg", 40);  // ← AJOUT ICI
 
                             if (tour_j1 && nb_selections_j1 < 3) {
@@ -340,6 +339,10 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
             
                                     break;
                             }
+                            
+                            
+                            Page retour = afficher_fiche_personnage(rendu, persoChoisi[a], tour_j1 ? 1 : 2);
+                            if (retour == PAGE_SELECTION_PERSO) continue;
                             
                            
 
@@ -591,14 +594,6 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
     return PAGE_CONFIRMATION_PERSO;
 }
 
-const char* get_nom_image_depuis_index(int index) {
-    const char* noms[] = {
-        "darkshadow", "hitsugaya", "incassable", "katara",
-        "kirua", "rengoku", "temari", "zoro"
-    };
-    if (index >= 0 && index < 8) return noms[index];
-    return "inconnu";
-}
 
 Page afficher_fiche_personnage(SDL_Renderer* rendu, Fighter perso, int joueur) {
     SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/fonds/fond_selection_perso.png");
@@ -606,10 +601,12 @@ Page afficher_fiche_personnage(SDL_Renderer* rendu, Fighter perso, int joueur) {
     SDL_Texture* bouton_avancer = IMG_LoadTexture(rendu, "ressource/image/utilité/avance.png");
 
     // Corriger le nom pour chargement de sprite
-    const char* vrai_nom = get_nom_image_depuis_index(index_selection[joueur == 1 ? 0 : 1]);
+    const char* vrai_nom = perso.nom;
     char chemin[256];
+    SDL_Log(">> Chargement de %s", perso.nom);
     snprintf(chemin, sizeof(chemin), "ressource/image/personnages_pixel/%s.png", vrai_nom);
     SDL_Texture* sprite_pixel = IMG_LoadTexture(rendu, chemin);
+
 
     SDL_Rect rect_sprite = {50, 0, 400, HAUTEUR_FENETRE};
     SDL_Rect rect_retour = {20, HAUTEUR_FENETRE - 100, 80, 80};
