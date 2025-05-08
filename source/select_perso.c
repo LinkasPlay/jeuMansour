@@ -353,154 +353,160 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
 
                             //_____________________________________IA____________________________________//
 
-                            if(partieActuelle.iaDifficulte>0 &&(!tour_j1)){
-                                
-                                
-                                i=rand()% 8;
-                                switch(i){
+                            if (partieActuelle.iaDifficulte > 0 && !tour_j1 && nb_selections_j2 < 3) {
+                                int choix = -1;
+                                do {
+                                    choix = rand() % 8;
+                                    switch(choix){
 
-                                    case 0:
-                                        strcpy(persoChoisi[a].nom,"darkshadow");
-                                        persoChoisi[a].actu_pv=darkshadow.actu_pv;
-                                        persoChoisi[a].max_pv=darkshadow.max_pv;
-                                        persoChoisi[a].attaque=darkshadow.attaque;
-                                        persoChoisi[a].defense=darkshadow.defense;
-                                        persoChoisi[a].agilite=darkshadow.agilite;
-                                        persoChoisi[a].vitesse=darkshadow.vitesse;
-                                        persoChoisi[a].element=darkshadow.element;
-                                        persoChoisi[a].spe_atq1 = crepuscule;
-                                        persoChoisi[a].spe_atq2 = hurlementNoir;
-                                        persoChoisi[a].spe_atq3 = brumeProtectrice;
-                                        index_selection[a] = i;
-                                        break;
-                                   
-                                    case 1:
-                                    
-                                        strcpy(persoChoisi[a].nom,"hitsugaya");
-                                        persoChoisi[a].actu_pv=hitsugaya.actu_pv;
-                                        persoChoisi[a].max_pv=hitsugaya.max_pv;
-                                        persoChoisi[a].attaque=hitsugaya.attaque;
-                                        persoChoisi[a].defense=hitsugaya.defense;
-                                        persoChoisi[a].agilite=hitsugaya.agilite;
-                                        persoChoisi[a].vitesse=hitsugaya.vitesse;
-                                        persoChoisi[a].element=hitsugaya.element;
-                                        persoChoisi[a].spe_atq1 = prisonDeGivre;
-                                        persoChoisi[a].spe_atq2 = blizzard;
-                                        persoChoisi[a].spe_atq3 = glaceCurative;
-                                        index_selection[a] = i;
-                                        break;
-                                    case 2:
-                                    
-                                        strcpy(persoChoisi[a].nom,"incassable");
-                                        persoChoisi[a].actu_pv=incassable.actu_pv;
-                                        persoChoisi[a].max_pv=incassable.max_pv;
-                                        persoChoisi[a].attaque=incassable.attaque;
-                                        persoChoisi[a].defense=incassable.defense;
-                                        persoChoisi[a].agilite=incassable.agilite;
-                                        persoChoisi[a].vitesse=incassable.vitesse;
-                                        persoChoisi[a].element=incassable.element;
-                                        persoChoisi[a].spe_atq1 = murVivant;
-                                        persoChoisi[a].spe_atq2 = barriereDePierre;
-                                        persoChoisi[a].spe_atq3 = rugissementDacier;
-                                        index_selection[a] = i;
-                                        break;
-                                    
-                                    case 3:
+                                        case 0:
+                                            strcpy(persoChoisi[a].nom,"darkshadow");
+                                            persoChoisi[a].actu_pv=darkshadow.actu_pv;
+                                            persoChoisi[a].max_pv=darkshadow.max_pv;
+                                            persoChoisi[a].attaque=darkshadow.attaque;
+                                            persoChoisi[a].defense=darkshadow.defense;
+                                            persoChoisi[a].agilite=darkshadow.agilite;
+                                            persoChoisi[a].vitesse=darkshadow.vitesse;
+                                            persoChoisi[a].element=darkshadow.element;
+                                            persoChoisi[a].spe_atq1 = crepuscule;
+                                            persoChoisi[a].spe_atq2 = hurlementNoir;
+                                            persoChoisi[a].spe_atq3 = brumeProtectrice;
+                                            index_selection[a] = i;
+                                            break;
+                                       
+                                        case 1:
                                         
-                                        strcpy(persoChoisi[a].nom,"katara");
-                                        persoChoisi[a].actu_pv=katara.actu_pv;
-                                        persoChoisi[a].max_pv=katara.max_pv;
-                                        persoChoisi[a].attaque=katara.attaque;
-                                        persoChoisi[a].defense=katara.defense;
-                                        persoChoisi[a].agilite=katara.agilite;
-                                        persoChoisi[a].vitesse=katara.vitesse;
-                                        persoChoisi[a].element=katara.element;
-                                        persoChoisi[a].spe_atq1 = lienDeSang;
-                                        persoChoisi[a].spe_atq2 = vagueGuerisseuse;
-                                        persoChoisi[a].spe_atq3 = eveilLunaire;
-                                        index_selection[a] = i;
-                                        break;
-                                    
-                                    case 4:
-                                    
-                                        strcpy(persoChoisi[a].nom,"kirua");
-                                        persoChoisi[a].actu_pv=kirua.actu_pv;
-                                        persoChoisi[a].max_pv=kirua.max_pv;
-                                        persoChoisi[a].attaque=kirua.attaque;
-                                        persoChoisi[a].defense=kirua.defense;
-                                        persoChoisi[a].agilite=kirua.agilite;
-                                        persoChoisi[a].vitesse=kirua.vitesse;
-                                        persoChoisi[a].element=kirua.element;
-                                        persoChoisi[a].spe_atq1 = fulgurance;
-                                        persoChoisi[a].spe_atq2 = foudreEnchainee;
-                                        persoChoisi[a].spe_atq3 = executionRapide;
-                                        index_selection[a] = i;
-                                        break;
+                                            strcpy(persoChoisi[a].nom,"hitsugaya");
+                                            persoChoisi[a].actu_pv=hitsugaya.actu_pv;
+                                            persoChoisi[a].max_pv=hitsugaya.max_pv;
+                                            persoChoisi[a].attaque=hitsugaya.attaque;
+                                            persoChoisi[a].defense=hitsugaya.defense;
+                                            persoChoisi[a].agilite=hitsugaya.agilite;
+                                            persoChoisi[a].vitesse=hitsugaya.vitesse;
+                                            persoChoisi[a].element=hitsugaya.element;
+                                            persoChoisi[a].spe_atq1 = prisonDeGivre;
+                                            persoChoisi[a].spe_atq2 = blizzard;
+                                            persoChoisi[a].spe_atq3 = glaceCurative;
+                                            index_selection[a] = i;
+                                            break;
+                                        case 2:
                                         
-                                    case 5:
-                                    
-                                        strcpy(persoChoisi[a].nom,"rengoku");
-                                        persoChoisi[a].actu_pv=rengoku.actu_pv;
-                                        persoChoisi[a].max_pv=rengoku.max_pv;
-                                        persoChoisi[a].attaque=rengoku.attaque;
-                                        persoChoisi[a].defense=rengoku.defense;
-                                        persoChoisi[a].agilite=rengoku.agilite;
-                                        persoChoisi[a].vitesse=rengoku.vitesse;
-                                        persoChoisi[a].element=rengoku.element;
-                                        persoChoisi[a].spe_atq1 = flammesSolaires;
-                                        persoChoisi[a].spe_atq2 = explosionArdente;
-                                        persoChoisi[a].spe_atq3 = espritFlamboyant;
-                                        index_selection[a] = i;
-                                        break;
+                                            strcpy(persoChoisi[a].nom,"incassable");
+                                            persoChoisi[a].actu_pv=incassable.actu_pv;
+                                            persoChoisi[a].max_pv=incassable.max_pv;
+                                            persoChoisi[a].attaque=incassable.attaque;
+                                            persoChoisi[a].defense=incassable.defense;
+                                            persoChoisi[a].agilite=incassable.agilite;
+                                            persoChoisi[a].vitesse=incassable.vitesse;
+                                            persoChoisi[a].element=incassable.element;
+                                            persoChoisi[a].spe_atq1 = murVivant;
+                                            persoChoisi[a].spe_atq2 = barriereDePierre;
+                                            persoChoisi[a].spe_atq3 = rugissementDacier;
+                                            index_selection[a] = i;
+                                            break;
                                         
-                                    case 6:
+                                        case 3:
+                                            
+                                            strcpy(persoChoisi[a].nom,"katara");
+                                            persoChoisi[a].actu_pv=katara.actu_pv;
+                                            persoChoisi[a].max_pv=katara.max_pv;
+                                            persoChoisi[a].attaque=katara.attaque;
+                                            persoChoisi[a].defense=katara.defense;
+                                            persoChoisi[a].agilite=katara.agilite;
+                                            persoChoisi[a].vitesse=katara.vitesse;
+                                            persoChoisi[a].element=katara.element;
+                                            persoChoisi[a].spe_atq1 = lienDeSang;
+                                            persoChoisi[a].spe_atq2 = vagueGuerisseuse;
+                                            persoChoisi[a].spe_atq3 = eveilLunaire;
+                                            index_selection[a] = i;
+                                            break;
                                         
-                                        strcpy(persoChoisi[a].nom,"temari");
-                                        persoChoisi[a].actu_pv=temari.actu_pv;
-                                        persoChoisi[a].max_pv=temari.max_pv;
-                                        persoChoisi[a].attaque=temari.attaque;
-                                        persoChoisi[a].defense=temari.defense;
-                                        persoChoisi[a].agilite=temari.agilite;
-                                        persoChoisi[a].vitesse=temari.vitesse;
-                                        persoChoisi[a].element=temari.element;
-                                        persoChoisi[a].spe_atq1 = danseDuVent;
-                                        persoChoisi[a].spe_atq2 = ventPercant;
-                                        persoChoisi[a].spe_atq3 = souffleDeVie;
-                                        index_selection[a] = i;
-                                        break;
+                                        case 4:
                                         
-                                    case 7:
-                                    
-                                        strcpy(persoChoisi[a].nom,"zoro");
-                                        persoChoisi[a].actu_pv=zoro.actu_pv;
-                                        persoChoisi[a].max_pv=zoro.max_pv;
-                                        persoChoisi[a].attaque=zoro.attaque;
-                                        persoChoisi[a].defense=zoro.defense;
-                                        persoChoisi[a].agilite=zoro.agilite;
-                                        persoChoisi[a].vitesse=zoro.vitesse;
-                                        persoChoisi[a].element=zoro.element;
-                                        persoChoisi[a].spe_atq1 = affutageMortal;
-                                        persoChoisi[a].spe_atq2 = assautTranchant;
-                                        persoChoisi[a].spe_atq3 = eveilDuSabre;
-                                        index_selection[a] = i;
-                                        break;
-    
-                                    default :
-                                        strcpy(persoChoisi[a].nom,"lukas");
-                                        persoChoisi[a].actu_pv=lukas.actu_pv;
-                                        persoChoisi[a].max_pv=lukas.max_pv;
-                                        persoChoisi[a].attaque=lukas.attaque;
-                                        persoChoisi[a].defense=lukas.defense;
-                                        persoChoisi[a].agilite=lukas.agilite;
-                                        persoChoisi[a].vitesse=lukas.vitesse;
-                                        persoChoisi[a].element=lukas.element;
-                
-                                        break;
-                                }
-                                index_selection[a] = i;
-                                a = a + 1;
+                                            strcpy(persoChoisi[a].nom,"kirua");
+                                            persoChoisi[a].actu_pv=kirua.actu_pv;
+                                            persoChoisi[a].max_pv=kirua.max_pv;
+                                            persoChoisi[a].attaque=kirua.attaque;
+                                            persoChoisi[a].defense=kirua.defense;
+                                            persoChoisi[a].agilite=kirua.agilite;
+                                            persoChoisi[a].vitesse=kirua.vitesse;
+                                            persoChoisi[a].element=kirua.element;
+                                            persoChoisi[a].spe_atq1 = fulgurance;
+                                            persoChoisi[a].spe_atq2 = foudreEnchainee;
+                                            persoChoisi[a].spe_atq3 = executionRapide;
+                                            index_selection[a] = i;
+                                            break;
+                                            
+                                        case 5:
+                                        
+                                            strcpy(persoChoisi[a].nom,"rengoku");
+                                            persoChoisi[a].actu_pv=rengoku.actu_pv;
+                                            persoChoisi[a].max_pv=rengoku.max_pv;
+                                            persoChoisi[a].attaque=rengoku.attaque;
+                                            persoChoisi[a].defense=rengoku.defense;
+                                            persoChoisi[a].agilite=rengoku.agilite;
+                                            persoChoisi[a].vitesse=rengoku.vitesse;
+                                            persoChoisi[a].element=rengoku.element;
+                                            persoChoisi[a].spe_atq1 = flammesSolaires;
+                                            persoChoisi[a].spe_atq2 = explosionArdente;
+                                            persoChoisi[a].spe_atq3 = espritFlamboyant;
+                                            index_selection[a] = i;
+                                            break;
+                                            
+                                        case 6:
+                                            
+                                            strcpy(persoChoisi[a].nom,"temari");
+                                            persoChoisi[a].actu_pv=temari.actu_pv;
+                                            persoChoisi[a].max_pv=temari.max_pv;
+                                            persoChoisi[a].attaque=temari.attaque;
+                                            persoChoisi[a].defense=temari.defense;
+                                            persoChoisi[a].agilite=temari.agilite;
+                                            persoChoisi[a].vitesse=temari.vitesse;
+                                            persoChoisi[a].element=temari.element;
+                                            persoChoisi[a].spe_atq1 = danseDuVent;
+                                            persoChoisi[a].spe_atq2 = ventPercant;
+                                            persoChoisi[a].spe_atq3 = souffleDeVie;
+                                            index_selection[a] = i;
+                                            break;
+                                            
+                                        case 7:
+                                        
+                                            strcpy(persoChoisi[a].nom,"zoro");
+                                            persoChoisi[a].actu_pv=zoro.actu_pv;
+                                            persoChoisi[a].max_pv=zoro.max_pv;
+                                            persoChoisi[a].attaque=zoro.attaque;
+                                            persoChoisi[a].defense=zoro.defense;
+                                            persoChoisi[a].agilite=zoro.agilite;
+                                            persoChoisi[a].vitesse=zoro.vitesse;
+                                            persoChoisi[a].element=zoro.element;
+                                            persoChoisi[a].spe_atq1 = affutageMortal;
+                                            persoChoisi[a].spe_atq2 = assautTranchant;
+                                            persoChoisi[a].spe_atq3 = eveilDuSabre;
+                                            index_selection[a] = i;
+                                            break;
+        
+                                        default :
+                                            strcpy(persoChoisi[a].nom,"lukas");
+                                            persoChoisi[a].actu_pv=lukas.actu_pv;
+                                            persoChoisi[a].max_pv=lukas.max_pv;
+                                            persoChoisi[a].attaque=lukas.attaque;
+                                            persoChoisi[a].defense=lukas.defense;
+                                            persoChoisi[a].agilite=lukas.agilite;
+                                            persoChoisi[a].vitesse=lukas.vitesse;
+                                            persoChoisi[a].element=lukas.element;
+                    
+                                            break;
+                                    }
+                                } while (!perso_disponible[choix]);
+                            
+                                perso_disponible[choix] = false;
+                            
+                                selections_j2[nb_selections_j2] = portraits[choix];
+                                nb_selections_j2++;
+                            
+                                a++;
                                 tour_j1 = !tour_j1;
-                            }
+                            }                            
                             
                             break;
                         }
@@ -585,32 +591,6 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
     return PAGE_CONFIRMATION_PERSO;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 const char* get_nom_image_depuis_index(int index) {
     const char* noms[] = {
         "darkshadow", "hitsugaya", "incassable", "katara",
@@ -619,10 +599,6 @@ const char* get_nom_image_depuis_index(int index) {
     if (index >= 0 && index < 8) return noms[index];
     return "inconnu";
 }
-
-
-
-
 
 Page afficher_fiche_personnage(SDL_Renderer* rendu, Fighter perso, int joueur) {
     SDL_Texture* fond = IMG_LoadTexture(rendu, "ressource/image/fonds/fond_selection_perso.png");
