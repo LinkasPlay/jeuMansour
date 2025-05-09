@@ -419,7 +419,6 @@ void runGame(SDL_Renderer* rendu) {
     
     SDL_GetWindowSize(fenetre, &screenWidth, &screenHeight);
 
-    // Initialisation des personnages
     partieActuelle.joueur1.fighter1 = persoChoisi[0];
     partieActuelle.joueur1.fighter2 = persoChoisi[2];
     partieActuelle.joueur1.fighter3 = persoChoisi[4];
@@ -432,17 +431,29 @@ void runGame(SDL_Renderer* rendu) {
     partieActuelle.tour = 1;
     partieActuelle.equipeQuiCommence = rand() % 2 + 1;
     partieActuelle.fin = false;
-    partieActuelle.mapType = rand() % 9;
-    
-    // Sélection de la musique en fonction de la map
+    partieActuelle.mapType = 9;
+
+    partieActuelle.mapType = rand()%9;
     char musiquePath[128];
     snprintf(musiquePath, sizeof(musiquePath), "ressource/musique/ogg/jeu/combat_%d.ogg", partieActuelle.mapType);
-    jouerMusique(musiquePath, 20);
 
-    // Initialisation des attaques
-    for (int i = 0; i < NB_PERSOS_EQUIPE * 2; i++) {
-        tableauAttaqueDuTour[i] = (AttaqueSauvegarde){ .idAttaque = -1 };
+    switch (partieActuelle.mapType)
+    {
+    case 0:     ecartementPont = -25;    break;
+    case 1:     ecartementPont = 20;    break;
+    case 2:     ecartementPont = -25;    break;
+    case 3:     ecartementPont = -10;    break;
+    case 4:     ecartementPont = -20;    break;
+    case 5:     ecartementPont = 10;    break;
+    case 6:     ecartementPont = -20;    break;
+    case 7:     ecartementPont = 70;    break;
+    case 8:     ecartementPont = -50;    break;    
+    default:
+        break;
     }
+    jouerMusique("ressource/musique/mp3/combat_6.mp3", 20);
+    jouerMusique(musiquePath, 20);
+    
 
     // Boucle principale du jeu
     while (!partieActuelle.fin) {

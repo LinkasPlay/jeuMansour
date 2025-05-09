@@ -31,11 +31,14 @@ Fighter* get_fighter(int equipe, int numero) {
 }
 
 void renduJeu(SDL_Renderer* rendu) {
+    // Charger la police
     TTF_Font* font = TTF_OpenFont("ressource/langue/police/arial.ttf", 32);
     if (!font) {
-        SDL_Log("Erreur police: %s", TTF_GetError());
+        SDL_Log("Erreur chargement police: %s", TTF_GetError());
         return;
     }
+
+    // Charger l'image du cadre texte
     SDL_Texture* cadreTexte = IMG_LoadTexture(rendu, "ressource/image/cadres/cadre_texte.png");
     if (!cadreTexte) {
         SDL_Log("Erreur chargement cadre texte : %s", SDL_GetError());
@@ -56,7 +59,6 @@ void renduJeu(SDL_Renderer* rendu) {
     int numero = (equipe == 1) ? partieActuelle.perso_actif : partieActuelle.perso_actif - 3;
     Fighter* actif = get_fighter(equipe, numero);
 
-
     // Chargement du portrait stylisé
     char pathPortrait[128];
     snprintf(pathPortrait, sizeof(pathPortrait), "ressource/image/personnages_pp/pp_%s/pp_%s.png",
@@ -68,7 +70,7 @@ void renduJeu(SDL_Renderer* rendu) {
 
     if (texPortrait) {
         SDL_RenderCopy(rendu, texPortrait, NULL, &destPortrait);
-        SDL_DestroyTexture(texPortrait);
+        SDL_DestroyTexture(texPortrait);  // Libération de la texture après l'utilisation
     }
 
     // === Texte du tour ===
@@ -78,8 +80,8 @@ void renduJeu(SDL_Renderer* rendu) {
     SDL_Texture* txtTour = SDL_CreateTextureFromSurface(rendu, surfTour);
     SDL_Rect rectTour = {LARGEUR_FENETRE/2 - surfTour->w/2, 20, surfTour->w, surfTour->h};
     SDL_RenderCopy(rendu, txtTour, NULL, &rectTour);
-    SDL_FreeSurface(surfTour);
-    SDL_DestroyTexture(txtTour);
+    SDL_FreeSurface(surfTour);  // Libère la surface après utilisation
+    SDL_DestroyTexture(txtTour);  // Libère la texture après utilisation
 
     // === Texte joueur actif ===
     const char* joueurTexte = (equipe == 1) ? "Joueur 1" : "Joueur 2";
@@ -87,10 +89,10 @@ void renduJeu(SDL_Renderer* rendu) {
     SDL_Texture* txtJoueur = SDL_CreateTextureFromSurface(rendu, surfJoueur);
     SDL_Rect rectJoueur = {LARGEUR_FENETRE/2 - surfJoueur->w/2, 60, surfJoueur->w, surfJoueur->h};
     SDL_RenderCopy(rendu, txtJoueur, NULL, &rectJoueur);
-    SDL_FreeSurface(surfJoueur);
-    SDL_DestroyTexture(txtJoueur);
+    SDL_FreeSurface(surfJoueur);  // Libère la surface après utilisation
+    SDL_DestroyTexture(txtJoueur);  // Libère la texture après utilisation
 
-
+    // === Affichage des personnages ===
     const int largeur_perso = 100;
     const int hauteur_perso = 100;
     const int espacement = 30;
@@ -132,8 +134,8 @@ void renduJeu(SDL_Renderer* rendu) {
             SDL_RenderCopy(rendu, cadreTexte, NULL, &cadreRect);
         }
         SDL_RenderCopy(rendu, txtPV, NULL, &txtRectPV);
-        SDL_FreeSurface(surfPV);
-        SDL_DestroyTexture(txtPV);
+        SDL_FreeSurface(surfPV);  // Libère la surface après utilisation
+        SDL_DestroyTexture(txtPV);  // Libère la texture après utilisation
     
         // === Texte PT
         char infosPT[64];
@@ -148,10 +150,10 @@ void renduJeu(SDL_Renderer* rendu) {
             SDL_RenderCopy(rendu, cadreTexte, NULL, &cadreRect);
         }
         SDL_RenderCopy(rendu, txtPT, NULL, &txtRectPT);
-        SDL_FreeSurface(surfPT);
-        SDL_DestroyTexture(txtPT);
+        SDL_FreeSurface(surfPT);  // Libère la surface après utilisation
+        SDL_DestroyTexture(txtPT);  // Libère la texture après utilisation
     
-        if (tex) SDL_DestroyTexture(tex);
+        if (tex) SDL_DestroyTexture(tex);  // Libère la texture du personnage
     }    
 
     // === ÉQUIPE 2 ===
@@ -177,8 +179,8 @@ void renduJeu(SDL_Renderer* rendu) {
             SDL_RenderCopy(rendu, cadreTexte, NULL, &cadreRect);
         }
         SDL_RenderCopy(rendu, txtPV, NULL, &txtRectPV);
-        SDL_FreeSurface(surfPV);
-        SDL_DestroyTexture(txtPV);
+        SDL_FreeSurface(surfPV);  // Libère la surface après utilisation
+        SDL_DestroyTexture(txtPV);  // Libère la texture après utilisation
     
         // === Texte PT
         char infosPT[64];
@@ -192,17 +194,17 @@ void renduJeu(SDL_Renderer* rendu) {
             SDL_RenderCopy(rendu, cadreTexte, NULL, &cadreRect);
         }
         SDL_RenderCopy(rendu, txtPT, NULL, &txtRectPT);
-        SDL_FreeSurface(surfPT);
-        SDL_DestroyTexture(txtPT);
+        SDL_FreeSurface(surfPT);  // Libère la surface après utilisation
+        SDL_DestroyTexture(txtPT);  // Libère la texture après utilisation
     
-        if (tex) SDL_DestroyTexture(tex);
-
+        if (tex) SDL_DestroyTexture(tex);  // Libère la texture du personnage
     }    
 
     // Libération du fond
-    if (fond_texture) SDL_DestroyTexture(fond_texture);
-
+    if (fond_texture) SDL_DestroyTexture(fond_texture);  // Libère la texture du fond
+    if (cadreTexte) SDL_DestroyTexture(cadreTexte);  // Libération du cadre après l'utilisation
 }
+
 
 void animationNouveauTour(SDL_Renderer* renderer, int numeroTour) {
     // Charger police
@@ -222,7 +224,7 @@ void animationNouveauTour(SDL_Renderer* renderer, int numeroTour) {
 
     int texW = surf->w;
     int texH = surf->h;
-    SDL_FreeSurface(surf);
+    SDL_FreeSurface(surf); // Libérer la surface après création de la texture
 
     SDL_Rect posTexte = {
         (LARGEUR_FENETRE - texW) / 2,
@@ -256,9 +258,10 @@ void animationNouveauTour(SDL_Renderer* renderer, int numeroTour) {
         SDL_Delay(16);  // ~60 FPS
     }
 
-    SDL_DestroyTexture(textureTexte);
-    TTF_CloseFont(font);
+    SDL_DestroyTexture(textureTexte);  // Libération de la texture après utilisation
+    TTF_CloseFont(font);  // Libération de la police après utilisation
 }
+
 
 SDL_Rect get_rect_fighter(Fighter* fighter) {
     const int largeur = 100;
@@ -361,5 +364,6 @@ void jouerAnimationAttaque(SDL_Renderer* renderer, int type, SDL_Rect lanceur, S
             break;
     }
 
-    SDL_Delay(300);
+    SDL_Delay(300);  // Assurez-vous que la boucle d'animation est finie avant de quitter
 }
+
