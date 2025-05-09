@@ -93,11 +93,13 @@ AttaqueSauvegarde choisirCible(SDL_Renderer* rendu, int equipeCible, AttaqueSauv
     SDL_Texture* arrowTexture = IMG_LoadTexture(rendu, "ressource/image/utilité/cibleSelect.png");
     if (!arrowTexture) {
         SDL_Log("Erreur chargement flèche : %s", SDL_GetError());
+        return attaque;
     }
 
     Fighter* cibles[3];
     int x_start, direction;
 
+    // Choix des cibles
     if (equipeCible == 1) {
         cibles[0] = &partieActuelle.joueur1.fighter1;
         cibles[1] = &partieActuelle.joueur1.fighter2;
@@ -112,6 +114,7 @@ AttaqueSauvegarde choisirCible(SDL_Renderer* rendu, int equipeCible, AttaqueSauv
         direction = -1;
     } else {
         SDL_Log("Erreur : équipe cible inconnue (%d)", equipeCible);
+        SDL_DestroyTexture(arrowTexture); // Libération immédiate de la texture
         return attaque;
     }
 
@@ -127,11 +130,8 @@ AttaqueSauvegarde choisirCible(SDL_Renderer* rendu, int equipeCible, AttaqueSauv
 
             if (mx >= zone.x && mx <= zone.x + zone.w &&
                 my >= zone.y && my <= zone.y + zone.h) {
-
-                if (arrowTexture) {
-                    SDL_Rect arrowRect = {zone.x + (zone.w - 30) / 2, zone.y - 35, 30, 30};
-                    SDL_RenderCopy(rendu, arrowTexture, NULL, &arrowRect);
-                }
+                SDL_Rect arrowRect = {zone.x + (zone.w - 30) / 2, zone.y - 35, 30, 30};
+                SDL_RenderCopy(rendu, arrowTexture, NULL, &arrowRect);
             }
         }
 
@@ -139,7 +139,8 @@ AttaqueSauvegarde choisirCible(SDL_Renderer* rendu, int equipeCible, AttaqueSauv
 
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
-                exit(0);
+                SDL_DestroyTexture(arrowTexture); // Libération immédiate de la texture
+                return attaque;
             } else if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
                 for (int i = 0; i < 3; i++) {
                     int x = x_start + direction * i * (100 + 30);
@@ -160,9 +161,11 @@ AttaqueSauvegarde choisirCible(SDL_Renderer* rendu, int equipeCible, AttaqueSauv
         SDL_Delay(8);
     }
 
-    if (arrowTexture) SDL_DestroyTexture(arrowTexture);
+    SDL_DestroyTexture(arrowTexture); // Libération de la texture après son utilisation
     return attaque;
 }
+
+
 
 
 
@@ -171,33 +174,19 @@ void drawButton(SDL_Renderer* renderer, Button* btn, TTF_Font* font) {
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
     SDL_RenderFillRect(renderer, &btn->rect);
 
-    int fontSize = 32;
-    TTF_Font* f = TTF_OpenFont("ressource/langue/police/arial.ttf", fontSize);
-    if (!f) {
-        SDL_Log("Erreur chargement police : %s", TTF_GetError());
-        return;
-    }
-
-    SDL_Surface* surf = TTF_RenderUTF8_Blended(f, btn->text, (SDL_Color){255, 255, 255, 255});
-    while (surf && surf->w > btn->rect.w - 10 && fontSize > 10) {
-        SDL_FreeSurface(surf);
-        TTF_CloseFont(f);
-        fontSize -= 2;
-        f = TTF_OpenFont("ressource/langue/police/arial.ttf", fontSize);
-        if (!f) {
-            SDL_Log("Erreur police taille %d : %s", fontSize, TTF_GetError());
-            return;
-        }
-        surf = TTF_RenderUTF8_Blended(f, btn->text, (SDL_Color){255, 255, 255, 255});
-    }
-
+    SDL_Surface* surf = TTF_RenderUTF8_Blended(font, btn->text, (SDL_Color){255, 255, 255, 255});
     if (!surf) {
         SDL_Log("Erreur rendu texte : %s", TTF_GetError());
-        TTF_CloseFont(f);
         return;
     }
 
     SDL_Texture* tex = SDL_CreateTextureFromSurface(renderer, surf);
+    if (!tex) {
+        SDL_Log("Erreur création texture : %s", SDL_GetError());
+        SDL_FreeSurface(surf);
+        return;
+    }
+
     int tw, th;
     SDL_QueryTexture(tex, NULL, NULL, &tw, &th);
     SDL_Rect textRect = {
@@ -209,8 +198,8 @@ void drawButton(SDL_Renderer* renderer, Button* btn, TTF_Font* font) {
     SDL_RenderCopy(renderer, tex, NULL, &textRect);
     SDL_DestroyTexture(tex);
     SDL_FreeSurface(surf);
-    TTF_CloseFont(f);
 }
+
 
 Fighter* get_fighter_by_index(int index) {
     switch(index) {
@@ -327,7 +316,7 @@ void actionPerso(SDL_Renderer* renderer, Fighter* persoActuel, int equipeAdverse
             SDL_DestroyTexture(t1); SDL_FreeSurface(s1);
             SDL_DestroyTexture(t2); SDL_FreeSurface(s2);
             SDL_DestroyTexture(t3); SDL_FreeSurface(s3);
-            TTF_CloseFont(costFont);
+            TTF_CloseFont(costFont);  // Fermeture après utilisation
         }
 
         SDL_RenderPresent(renderer);
@@ -399,8 +388,9 @@ void actionPerso(SDL_Renderer* renderer, Fighter* persoActuel, int equipeAdverse
         SDL_Delay(8);
     }
 
-    TTF_CloseFont(font);
+    TTF_CloseFont(font);  // Fermeture de la police après utilisation
 }
+
 
 
 
@@ -425,12 +415,11 @@ bool equipe_est_morte(int equipe) {
 
 
 void runGame(SDL_Renderer* rendu) {
-
-
     arreter_musique("ressource/musique/ogg/selection_personnages.ogg");
     
     SDL_GetWindowSize(fenetre, &screenWidth, &screenHeight);
 
+    // Initialisation des personnages
     partieActuelle.joueur1.fighter1 = persoChoisi[0];
     partieActuelle.joueur1.fighter2 = persoChoisi[2];
     partieActuelle.joueur1.fighter3 = persoChoisi[4];
@@ -443,38 +432,26 @@ void runGame(SDL_Renderer* rendu) {
     partieActuelle.tour = 1;
     partieActuelle.equipeQuiCommence = rand() % 2 + 1;
     partieActuelle.fin = false;
-    partieActuelle.mapType = 9;
-
-    partieActuelle.mapType = rand()%9;
+    partieActuelle.mapType = rand() % 9;
+    
+    // Sélection de la musique en fonction de la map
     char musiquePath[128];
     snprintf(musiquePath, sizeof(musiquePath), "ressource/musique/ogg/jeu/combat_%d.ogg", partieActuelle.mapType);
-
-    switch (partieActuelle.mapType){
-    case 0:     ecartementPont = -25;    break;
-    case 1:     ecartementPont = 20;    break;
-    case 2:     ecartementPont = -25;    break;
-    case 3:     ecartementPont = -10;    break;
-    case 4:     ecartementPont = -20;    break;
-    case 5:     ecartementPont = 10;    break;
-    case 6:     ecartementPont = -20;    break;
-    case 7:     ecartementPont = 70;    break;
-    case 8:     ecartementPont = -50;    break;    
-    default:
-        break;
-    }
     jouerMusique(musiquePath, 20);
+
+    // Initialisation des attaques
     for (int i = 0; i < NB_PERSOS_EQUIPE * 2; i++) {
         tableauAttaqueDuTour[i] = (AttaqueSauvegarde){ .idAttaque = -1 };
     }
 
+    // Boucle principale du jeu
     while (!partieActuelle.fin) {
         renduJeu(rendu);
         SDL_Log("==================================== Tour %d =======================================", partieActuelle.tour);
         animationNouveauTour(rendu, partieActuelle.tour);
 
+        // Détermine l'équipe qui commence
         int equipeDebut = (partieActuelle.tour % 2 == 0) ? partieActuelle.equipeQuiCommence : 3 - partieActuelle.equipeQuiCommence;
-
-
 
         // Tour de la première équipe
         for (int i = 0; i < 3; i++) {
@@ -498,7 +475,7 @@ void runGame(SDL_Renderer* rendu) {
 
         partieActuelle.perso_actif = 0;
 
-        // Tri des attaques par vitesse 
+        // Tri des attaques par vitesse
         int tabIdVitesse[6] = {0, 1, 2, 3, 4, 5};
         for (int i = 0; i < 5; i++) {
             for (int j = i + 1; j < 6; j++) {
@@ -512,7 +489,7 @@ void runGame(SDL_Renderer* rendu) {
             }
         }
 
-
+        // Traitement des attaques
         for (int i = 0; i < NB_PERSOS_EQUIPE * 2; i++) {
             int index = tabIdVitesse[i];
             AttaqueSauvegarde action = tableauAttaqueDuTour[index];
@@ -537,14 +514,13 @@ void runGame(SDL_Renderer* rendu) {
                     }
                 }
         
-                
-        
                 fonctions_attaques[action.idAttaque](utilisateur, cible);
             } else {
                 SDL_Log("Erreur : attaque id %d invalide ou cible/utilisateur manquant", action.idAttaque);
             }
         }        
 
+        // Vérification de la fin de la partie
         if (equipe_est_morte(1)) {
             SDL_Log("L'équipe 1 est éliminée. L'équipe 2 gagne !");
             partieActuelle.fin = true;
@@ -559,4 +535,5 @@ void runGame(SDL_Renderer* rendu) {
     SDL_Log("\n\n_______Fin du jeu ! Merci d'avoir joué._______\n\n");
     exit(0);
 }
+
 

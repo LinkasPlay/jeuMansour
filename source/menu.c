@@ -262,19 +262,8 @@ Page afficher_menu(SDL_Renderer* rendu) {
     };
     const char* ids_textes[] = {"jouer", "options", "quitter"};
 
-    // Position trophée (en bas à droite)
-    SDL_Rect rect_trophee = {
-        LARGEUR_FENETRE - 120,   // x
-        HAUTEUR_FENETRE - 140,   // y
-        100, 100                 // w, h
-    };
-
-    // Position manette (au-dessus du trophée)
-    SDL_Rect rect_manette = {
-        LARGEUR_FENETRE - 120,
-        HAUTEUR_FENETRE - 260,
-        100, 100
-    };
+    SDL_Rect rect_trophee = {LARGEUR_FENETRE - 120, HAUTEUR_FENETRE - 140, 100, 100};
+    SDL_Rect rect_manette = {LARGEUR_FENETRE - 120, HAUTEUR_FENETRE - 260, 100, 100};
 
     SDL_RenderClear(rendu);
     SDL_RenderCopy(rendu, fond, NULL, NULL);
@@ -295,35 +284,69 @@ Page afficher_menu(SDL_Renderer* rendu) {
         SDL_DestroyTexture(tex);
     }
 
-    // Affichage des icônes
     SDL_RenderCopy(rendu, image_trophee, NULL, &rect_trophee);
     SDL_RenderCopy(rendu, image_manette, NULL, &rect_manette);
-
     SDL_RenderPresent(rendu);
 
     SDL_Event event;
     while (1) {
         while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) return PAGE_QUITTER;
+            if (event.type == SDL_QUIT) {
+                TTF_CloseFont(police);
+                SDL_DestroyTexture(fond);
+                SDL_DestroyTexture(cadre_titre);
+                SDL_DestroyTexture(cadre_bouton);
+                SDL_DestroyTexture(image_trophee);
+                SDL_DestroyTexture(image_manette);
+                return PAGE_QUITTER;
+            }
 
             if (event.type == SDL_MOUSEBUTTONDOWN) {
                 int x = event.button.x, y = event.button.y;
 
                 if (x >= boutons[0].x && x <= boutons[0].x + boutons[0].w &&
-                    y >= boutons[0].y && y <= boutons[0].y + boutons[0].h)
+                    y >= boutons[0].y && y <= boutons[0].y + boutons[0].h) {
+                    TTF_CloseFont(police);
+                    SDL_DestroyTexture(fond);
+                    SDL_DestroyTexture(cadre_titre);
+                    SDL_DestroyTexture(cadre_bouton);
+                    SDL_DestroyTexture(image_trophee);
+                    SDL_DestroyTexture(image_manette);
                     return PAGE_SELEC_MODE;
+                }
 
                 if (x >= boutons[1].x && x <= boutons[1].x + boutons[1].w &&
-                    y >= boutons[1].y && y <= boutons[1].y + boutons[1].h)
+                    y >= boutons[1].y && y <= boutons[1].y + boutons[1].h) {
+                    TTF_CloseFont(police);
+                    SDL_DestroyTexture(fond);
+                    SDL_DestroyTexture(cadre_titre);
+                    SDL_DestroyTexture(cadre_bouton);
+                    SDL_DestroyTexture(image_trophee);
+                    SDL_DestroyTexture(image_manette);
                     return PAGE_OPTIONS;
+                }
 
                 if (x >= boutons[2].x && x <= boutons[2].x + boutons[2].w &&
-                    y >= boutons[2].y && y <= boutons[2].y + boutons[2].h)
+                    y >= boutons[2].y && y <= boutons[2].y + boutons[2].h) {
+                    TTF_CloseFont(police);
+                    SDL_DestroyTexture(fond);
+                    SDL_DestroyTexture(cadre_titre);
+                    SDL_DestroyTexture(cadre_bouton);
+                    SDL_DestroyTexture(image_trophee);
+                    SDL_DestroyTexture(image_manette);
                     return PAGE_QUITTER;
+                }
             }
         }
     }
 
+    // Nettoyage (normalement jamais atteint)
+    TTF_CloseFont(police);
+    SDL_DestroyTexture(fond);
+    SDL_DestroyTexture(cadre_titre);
+    SDL_DestroyTexture(cadre_bouton);
+    SDL_DestroyTexture(image_trophee);
+    SDL_DestroyTexture(image_manette);
     return PAGE_MENU;
 }
 
@@ -913,7 +936,7 @@ Page afficher_selec_mode(SDL_Renderer* rendu) {
                 if (x >= boutons[0].x && x <= boutons[0].x + boutons[0].w &&
                     y >= boutons[0].y && y <= boutons[0].y + boutons[0].h) {
                     chemin_retour = 0;
-                    partieActuelle.iaDifficulte = 0; 
+                    partieActuelle.iaDifficulte = 0;
                     return PAGE_SELECTION_PERSO;
                 }
 
