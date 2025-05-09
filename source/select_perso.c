@@ -501,6 +501,7 @@ Page afficher_selection_perso(SDL_Renderer* rendu, SDL_Texture* selections_j1[3]
                                             break;
         
                                         default :
+                                            SDL_Log("Crash ce n'est pas normal");
                                             strcpy(persoChoisi[a].nom,"lukas");
                                             persoChoisi[a].actu_pv=lukas.actu_pv;
                                             persoChoisi[a].max_pv=lukas.max_pv;

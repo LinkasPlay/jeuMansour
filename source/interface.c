@@ -16,8 +16,14 @@ void charger_langue(const char* chemin) {
 
 // Génération d'une texture SDL pour du texte non coloré
 SDL_Texture* generer_texte(SDL_Renderer* rendu, const char* texte, TTF_Font* police) {
+    
+    
+    
+    
     SDL_Color couleur = {255, 255, 255, 255};
     SDL_Surface* surface = TTF_RenderUTF8_Blended(police, texte, couleur);
+
+    
     if (!surface) return NULL;
     SDL_Texture* texture = SDL_CreateTextureFromSurface(rendu, surface);
     SDL_FreeSurface(surface);

@@ -11,6 +11,7 @@
 
 SDL_Window* fenetre;
 
+
 int main(int argc, char* argv[]) {
     SDL_Texture* selections_j1[NB_PERSOS_EQUIPE] = { NULL };
     SDL_Texture* selections_j2[NB_PERSOS_EQUIPE] = { NULL };

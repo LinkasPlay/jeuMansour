@@ -15,6 +15,7 @@ int ecartementPont = 40;
 
 AttaqueSauvegarde tableauAttaqueDuTour [NB_PERSOS_EQUIPE * 2];
 
+
 // ====================== GAMEPLAY ====================
 
 Fighter appliquer_modificateurs(Fighter* original){
@@ -165,15 +166,6 @@ AttaqueSauvegarde choisirCible(SDL_Renderer* rendu, int equipeCible, AttaqueSauv
 
 
 
-
-
-
-
-
-
-
-
-
 void drawButton(SDL_Renderer* renderer, Button* btn, TTF_Font* font) {
     SDL_Color color = btn->hovered ? btn->hoverColor : btn->baseColor;
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
@@ -260,6 +252,16 @@ bool est_une_attaque_de_soin(int id) {
 
 
 
+
+
+
+
+
+
+
+
+
+
 void actionPerso(SDL_Renderer* renderer, Fighter* persoActuel, int equipeAdverse) {
     TTF_Font* font = TTF_OpenFont("ressource/langue/police/arial.ttf", 32);
     if (!font) {
@@ -280,14 +282,12 @@ void actionPerso(SDL_Renderer* renderer, Fighter* persoActuel, int equipeAdverse
         int mx, my;
         SDL_GetMouseState(&mx, &my);
 
-        // Hover
         btnAttaque.hovered = isMouseOver(&btnAttaque, mx, my);
         btnDefense.hovered = isMouseOver(&btnDefense, mx, my);
         btnComp1.hovered = isMouseOver(&btnComp1, mx, my);
         btnComp2.hovered = isMouseOver(&btnComp2, mx, my);
         btnComp3.hovered = isMouseOver(&btnComp3, mx, my);
 
-        // Affichage
         SDL_SetRenderDrawColor(renderer, 20, 20, 20, 255);
         SDL_RenderClear(renderer);
 
@@ -299,7 +299,7 @@ void actionPerso(SDL_Renderer* renderer, Fighter* persoActuel, int equipeAdverse
         drawButton(renderer, &btnComp2, font);
         drawButton(renderer, &btnComp3, font);
 
-        // === Coûts des compétences ===
+        // Coûts
         TTF_Font* costFont = TTF_OpenFont("ressource/langue/police/arial.ttf", 22);
         if (costFont) {
             SDL_Color jaune = {255, 255, 0, 255};
@@ -330,16 +330,15 @@ void actionPerso(SDL_Renderer* renderer, Fighter* persoActuel, int equipeAdverse
             TTF_CloseFont(costFont);
         }
 
-
         SDL_RenderPresent(renderer);
 
         while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
-                exit(0);
-            } else if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
+            if (event.type == SDL_QUIT) exit(0);
+
+            if (event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_LEFT) {
                 int id = partieActuelle.perso_actif;
                 AttaqueSauvegarde* attaque = &tableauAttaqueDuTour[id];
-        
+
                 if (btnAttaque.hovered) {
                     *attaque = (AttaqueSauvegarde){
                         .idAttaque = ATTAQUE_BASIQUE,
@@ -349,7 +348,7 @@ void actionPerso(SDL_Renderer* renderer, Fighter* persoActuel, int equipeAdverse
                     *attaque = choisirCible(renderer, equipeAdverse, *attaque);
                     if (persoActuel->pt < 10) persoActuel->pt += 1;
                     quit = true;
-        
+
                 } else if (btnDefense.hovered) {
                     *attaque = (AttaqueSauvegarde){
                         .idAttaque = DEFENSE,
@@ -358,10 +357,9 @@ void actionPerso(SDL_Renderer* renderer, Fighter* persoActuel, int equipeAdverse
                         .cibleEquipe = -1,
                         .cibleNum = -1
                     };
-                    if (persoActuel->pt < 10) persoActuel->pt += 1;
-                    if (persoActuel->pt < 10) persoActuel->pt += 1;
+                    if (persoActuel->pt < 10) persoActuel->pt += 2;
                     quit = true;
-        
+
                 } else if (btnComp1.hovered && persoActuel->pt >= persoActuel->spe_atq1.cout) {
                     persoActuel->pt -= persoActuel->spe_atq1.cout;
                     *attaque = (AttaqueSauvegarde){
@@ -369,11 +367,10 @@ void actionPerso(SDL_Renderer* renderer, Fighter* persoActuel, int equipeAdverse
                         .utilisateurEquipe = get_equipe_id(id),
                         .utilisateurNum = get_fighter_num(id),
                     };
-                    int equipeCible = est_une_attaque_de_soin(attaque->idAttaque) ?
-                                      get_equipe_id(id) : equipeAdverse;
-                    *attaque = choisirCible(renderer, equipeCible, *attaque);
+                    int cible = est_une_attaque_de_soin(attaque->idAttaque) ? get_equipe_id(id) : equipeAdverse;
+                    *attaque = choisirCible(renderer, cible, *attaque);
                     quit = true;
-        
+
                 } else if (btnComp2.hovered && persoActuel->pt >= persoActuel->spe_atq2.cout) {
                     persoActuel->pt -= persoActuel->spe_atq2.cout;
                     *attaque = (AttaqueSauvegarde){
@@ -381,11 +378,10 @@ void actionPerso(SDL_Renderer* renderer, Fighter* persoActuel, int equipeAdverse
                         .utilisateurEquipe = get_equipe_id(id),
                         .utilisateurNum = get_fighter_num(id),
                     };
-                    int equipeCible = est_une_attaque_de_soin(attaque->idAttaque) ?
-                                      get_equipe_id(id) : equipeAdverse;
-                    *attaque = choisirCible(renderer, equipeCible, *attaque);
+                    int cible = est_une_attaque_de_soin(attaque->idAttaque) ? get_equipe_id(id) : equipeAdverse;
+                    *attaque = choisirCible(renderer, cible, *attaque);
                     quit = true;
-        
+
                 } else if (btnComp3.hovered && persoActuel->pt >= persoActuel->spe_atq3.cout) {
                     persoActuel->pt -= persoActuel->spe_atq3.cout;
                     *attaque = (AttaqueSauvegarde){
@@ -393,18 +389,26 @@ void actionPerso(SDL_Renderer* renderer, Fighter* persoActuel, int equipeAdverse
                         .utilisateurEquipe = get_equipe_id(id),
                         .utilisateurNum = get_fighter_num(id),
                     };
-                    int equipeCible = est_une_attaque_de_soin(attaque->idAttaque) ?
-                                      get_equipe_id(id) : equipeAdverse;
-                    *attaque = choisirCible(renderer, equipeCible, *attaque);
+                    int cible = est_une_attaque_de_soin(attaque->idAttaque) ? get_equipe_id(id) : equipeAdverse;
+                    *attaque = choisirCible(renderer, cible, *attaque);
                     quit = true;
                 }
             }
         }
-        
 
         SDL_Delay(8);
     }
+
+    TTF_CloseFont(font);
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -420,29 +424,9 @@ bool equipe_est_morte(int equipe) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void runGame(SDL_Renderer* rendu) {
+
+
     arreter_musique("ressource/musique/ogg/selection_personnages.ogg");
     
     SDL_GetWindowSize(fenetre, &screenWidth, &screenHeight);
@@ -575,3 +559,4 @@ void runGame(SDL_Renderer* rendu) {
     SDL_Log("\n\n_______Fin du jeu ! Merci d'avoir joué._______\n\n");
     exit(0);
 }
+

@@ -324,6 +324,8 @@ Fighter incassable={
     .pt = 0
 };
 
+
+
 Fighter lukas={
     .nom = "LoukasCocasse",
     .actu_pv = 69696969,

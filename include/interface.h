@@ -20,6 +20,7 @@ typedef enum {
     PAGE_COMBAT,
     PAGE_OPTIONS,
     PAGE_HISTOIRE,
+    PAGE_PAUSE,      
     PAGE_QUITTER
 } Page;
 

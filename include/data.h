@@ -95,6 +95,7 @@ typedef struct {
     int iaDifficulte;
 } Partie;
 
+
 typedef struct {
     int bonus_attaque;
     int bonus_defense;
