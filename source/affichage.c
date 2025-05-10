@@ -15,6 +15,9 @@ int screenWidth = 0;
 int screenHeight = 0;
 
 
+
+
+
 // ============================ AFFICHAGE =========================================
 
 Fighter* get_fighter(int equipe, int numero) {
@@ -32,11 +35,11 @@ Fighter* get_fighter(int equipe, int numero) {
 
 void renduJeu(SDL_Renderer* rendu) {
     // Charger la police
-    TTF_Font* font = TTF_OpenFont("ressource/langue/police/arial.ttf", 32);
-    if (!font) {
-        SDL_Log("Erreur chargement police: %s", TTF_GetError());
+    if (!policePrincipale) {
+        SDL_Log("Police principale non chargée !");
         return;
     }
+
 
     // Charger l'image du cadre texte
     SDL_Texture* cadreTexte = IMG_LoadTexture(rendu, "ressource/image/cadres/cadre_texte.png");
@@ -76,7 +79,7 @@ void renduJeu(SDL_Renderer* rendu) {
     // === Texte du tour ===
     char texteTour[64];
     snprintf(texteTour, sizeof(texteTour), "Tour %d", partieActuelle.tour);
-    SDL_Surface* surfTour = TTF_RenderUTF8_Blended(font, texteTour, (SDL_Color){255, 255, 255, 255});
+    SDL_Surface* surfTour = TTF_RenderUTF8_Blended(policePrincipale, texteTour, (SDL_Color){255, 255, 255, 255});
     SDL_Texture* txtTour = SDL_CreateTextureFromSurface(rendu, surfTour);
     SDL_Rect rectTour = {LARGEUR_FENETRE/2 - surfTour->w/2, 20, surfTour->w, surfTour->h};
     SDL_RenderCopy(rendu, txtTour, NULL, &rectTour);
@@ -85,7 +88,7 @@ void renduJeu(SDL_Renderer* rendu) {
 
     // === Texte joueur actif ===
     const char* joueurTexte = (equipe == 1) ? "Joueur 1" : "Joueur 2";
-    SDL_Surface* surfJoueur = TTF_RenderUTF8_Blended(font, joueurTexte, (SDL_Color){255, 200, 0, 255});
+    SDL_Surface* surfJoueur = TTF_RenderUTF8_Blended(policePrincipale, joueurTexte, (SDL_Color){255, 200, 0, 255});
     SDL_Texture* txtJoueur = SDL_CreateTextureFromSurface(rendu, surfJoueur);
     SDL_Rect rectJoueur = {LARGEUR_FENETRE/2 - surfJoueur->w/2, 60, surfJoueur->w, surfJoueur->h};
     SDL_RenderCopy(rendu, txtJoueur, NULL, &rectJoueur);
@@ -124,7 +127,7 @@ void renduJeu(SDL_Renderer* rendu) {
         // === Texte PV
         char infosPV[64];
         snprintf(infosPV, sizeof(infosPV), "PV: %d/%d", perso1[i]->actu_pv, perso1[i]->max_pv);
-        SDL_Surface* surfPV = TTF_RenderUTF8_Blended(font, infosPV, (SDL_Color){255, 255, 255, 255});
+        SDL_Surface* surfPV = TTF_RenderUTF8_Blended(policePrincipale, infosPV, (SDL_Color){255, 255, 255, 255});
         SDL_Texture* txtPV = SDL_CreateTextureFromSurface(rendu, surfPV);
         SDL_Rect txtRectPV = {dest.x + (largeur_perso - surfPV->w) / 2, dest.y - surfPV->h - 10, surfPV->w, surfPV->h};
     
@@ -140,7 +143,7 @@ void renduJeu(SDL_Renderer* rendu) {
         // === Texte PT
         char infosPT[64];
         snprintf(infosPT, sizeof(infosPT), "PT: %d", perso1[i]->pt);
-        SDL_Surface* surfPT = TTF_RenderUTF8_Blended(font, infosPT, (SDL_Color){255, 255, 0, 255});
+        SDL_Surface* surfPT = TTF_RenderUTF8_Blended(policePrincipale, infosPT, (SDL_Color){255, 255, 0, 255});
         SDL_Texture* txtPT = SDL_CreateTextureFromSurface(rendu, surfPT);
         SDL_Rect txtRectPT = {dest.x + (largeur_perso - surfPT->w) / 2, dest.y + hauteur_perso + 5, surfPT->w, surfPT->h};
     
@@ -170,7 +173,7 @@ void renduJeu(SDL_Renderer* rendu) {
         // === Texte PV
         char infosPV[64];
         snprintf(infosPV, sizeof(infosPV), "PV: %d/%d", perso2[i]->actu_pv, perso2[i]->max_pv);
-        SDL_Surface* surfPV = TTF_RenderUTF8_Blended(font, infosPV, (SDL_Color){255, 255, 255, 255});
+        SDL_Surface* surfPV = TTF_RenderUTF8_Blended(policePrincipale, infosPV, (SDL_Color){255, 255, 255, 255});
         SDL_Texture* txtPV = SDL_CreateTextureFromSurface(rendu, surfPV);
         SDL_Rect txtRectPV = {dest.x + (largeur_perso - surfPV->w) / 2, dest.y - surfPV->h - 10, surfPV->w, surfPV->h};
     
@@ -185,7 +188,7 @@ void renduJeu(SDL_Renderer* rendu) {
         // === Texte PT
         char infosPT[64];
         snprintf(infosPT, sizeof(infosPT), "PT: %d", perso2[i]->pt);
-        SDL_Surface* surfPT = TTF_RenderUTF8_Blended(font, infosPT, (SDL_Color){255, 255, 0, 255});
+        SDL_Surface* surfPT = TTF_RenderUTF8_Blended(policePrincipale, infosPT, (SDL_Color){255, 255, 0, 255});
         SDL_Texture* txtPT = SDL_CreateTextureFromSurface(rendu, surfPT);
         SDL_Rect txtRectPT = {dest.x + (largeur_perso - surfPT->w) / 2, dest.y + hauteur_perso + 5, surfPT->w, surfPT->h};
     
@@ -208,23 +211,24 @@ void renduJeu(SDL_Renderer* rendu) {
 
 void animationNouveauTour(SDL_Renderer* renderer, int numeroTour) {
     // Charger police
-    TTF_Font* font = TTF_OpenFont("ressource/langue/police/arial.ttf", 64);
-    if (!font) {
-        SDL_Log("Erreur chargement police: %s", TTF_GetError());
+    
+    if (!policePrincipale) {
+        SDL_Log("Police principale non chargée !");
         return;
     }
+
 
     // Texte principal
     char texte[64];
     snprintf(texte, sizeof(texte), "Tour %d", numeroTour);
     SDL_Color couleur = {255, 255, 255, 255};
 
-    SDL_Surface* surf = TTF_RenderUTF8_Blended(font, texte, couleur);
+    SDL_Surface* surf = TTF_RenderUTF8_Blended(policePrincipale, texte, couleur);
     SDL_Texture* textureTexte = SDL_CreateTextureFromSurface(renderer, surf);
 
     int texW = surf->w;
     int texH = surf->h;
-    SDL_FreeSurface(surf); // Libérer la surface après création de la texture
+    SDL_FreeSurface(surf);
 
     SDL_Rect posTexte = {
         (LARGEUR_FENETRE - texW) / 2,
@@ -258,10 +262,8 @@ void animationNouveauTour(SDL_Renderer* renderer, int numeroTour) {
         SDL_Delay(16);  // ~60 FPS
     }
 
-    SDL_DestroyTexture(textureTexte);  // Libération de la texture après utilisation
-    TTF_CloseFont(font);  // Libération de la police après utilisation
+    SDL_DestroyTexture(textureTexte);
 }
-
 
 SDL_Rect get_rect_fighter(Fighter* fighter) {
     const int largeur = 100;
@@ -364,6 +366,5 @@ void jouerAnimationAttaque(SDL_Renderer* renderer, int type, SDL_Rect lanceur, S
             break;
     }
 
-    SDL_Delay(300);  // Assurez-vous que la boucle d'animation est finie avant de quitter
+    SDL_Delay(300);
 }
-

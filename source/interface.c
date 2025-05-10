@@ -14,6 +14,9 @@ void charger_langue(const char* chemin) {
     // TODO: Lire un fichier texte ou JSON pour charger les chaînes localisées
 }
 
+TTF_Font* policePrincipale = NULL;
+TTF_Font* policePetite = NULL;
+
 
 // Génération d'une texture SDL pour du texte coloré
 SDL_Texture* generer_texte(SDL_Renderer* rendu, const char* texte, TTF_Font* police) {
@@ -39,3 +42,42 @@ SDL_Texture* generer_texte(SDL_Renderer* rendu, const char* texte, TTF_Font* pol
     return texture;
 }
 
+// Libérer une texture
+void liberer_texte(SDL_Texture* texture) {
+    if (texture) {
+        SDL_DestroyTexture(texture);
+    }
+}
+
+
+void charger_polices() {
+    policePrincipale = TTF_OpenFont("ressource/langue/police/arial.ttf", 32);
+    policePetite = TTF_OpenFont("ressource/langue/police/arial.ttf", 22);
+
+    if (!policePrincipale || !policePetite) {
+        SDL_Log("Erreur ouverture police : %s", TTF_GetError());
+        exit(1);
+    }
+}
+
+
+void liberer_polices() {
+    if (policePrincipale) {
+        TTF_CloseFont(policePrincipale);
+        policePrincipale = NULL;
+    }
+    if (policePetite) {
+        TTF_CloseFont(policePetite);
+        policePetite = NULL;
+    }
+}
+
+
+
+bool equipe_est_morte(int equipe) {
+    for (int i = 0; i < 3; i++) {
+        Fighter* p = get_fighter(equipe, i);
+        if (p->actu_pv > 0) return false;
+    }
+    return true;
+}
