@@ -169,6 +169,7 @@ AttaqueSauvegarde choisirCible(SDL_Renderer* rendu, int equipeCible, AttaqueSauv
 
 
 
+
 void drawButton(SDL_Renderer* renderer, Button* btn, TTF_Font* font) {
     SDL_Color color = btn->hovered ? btn->hoverColor : btn->baseColor;
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
@@ -179,16 +180,40 @@ void drawButton(SDL_Renderer* renderer, Button* btn, TTF_Font* font) {
         return;
     }
 
-    SDL_Surface* surf = TTF_RenderUTF8_Blended(font, btn->text, (SDL_Color){255, 255, 255, 255});
+    // Crée un font réduit si le texte dépasse le bouton
+    int fontSize = 40;  // Taille de la police par défaut
+    TTF_Font* adjustedFont = TTF_OpenFont("ressource/langue/police/arial.ttf", fontSize);
+    if (!adjustedFont) {
+        SDL_Log("Erreur ouverture police : %s", TTF_GetError());
+        return;
+    }
+
+    SDL_Surface* surf = TTF_RenderUTF8_Blended(adjustedFont, btn->text, (SDL_Color){255, 255, 255, 255});
+
+    // Ajuster la taille de la police si le texte dépasse
+    while (surf && surf->w > btn->rect.w) {
+        SDL_FreeSurface(surf);  // Libère la surface précédente
+        fontSize--;
+        TTF_CloseFont(adjustedFont); // Fermeture de la police précédente
+        adjustedFont = TTF_OpenFont("ressource/langue/police/arial.ttf", fontSize);
+        if (!adjustedFont) {
+            SDL_Log("Erreur ouverture police : %s", TTF_GetError());
+            return;
+        }
+        surf = TTF_RenderUTF8_Blended(adjustedFont, btn->text, (SDL_Color){255, 255, 255, 255});
+    }
+
     if (!surf) {
         SDL_Log("Erreur rendu texte dans drawButton : %s", TTF_GetError());
+        TTF_CloseFont(adjustedFont);  // Libération de la police en cas d'erreur
         return;
     }
 
     SDL_Texture* tex = SDL_CreateTextureFromSurface(renderer, surf);
     if (!tex) {
         SDL_Log("Erreur création texture bouton : %s", SDL_GetError());
-        SDL_FreeSurface(surf);
+        SDL_FreeSurface(surf);  // Libération de la surface si la texture échoue
+        TTF_CloseFont(adjustedFont);  // Libération de la police
         return;
     }
 
@@ -201,9 +226,14 @@ void drawButton(SDL_Renderer* renderer, Button* btn, TTF_Font* font) {
     };
 
     SDL_RenderCopy(renderer, tex, NULL, &textRect);
+
+    // Libération de la mémoire après le rendu
     SDL_DestroyTexture(tex);
     SDL_FreeSurface(surf);
+    TTF_CloseFont(adjustedFont);  // Libération finale de la police
 }
+
+
 
 
 
