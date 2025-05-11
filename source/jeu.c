@@ -660,6 +660,9 @@ void runGame(SDL_Renderer* rendu) {
             for (int i = 0; i < 3; i++) {
                 int index = (equipe == 1) ? i : i + 3;
                 Fighter* perso = get_fighter(index);
+                
+                if (tableauAttaqueDuTour[index].idAttaque >= 0) continue;
+
                 if (perso->actu_pv <= 0) continue;
                 appliquer_et_mettre_a_jour_effets(perso);
                 partieActuelle.perso_actif = index;
@@ -667,6 +670,8 @@ void runGame(SDL_Renderer* rendu) {
 
                 //IA Facile
 
+
+                
 
                 if (equipe == 2 && partieActuelle.iaDifficulte > 0) {
                     int choix = rand() % 100;
@@ -705,6 +710,7 @@ void runGame(SDL_Renderer* rendu) {
 
                     SDL_Delay(500);
                 } else {
+                    
                     actionPerso(rendu, perso, (equipe == 1) ? 2 : 1);
                 }
             }
