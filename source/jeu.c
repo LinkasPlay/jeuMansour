@@ -132,6 +132,7 @@ AttaqueSauvegarde choisirCible(SDL_Renderer* rendu, int equipeCible, AttaqueSauv
     }
 
     Fighter* cibles[3];
+    (void)cibles;
     int x_start, direction;
 
     if (equipeCible == 1) {
@@ -318,14 +319,17 @@ bool est_mur_vivant(int id) {
 }
 
 bool attaque_cible_soi_meme(int idAttaque) {
-    return idAttaque == AFFUTAGE_MORTAL ||
-           idAttaque == EVEIL_DU_SABRE ||
-           idAttaque == BRUME_PROTECTRICE ||
-           idAttaque == EVEIL_LUNAIRE ||
-           idAttaque == CREPUSCULE ||
-           idAttaque == FLAMMES_SOLAIRES ||
-           idAttaque == BARRIERE_DE_PIERRE ||
-           idAttaque == MUR_VIVANT;
+    return idAttaque == AFFUTAGE_MORTAL ||        // Zoro
+           idAttaque == EVEIL_DU_SABRE ||         // Zoro
+           idAttaque == EVEIL_LUNAIRE ||          // Katara - change le cycle → pas de cible
+           idAttaque == CREPUSCULE ||             // Dark Shadow - change le cycle → pas de cible
+           idAttaque == FLAMMES_SOLAIRES ||       // Rengoku - change le cycle → pas de cible
+           idAttaque == BARRIERE_DE_PIERRE ||     // Incassable - boost défense de soi-même
+           idAttaque == MUR_VIVANT ||             // Incassable - protège un allié mais effet passif
+           idAttaque == HURLEMENT_NOIR ||         // Dark Shadow - AOE
+           idAttaque == VENT_PERÇANT ||           // Temari - AOE
+           idAttaque == FOUDRE_ENCHAINEE ||       // Kirua - AOE
+           idAttaque == BLIZZARD;                 // Itsugaya - AOE
 }
 
 

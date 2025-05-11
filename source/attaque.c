@@ -145,30 +145,45 @@ void attaque_affutage_mortal(Fighter* attaquant, Fighter* cible) {
 
 void attaque_assaut_tranchant(Fighter* attaquant, Fighter* cible) {
     Fighter a = appliquer_modificateurs(attaquant);
+    Fighter modifCible;
+    Fighter* vraieCible = cible;
 
-    Fighter* cibleReelle = cible;
-    int indexProtecteur = cible->protegePar;
-    
-    SDL_Log("Vérif redirection : cible = %s, protegePar = %d, protecteur = %s",
-        cible->nom, cible->protegePar,
-        (cible->protegePar >= 0 ? persoChoisi[cible->protegePar].nom : "aucun"));
+    int equipeCibleInitiale = (cible == &partieActuelle.joueur1.fighter1 || 
+        cible == &partieActuelle.joueur1.fighter2 || 
+        cible == &partieActuelle.joueur1.fighter3) ? 1 : 2;
 
-    if (indexProtecteur >= 0 &&
-        indexProtecteur != get_index_fighter(cible) &&
-        strcmp(persoChoisi[indexProtecteur].nom, "incassable") == 0) {
-        
-        cibleReelle = &persoChoisi[indexProtecteur];
-        SDL_Log("%s protège %s : redirection vers %s !", cibleReelle->nom, cible->nom, cibleReelle->nom);
+    int equipeIncassable = (idIncassble <= 2) ? 1 : 2;
+
+    if (dureeMur > 0 && equipeCibleInitiale == equipeIncassable) {
+    switch (idIncassble) {
+    case 0: vraieCible = &partieActuelle.joueur1.fighter1; break;
+    case 1: vraieCible = &partieActuelle.joueur1.fighter2; break;
+    case 2: vraieCible = &partieActuelle.joueur1.fighter3; break;
+    case 3: vraieCible = &partieActuelle.joueur2.fighter1; break;
+    case 4: vraieCible = &partieActuelle.joueur2.fighter2; break;
+    case 5: vraieCible = &partieActuelle.joueur2.fighter3; break;
+    }
     }
 
-    Fighter c = appliquer_modificateurs(cibleReelle);
 
-    int degats = (a.attaque * 0.6) * 2 - c.defense;
+    modifCible = appliquer_modificateurs(vraieCible);
+
+    int degats = (a.attaque *0.6 )* 2 - modifCible.defense;
+
+    if (vraieCible->statutEffet == 13) {
+        degats *= 0.1;
+        vraieCible->statutEffet = 0;
+        SDL_Log("Défense active : dégâts réduits pour %s !", vraieCible->nom);
+    }
+
     if (degats < 10) degats = 10;
 
-    cibleReelle->actu_pv -= degats * 2;
-    if (cibleReelle->actu_pv < 0) cibleReelle->actu_pv = 0;
-    if (cibleReelle->pt < 10) cibleReelle->pt++;
+    vraieCible->actu_pv -= degats;
+    vraieCible->actu_pv -= degats;
+    if (vraieCible->actu_pv < 0) vraieCible->actu_pv = 0;
+    
+
+    if (vraieCible->pt < 10) vraieCible->pt++;
 
     SDL_Log("%s utilise Assaut Tranchant sur %s (-%d PV)\n", a.nom, cible->nom, degats * 2);
 }
@@ -190,29 +205,45 @@ void attaque_flammes_solaires(Fighter* attaquant, Fighter* cible) {
 
 void attaque_explosion_ardente(Fighter* attaquant, Fighter* cible) {
     Fighter a = appliquer_modificateurs(attaquant);
+    Fighter modifCible;
+    Fighter* vraieCible = cible;
 
-    Fighter* cibleReelle = cible;
-    int indexProtecteur = cible->protegePar;
+    int equipeCibleInitiale = (cible == &partieActuelle.joueur1.fighter1 || 
+        cible == &partieActuelle.joueur1.fighter2 || 
+        cible == &partieActuelle.joueur1.fighter3) ? 1 : 2;
 
-    if (indexProtecteur >= 0 &&
-        indexProtecteur != get_index_fighter(cible) &&
-        strcmp(persoChoisi[indexProtecteur].nom, "incassable") == 0) {
+    int equipeIncassable = (idIncassble <= 2) ? 1 : 2;
 
-        cibleReelle = &persoChoisi[indexProtecteur];
-        SDL_Log("%s protège %s : redirection vers %s !", cibleReelle->nom, cible->nom, cibleReelle->nom);
+    if (dureeMur > 0 && equipeCibleInitiale == equipeIncassable) {
+        switch (idIncassble) {
+            case 0: vraieCible = &partieActuelle.joueur1.fighter1; break;
+            case 1: vraieCible = &partieActuelle.joueur1.fighter2; break;
+            case 2: vraieCible = &partieActuelle.joueur1.fighter3; break;
+            case 3: vraieCible = &partieActuelle.joueur2.fighter1; break;
+            case 4: vraieCible = &partieActuelle.joueur2.fighter2; break;
+            case 5: vraieCible = &partieActuelle.joueur2.fighter3; break;
+        }
     }
 
-    Fighter c = appliquer_modificateurs(cibleReelle);
 
-    attaquant->statutEffet = 2;
-    attaquant->dureeEffet = 3;
-    int degats = a.magie * 2 - c.magie;
+    modifCible = appliquer_modificateurs(vraieCible);
+
+    int degats = a.magie* 2 - modifCible.magie;
+
+    if (vraieCible->statutEffet == 13) {
+        degats *= 0.1;
+        vraieCible->statutEffet = 0;
+        SDL_Log("Défense active : dégâts réduits pour %s !", vraieCible->nom);
+    }
+
     if (degats < 10) degats = 10;
 
-    cibleReelle->actu_pv -= degats;
-    if (cibleReelle->actu_pv < 0) cibleReelle->actu_pv = 0;
-    if (cibleReelle->pt < 10) cibleReelle->pt++;
+    vraieCible->actu_pv -= degats;
+    vraieCible->actu_pv -= degats;
+    if (vraieCible->actu_pv < 0) vraieCible->actu_pv = 0;
+    
 
+    if (vraieCible->pt < 10) vraieCible->pt++;
     SDL_Log("%s utilise Explosion Ardente sur %s (-%d PV)\n", a.nom, cible->nom, degats);
 }
 
@@ -232,29 +263,43 @@ void attaque_prison_de_givre(Fighter* attaquant, Fighter* cible) {
 
 void attaque_blizzard(Fighter* attaquant, Fighter* cible) {
     Fighter a = appliquer_modificateurs(attaquant);
+    Fighter modifCible;
+    Fighter* vraieCible = cible;
 
-    Fighter* cibleReelle = cible;
-    int indexProtecteur = cible->protegePar;
+    int equipeCibleInitiale = (cible == &partieActuelle.joueur1.fighter1 || 
+        cible == &partieActuelle.joueur1.fighter2 || 
+        cible == &partieActuelle.joueur1.fighter3) ? 1 : 2;
 
-    if (indexProtecteur >= 0 &&
-        indexProtecteur != get_index_fighter(cible) &&
-        strcmp(persoChoisi[indexProtecteur].nom, "incassable") == 0) {
+    int equipeIncassable = (idIncassble <= 2) ? 1 : 2;
 
-        cibleReelle = &persoChoisi[indexProtecteur];
-        SDL_Log("%s protège %s : redirection vers %s !", cibleReelle->nom, cible->nom, cibleReelle->nom);
+    if (dureeMur > 0 && equipeCibleInitiale == equipeIncassable) {
+    switch (idIncassble) {
+    case 0: vraieCible = &partieActuelle.joueur1.fighter1; break;
+    case 1: vraieCible = &partieActuelle.joueur1.fighter2; break;
+    case 2: vraieCible = &partieActuelle.joueur1.fighter3; break;
+    case 3: vraieCible = &partieActuelle.joueur2.fighter1; break;
+    case 4: vraieCible = &partieActuelle.joueur2.fighter2; break;
+    case 5: vraieCible = &partieActuelle.joueur2.fighter3; break;
+    }
     }
 
-    Fighter c = appliquer_modificateurs(cibleReelle);
 
-    cible->statutEffet = 11;
-    cible->dureeEffet = 2;
+    modifCible = appliquer_modificateurs(vraieCible);
 
-    int degats = (a.attaque * 0.3) * 2 - c.defense;
+    int degats = a.attaque * 2 - modifCible.defense;
+
+    if (vraieCible->statutEffet == 13) {
+        degats *= 0.1;
+        vraieCible->statutEffet = 0;
+        SDL_Log("Défense active : dégâts réduits pour %s !", vraieCible->nom);
+    }
+
     if (degats < 10) degats = 10;
 
-    cibleReelle->actu_pv -= degats;
-    if (cibleReelle->actu_pv < 0) cibleReelle->actu_pv = 0;
-    if (cibleReelle->pt < 10) cibleReelle->pt++;
+    vraieCible->actu_pv -= degats;
+    if (vraieCible->actu_pv < 0) vraieCible->actu_pv = 0;
+
+    if (vraieCible->pt < 10) vraieCible->pt++;
 
     SDL_Log("%s utilise Blizzard sur %s (-%d PV + Gel)\n", a.nom, cible->nom, degats);
 }
@@ -290,30 +335,62 @@ void attaque_crepuscule(Fighter* attaquant, Fighter* cible) {
     SDL_Log("%s plonge le combat dans le Crépuscule\n", attaquant->nom);
 }
 
+//aoe
 void attaque_hurlement_noir(Fighter* attaquant, Fighter* cible) {
     Fighter a = appliquer_modificateurs(attaquant);
+    int equipeAdverse = (attaquant == &partieActuelle.joueur1.fighter1 ||
+                         attaquant == &partieActuelle.joueur1.fighter2 ||
+                         attaquant == &partieActuelle.joueur1.fighter3) ? 2 : 1;
 
-    Fighter* cibleReelle = cible;
-    int indexProtecteur = cible->protegePar;
-
-    if (indexProtecteur >= 0 &&
-        indexProtecteur != get_index_fighter(cible) &&
-        strcmp(persoChoisi[indexProtecteur].nom, "incassable") == 0) {
-
-        cibleReelle = &persoChoisi[indexProtecteur];
-        SDL_Log("%s protège %s : redirection vers %s !", cibleReelle->nom, cible->nom, cibleReelle->nom);
+    Fighter* cibles[3];
+    if (equipeAdverse == 1) {
+        cibles[0] = &partieActuelle.joueur1.fighter1;
+        cibles[1] = &partieActuelle.joueur1.fighter2;
+        cibles[2] = &partieActuelle.joueur1.fighter3;
+    } else {
+        cibles[0] = &partieActuelle.joueur2.fighter1;
+        cibles[1] = &partieActuelle.joueur2.fighter2;
+        cibles[2] = &partieActuelle.joueur2.fighter3;
     }
 
-    Fighter c = appliquer_modificateurs(cibleReelle);
+    for (int i = 0; i < 3; i++) {
+        Fighter* vraieCible = cibles[i];
 
-    int degats = (a.magie) * 2 - c.magie;
-    if (degats < 10) degats = 10;
+        // Skip les morts
+        if (vraieCible->actu_pv <= 0) continue;
 
-    cibleReelle->actu_pv -= degats;
-    if (cibleReelle->actu_pv < 0) cibleReelle->actu_pv = 0;
-    if (cibleReelle->pt < 10) cibleReelle->pt++;
+        // Mur vivant
+        int equipeCibleInitiale = equipeAdverse;
+        int equipeIncassable = (idIncassble <= 2) ? 1 : 2;
 
-    SDL_Log("%s utilise Hurlement Noir sur %s (-%d PV)\n", a.nom, cible->nom, degats);
+        if (dureeMur > 0 && equipeCibleInitiale == equipeIncassable) {
+            switch (idIncassble) {
+                case 0: vraieCible = &partieActuelle.joueur1.fighter1; break;
+                case 1: vraieCible = &partieActuelle.joueur1.fighter2; break;
+                case 2: vraieCible = &partieActuelle.joueur1.fighter3; break;
+                case 3: vraieCible = &partieActuelle.joueur2.fighter1; break;
+                case 4: vraieCible = &partieActuelle.joueur2.fighter2; break;
+                case 5: vraieCible = &partieActuelle.joueur2.fighter3; break;
+            }
+        }
+
+        Fighter modifCible = appliquer_modificateurs(vraieCible);
+        int degats = a.magie * 2 - modifCible.magie;
+
+        if (vraieCible->statutEffet == 13) {
+            degats *= 0.1;
+            vraieCible->statutEffet = 0;
+            SDL_Log("Défense active : dégâts réduits pour %s !", vraieCible->nom);
+        }
+
+        if (degats < 10) degats = 10;
+        vraieCible->actu_pv -= degats;
+        if (vraieCible->actu_pv < 0) vraieCible->actu_pv = 0;
+
+        if (vraieCible->pt < 10) vraieCible->pt++;
+
+        SDL_Log("%s subit Hurlement Noir (-%d PV)", vraieCible->nom, degats);
+    }
 }
 
 
@@ -329,30 +406,62 @@ void attaque_danse_du_vent(Fighter* attaquant, Fighter* cible) {
     SDL_Log("%s affaiblit l’attaque de %s (Danse du Vent)\n", attaquant->nom, cible->nom);
 }
 
+//aoe
 void attaque_vent_percant(Fighter* attaquant, Fighter* cible) {
     Fighter a = appliquer_modificateurs(attaquant);
+    int equipeAdverse = (attaquant == &partieActuelle.joueur1.fighter1 ||
+                         attaquant == &partieActuelle.joueur1.fighter2 ||
+                         attaquant == &partieActuelle.joueur1.fighter3) ? 2 : 1;
 
-    Fighter* cibleReelle = cible;
-    int indexProtecteur = cible->protegePar;
-
-    if (indexProtecteur >= 0 &&
-        indexProtecteur != get_index_fighter(cible) &&
-        strcmp(persoChoisi[indexProtecteur].nom, "incassable") == 0) {
-
-        cibleReelle = &persoChoisi[indexProtecteur];
-        SDL_Log("%s protège %s : redirection vers %s !", cibleReelle->nom, cible->nom, cibleReelle->nom);
+    Fighter* cibles[3];
+    if (equipeAdverse == 1) {
+        cibles[0] = &partieActuelle.joueur1.fighter1;
+        cibles[1] = &partieActuelle.joueur1.fighter2;
+        cibles[2] = &partieActuelle.joueur1.fighter3;
+    } else {
+        cibles[0] = &partieActuelle.joueur2.fighter1;
+        cibles[1] = &partieActuelle.joueur2.fighter2;
+        cibles[2] = &partieActuelle.joueur2.fighter3;
     }
 
-    Fighter c = appliquer_modificateurs(cibleReelle);
+    for (int i = 0; i < 3; i++) {
+        Fighter* vraieCible = cibles[i];
 
-    int degats = (a.magie) * 2 - c.magie;
-    if (degats < 10) degats = 10;
+        // Skip les morts
+        if (vraieCible->actu_pv <= 0) continue;
 
-    cibleReelle->actu_pv -= degats;
-    if (cibleReelle->actu_pv < 0) cibleReelle->actu_pv = 0;
-    if (cibleReelle->pt < 10) cibleReelle->pt++;
+        // Mur vivant
+        int equipeCibleInitiale = equipeAdverse;
+        int equipeIncassable = (idIncassble <= 2) ? 1 : 2;
 
-    SDL_Log("%s utilise Vent Perçant sur %s (-%d PV)\n", a.nom, cible->nom, degats);
+        if (dureeMur > 0 && equipeCibleInitiale == equipeIncassable) {
+            switch (idIncassble) {
+                case 0: vraieCible = &partieActuelle.joueur1.fighter1; break;
+                case 1: vraieCible = &partieActuelle.joueur1.fighter2; break;
+                case 2: vraieCible = &partieActuelle.joueur1.fighter3; break;
+                case 3: vraieCible = &partieActuelle.joueur2.fighter1; break;
+                case 4: vraieCible = &partieActuelle.joueur2.fighter2; break;
+                case 5: vraieCible = &partieActuelle.joueur2.fighter3; break;
+            }
+        }
+
+        Fighter modifCible = appliquer_modificateurs(vraieCible);
+        int degats = a.magie * 2 - modifCible.magie;
+
+        if (vraieCible->statutEffet == 13) {
+            degats *= 0.1;
+            vraieCible->statutEffet = 0;
+            SDL_Log("Défense active : dégâts réduits pour %s !", vraieCible->nom);
+        }
+
+        if (degats < 10) degats = 10;
+        vraieCible->actu_pv -= degats;
+        if (vraieCible->actu_pv < 0) vraieCible->actu_pv = 0;
+
+        if (vraieCible->pt < 10) vraieCible->pt++;
+
+        SDL_Log("%s utilise Vent Perçant sur %s (-%d PV)\n", a.nom, cible->nom, degats);
+    }
 }
 
 
@@ -365,61 +474,127 @@ void attaque_souffle_de_vie(Fighter* attaquant, Fighter* cible) {
 
 void attaque_fulgurance(Fighter* attaquant, Fighter* cible) {
     Fighter a = appliquer_modificateurs(attaquant);
+    Fighter modifCible;
+    Fighter* vraieCible = cible;
 
-    Fighter* cibleReelle = cible;
-    int indexProtecteur = cible->protegePar;
+    int equipeCibleInitiale = (cible == &partieActuelle.joueur1.fighter1 || 
+        cible == &partieActuelle.joueur1.fighter2 || 
+        cible == &partieActuelle.joueur1.fighter3) ? 1 : 2;
 
-    if (indexProtecteur >= 0 &&
-        indexProtecteur != get_index_fighter(cible) &&
-        strcmp(persoChoisi[indexProtecteur].nom, "incassable") == 0) {
+    int equipeIncassable = (idIncassble <= 2) ? 1 : 2;
 
-        cibleReelle = &persoChoisi[indexProtecteur];
-        SDL_Log("%s protège %s : redirection vers %s !", cibleReelle->nom, cible->nom, cibleReelle->nom);
+    if (dureeMur > 0 && equipeCibleInitiale == equipeIncassable) {
+    switch (idIncassble) {
+    case 0: vraieCible = &partieActuelle.joueur1.fighter1; break;
+    case 1: vraieCible = &partieActuelle.joueur1.fighter2; break;
+    case 2: vraieCible = &partieActuelle.joueur1.fighter3; break;
+    case 3: vraieCible = &partieActuelle.joueur2.fighter1; break;
+    case 4: vraieCible = &partieActuelle.joueur2.fighter2; break;
+    case 5: vraieCible = &partieActuelle.joueur2.fighter3; break;
+    }
     }
 
-    Fighter c = appliquer_modificateurs(cibleReelle);
 
-    int degats = a.attaque * 2 - c.defense * 0.5;
+    modifCible = appliquer_modificateurs(vraieCible);
+
+    int degats = a.attaque * 2 - modifCible.defense * 0.5;
+
+    if (vraieCible->statutEffet == 13) {
+        degats *= 0.1;
+        vraieCible->statutEffet = 0;
+        SDL_Log("Défense active : dégâts réduits pour %s !", vraieCible->nom);
+    }
+
     if (degats < 10) degats = 10;
 
-    cibleReelle->actu_pv -= degats;
-    if (cibleReelle->actu_pv < 0) cibleReelle->actu_pv = 0;
-    if (cibleReelle->pt < 10) cibleReelle->pt++;
+    vraieCible->actu_pv -= degats;
+    if (vraieCible->actu_pv < 0) vraieCible->actu_pv = 0;
+
+    if (vraieCible->pt < 10) vraieCible->pt++;
 
     SDL_Log("%s utilise Fulgurance sur %s (-%d PV)\n", a.nom, cible->nom, degats);
 }
 
 
-
+//aoe
 void attaque_foudre_enchainee(Fighter* attaquant, Fighter* cible) {
     Fighter a = appliquer_modificateurs(attaquant);
+    int equipeAdverse = (attaquant == &partieActuelle.joueur1.fighter1 ||
+                         attaquant == &partieActuelle.joueur1.fighter2 ||
+                         attaquant == &partieActuelle.joueur1.fighter3) ? 2 : 1;
 
-    Fighter* cibleReelle = cible;
-    int indexProtecteur = cible->protegePar;
-
-    if (indexProtecteur >= 0 &&
-        indexProtecteur != get_index_fighter(cible) &&
-        strcmp(persoChoisi[indexProtecteur].nom, "incassable") == 0) {
-
-        cibleReelle = &persoChoisi[indexProtecteur];
-        SDL_Log("%s protège %s : redirection vers %s !", cibleReelle->nom, cible->nom, cibleReelle->nom);
+    Fighter* cibles[3];
+    if (equipeAdverse == 1) {
+        cibles[0] = &partieActuelle.joueur1.fighter1;
+        cibles[1] = &partieActuelle.joueur1.fighter2;
+        cibles[2] = &partieActuelle.joueur1.fighter3;
+    } else {
+        cibles[0] = &partieActuelle.joueur2.fighter1;
+        cibles[1] = &partieActuelle.joueur2.fighter2;
+        cibles[2] = &partieActuelle.joueur2.fighter3;
     }
 
-    Fighter c = appliquer_modificateurs(cibleReelle);
+    for (int i = 0; i < 3; i++) {
+        Fighter* vraieCible = cibles[i];
 
-    int degats = (a.attaque * 0.4) * 2 - c.defense;
-    if (degats < 10) degats = 10;
+        // Skip les morts
+        if (vraieCible->actu_pv <= 0) continue;
 
-    cibleReelle->actu_pv -= degats;
-    if (cibleReelle->actu_pv < 0) cibleReelle->actu_pv = 0;
-    if (cibleReelle->pt < 10) cibleReelle->pt++;
+        // Mur vivant
+        int equipeCibleInitiale = equipeAdverse;
+        int equipeIncassable = (idIncassble <= 2) ? 1 : 2;
 
-    SDL_Log("%s utilise Foudre Enchaînée sur %s (-%d PV)\n", a.nom, cible->nom, degats);
+        if (dureeMur > 0 && equipeCibleInitiale == equipeIncassable) {
+            switch (idIncassble) {
+                case 0: vraieCible = &partieActuelle.joueur1.fighter1; break;
+                case 1: vraieCible = &partieActuelle.joueur1.fighter2; break;
+                case 2: vraieCible = &partieActuelle.joueur1.fighter3; break;
+                case 3: vraieCible = &partieActuelle.joueur2.fighter1; break;
+                case 4: vraieCible = &partieActuelle.joueur2.fighter2; break;
+                case 5: vraieCible = &partieActuelle.joueur2.fighter3; break;
+            }
+        }
+
+        Fighter modifCible = appliquer_modificateurs(vraieCible);
+        int degats = (a.attaque * 0.4) * 2 - modifCible.defense;
+
+        if (vraieCible->statutEffet == 13) {
+            degats *= 0.1;
+            vraieCible->statutEffet = 0;
+            SDL_Log("Défense active : dégâts réduits pour %s !", vraieCible->nom);
+        }
+
+        if (degats < 10) degats = 10;
+        vraieCible->actu_pv -= degats;
+        if (vraieCible->actu_pv < 0) vraieCible->actu_pv = 0;
+
+        if (vraieCible->pt < 10) vraieCible->pt++;
+        
+        SDL_Log("%s utilise Foudre Enchaînée sur %s (-%d PV)\n", a.nom, cible->nom, degats);
+    }
 }
 
 
 void attaque_execution_rapide(Fighter* attaquant, Fighter* cible) {
     Fighter a = appliquer_modificateurs(attaquant);
+    Fighter* vraieCible = cible;
+
+    int equipeCibleInitiale = (cible == &partieActuelle.joueur1.fighter1 || 
+        cible == &partieActuelle.joueur1.fighter2 || 
+        cible == &partieActuelle.joueur1.fighter3) ? 1 : 2;
+
+    int equipeIncassable = (idIncassble <= 2) ? 1 : 2;
+
+    if (dureeMur > 0 && equipeCibleInitiale == equipeIncassable) {
+        switch (idIncassble) {
+            case 0: vraieCible = &partieActuelle.joueur1.fighter1; break;
+            case 1: vraieCible = &partieActuelle.joueur1.fighter2; break;
+            case 2: vraieCible = &partieActuelle.joueur1.fighter3; break;
+            case 3: vraieCible = &partieActuelle.joueur2.fighter1; break;
+            case 4: vraieCible = &partieActuelle.joueur2.fighter2; break;
+            case 5: vraieCible = &partieActuelle.joueur2.fighter3; break;
+        }
+    }
 
     // Calcul des dégâts basé sur la cible originale
     int degats;
@@ -429,25 +604,18 @@ void attaque_execution_rapide(Fighter* attaquant, Fighter* cible) {
         degats = (a.attaque * 0.5) * 2;
     }
 
-    Fighter* cibleReelle = cible;
-    int indexProtecteur = cible->protegePar;
-
-    if (indexProtecteur >= 0 &&
-        indexProtecteur != get_index_fighter(cible) &&
-        strcmp(persoChoisi[indexProtecteur].nom, "incassable") == 0) {
-        
-        cibleReelle = &persoChoisi[indexProtecteur];
-        SDL_Log("%s protège %s : redirection vers %s !", cibleReelle->nom, cible->nom, cibleReelle->nom);
+    if (vraieCible->statutEffet == 13) {
+        degats *= 0.1;
+        vraieCible->statutEffet = 0;
+        SDL_Log("Défense active : dégâts réduits pour %s !", vraieCible->nom);
     }
-
-    Fighter c = appliquer_modificateurs(cibleReelle);
-    degats -= c.defense;
 
     if (degats < 10) degats = 10;
 
-    cibleReelle->actu_pv -= degats;
-    if (cibleReelle->actu_pv < 0) cibleReelle->actu_pv = 0;
-    if (cibleReelle->pt < 10) cibleReelle->pt++;
+    vraieCible->actu_pv -= degats;
+    if (vraieCible->actu_pv < 0) vraieCible->actu_pv = 0;
+
+    if (vraieCible->pt < 10) vraieCible->pt++;
 
     SDL_Log("%s utilise Exécution Rapide sur %s (-%d PV)\n", a.nom, cible->nom, degats);
 }
