@@ -22,6 +22,7 @@ AttaqueSauvegarde tableauAttaqueDuTour [NB_PERSOS_EQUIPE * 2];
 
 Fighter appliquer_modificateurs(Fighter* original){
     Fighter copie = *original;
+    
     if (copie.statutEffet == 3 && copie.dureeEffet > 0) {
         copie.defense += copie.defense * 0.25;  // +25%
     }
@@ -72,6 +73,7 @@ Fighter appliquer_modificateurs(Fighter* original){
         case 13: // Defense classique
             copie.defense += copie.defense * 0.1;
     }
+
 
     return *original;
 }
@@ -132,6 +134,7 @@ AttaqueSauvegarde choisirCible(SDL_Renderer* rendu, int equipeCible, AttaqueSauv
     }
 
     Fighter* cibles[3];
+    (void)cibles;
     int x_start, direction;
 
     if (equipeCible == 1) {
@@ -318,14 +321,17 @@ bool est_mur_vivant(int id) {
 }
 
 bool attaque_cible_soi_meme(int idAttaque) {
-    return idAttaque == AFFUTAGE_MORTAL ||
-           idAttaque == EVEIL_DU_SABRE ||
-           idAttaque == BRUME_PROTECTRICE ||
-           idAttaque == EVEIL_LUNAIRE ||
-           idAttaque == CREPUSCULE ||
-           idAttaque == FLAMMES_SOLAIRES ||
-           idAttaque == BARRIERE_DE_PIERRE ||
-           idAttaque == MUR_VIVANT;
+    return idAttaque == AFFUTAGE_MORTAL ||        // Zoro
+           idAttaque == EVEIL_DU_SABRE ||         // Zoro
+           idAttaque == EVEIL_LUNAIRE ||          // Katara - change le cycle → pas de cible
+           idAttaque == CREPUSCULE ||             // Dark Shadow - change le cycle → pas de cible
+           idAttaque == FLAMMES_SOLAIRES ||       // Rengoku - change le cycle → pas de cible
+           idAttaque == BARRIERE_DE_PIERRE ||     // Incassable - boost défense de soi-même
+           idAttaque == MUR_VIVANT ||             // Incassable - protège un allié mais effet passif
+           idAttaque == HURLEMENT_NOIR ||         // Dark Shadow - AOE
+           idAttaque == VENT_PERÇANT ||           // Temari - AOE
+           idAttaque == FOUDRE_ENCHAINEE ||       // Kirua - AOE
+           idAttaque == BLIZZARD;                 // Itsugaya - AOE
 }
 
 
@@ -550,20 +556,56 @@ void actionPerso(SDL_Renderer* renderer, Fighter* persoActuel, int equipeAdverse
 
 
 
-
-
-
-
 void runGame(SDL_Renderer* rendu) {
     arreter_musique("ressource/musique/ogg/selection_personnages.ogg");
     SDL_GetWindowSize(fenetre, &screenWidth, &screenHeight);
-
+    
+    partieActuelle.mapType = rand() % 9;
+    
+    
     partieActuelle.joueur1.fighter1 = persoChoisi[0];
+    if(partieActuelle.joueur1.fighter1.element == partieActuelle.mapType){ 
+        partieActuelle.joueur1.fighter1.max_pv += 20;
+        partieActuelle.joueur1.fighter1.actu_pv += 20;
+        SDL_Log("%s recoit un boost d'élement !",partieActuelle.joueur1.fighter1.nom);
+    } 
     partieActuelle.joueur1.fighter2 = persoChoisi[2];
+    if(partieActuelle.joueur1.fighter2.element == partieActuelle.mapType){
+        partieActuelle.joueur1.fighter2.max_pv += 20;
+        partieActuelle.joueur1.fighter2.actu_pv += 20;
+        SDL_Log("%s recoit un boost d'élement !",partieActuelle.joueur1.fighter2.nom);
+    }
+
     partieActuelle.joueur1.fighter3 = persoChoisi[4];
+    if(partieActuelle.joueur1.fighter3.element == partieActuelle.mapType){ 
+        partieActuelle.joueur1.fighter3.max_pv += 20;
+        partieActuelle.joueur1.fighter3.actu_pv += 20;
+        SDL_Log("%s recoit un boost d'élement !",partieActuelle.joueur1.fighter3.nom);
+    }
+
     partieActuelle.joueur2.fighter1 = persoChoisi[1];
+    if(partieActuelle.joueur2.fighter1.element == partieActuelle.mapType){
+        partieActuelle.joueur2.fighter1.max_pv += 20;
+        partieActuelle.joueur2.fighter1.actu_pv += 20;
+        SDL_Log("%s recoit un boost d'élement !",partieActuelle.joueur2.fighter1.nom);
+    }
+
+
     partieActuelle.joueur2.fighter2 = persoChoisi[3];
+    if(partieActuelle.joueur2.fighter2.element == partieActuelle.mapType){ 
+        partieActuelle.joueur2.fighter2.max_pv += 20;
+        partieActuelle.joueur2.fighter2.actu_pv += 20;
+        SDL_Log("%s recoit un boost d'élement !",partieActuelle.joueur2.fighter2.nom);
+    }
+
     partieActuelle.joueur2.fighter3 = persoChoisi[5];
+    if(partieActuelle.joueur2.fighter3.element == partieActuelle.mapType){
+        partieActuelle.joueur2.fighter3.max_pv += 20;
+        partieActuelle.joueur2.fighter3.actu_pv += 20;
+        SDL_Log("%s recoit un boost d'élement !",partieActuelle.joueur2.fighter3.nom);
+    }
+
+    
 
     for (int i = 0; i < 6; i++) {
         if (strcmp(persoChoisi[i].nom, "incassable") == 0) {
@@ -576,13 +618,16 @@ void runGame(SDL_Renderer* rendu) {
             break;
         }
     }
+    
+    dureeMur = 0;
 
     dureeMur = 0;
     partieActuelle.perso_actif = 0;
     partieActuelle.tour = 1;
     partieActuelle.equipeQuiCommence = rand() % 2 + 1;
     partieActuelle.fin = false;
-    partieActuelle.mapType = rand() % 9;
+    
+    
 
     char musiquePath[128];
     snprintf(musiquePath, sizeof(musiquePath), "ressource/musique/ogg/jeu/combat_%d.ogg", partieActuelle.mapType);
@@ -615,6 +660,9 @@ void runGame(SDL_Renderer* rendu) {
             for (int i = 0; i < 3; i++) {
                 int index = (equipe == 1) ? i : i + 3;
                 Fighter* perso = get_fighter(index);
+                
+                if (tableauAttaqueDuTour[index].idAttaque >= 0) continue;
+
                 if (perso->actu_pv <= 0) continue;
                 appliquer_et_mettre_a_jour_effets(perso);
                 partieActuelle.perso_actif = index;
@@ -622,6 +670,8 @@ void runGame(SDL_Renderer* rendu) {
 
                 //IA Facile
 
+
+                
 
                 if (equipe == 2 && partieActuelle.iaDifficulte > 0) {
                     int choix = rand() % 100;
@@ -660,6 +710,7 @@ void runGame(SDL_Renderer* rendu) {
 
                     SDL_Delay(500);
                 } else {
+                    
                     actionPerso(rendu, perso, (equipe == 1) ? 2 : 1);
                 }
             }
