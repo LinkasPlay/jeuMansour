@@ -22,6 +22,7 @@ AttaqueSauvegarde tableauAttaqueDuTour [NB_PERSOS_EQUIPE * 2];
 
 Fighter appliquer_modificateurs(Fighter* original){
     Fighter copie = *original;
+    
     if (copie.statutEffet == 3 && copie.dureeEffet > 0) {
         copie.defense += copie.defense * 0.25;  // +25%
     }
@@ -72,6 +73,7 @@ Fighter appliquer_modificateurs(Fighter* original){
         case 13: // Defense classique
             copie.defense += copie.defense * 0.1;
     }
+
 
     return *original;
 }
@@ -550,20 +552,56 @@ void actionPerso(SDL_Renderer* renderer, Fighter* persoActuel, int equipeAdverse
 
 
 
-
-
-
-
 void runGame(SDL_Renderer* rendu) {
     arreter_musique("ressource/musique/ogg/selection_personnages.ogg");
     SDL_GetWindowSize(fenetre, &screenWidth, &screenHeight);
-
+    
+    partieActuelle.mapType = rand() % 9;
+    
+    
     partieActuelle.joueur1.fighter1 = persoChoisi[0];
+    if(partieActuelle.joueur1.fighter1.element == partieActuelle.mapType){ 
+        partieActuelle.joueur1.fighter1.max_pv += 20;
+        partieActuelle.joueur1.fighter1.actu_pv += 20;
+        SDL_Log("%s recoit un boost d'élement !",joueur1.fighter1.nom);
+    } 
     partieActuelle.joueur1.fighter2 = persoChoisi[2];
+    if(partieActuelle.joueur1.fighter2.element == partieActuelle.mapType){
+        partieActuelle.joueur1.fighter2.max_pv += 20;
+        partieActuelle.joueur1.fighter2.actu_pv += 20;
+        SDL_Log("%s recoit un boost d'élement !",joueur1.fighter2.nom);
+    }
+
     partieActuelle.joueur1.fighter3 = persoChoisi[4];
+    if(partieActuelle.joueur1.fighter3.element == partieActuelle.mapType){ 
+        partieActuelle.joueur1.fighter3.max_pv += 20;
+        partieActuelle.joueur1.fighter3.actu_pv += 20;
+        SDL_Log("%s recoit un boost d'élement !",joueur1.fighter3.nom);
+    }
+
     partieActuelle.joueur2.fighter1 = persoChoisi[1];
+    if(partieActuelle.joueur2.fighter1.element == partieActuelle.mapType){
+        partieActuelle.joueur2.fighter1.max_pv += 20;
+        partieActuelle.joueur2.fighter1.actu_pv += 20;
+        SDL_Log("%s recoit un boost d'élement !",joueur2.fighter1.nom);
+    }
+
+
     partieActuelle.joueur2.fighter2 = persoChoisi[3];
+    if(partieActuelle.joueur2.fighter2.element == partieActuelle.mapType){ 
+        partieActuelle.joueur2.fighter2.max_pv += 20;
+        partieActuelle.joueur2.fighter2.actu_pv += 20;
+        SDL_Log("%s recoit un boost d'élement !",joueur2.fighter2.nom);
+    }
+
     partieActuelle.joueur2.fighter3 = persoChoisi[5];
+    if(partieActuelle.joueur2.fighter3.element == partieActuelle.mapType){
+        partieActuelle.joueur2.fighter3.max_pv += 20;
+        partieActuelle.joueur2.fighter3.actu_pv += 20;
+        SDL_Log("%s recoit un boost d'élement !",joueur2.fighter3.nom);
+    }
+
+    
 
     for (int i = 0; i < 6; i++) {
         if (strcmp(persoChoisi[i].nom, "incassable") == 0) {
@@ -577,7 +615,6 @@ void runGame(SDL_Renderer* rendu) {
             break;
         }
     }
-    SDL_Log("%d inacalle\n", idIncassble);
     
     dureeMur = 0;
 
@@ -586,7 +623,7 @@ void runGame(SDL_Renderer* rendu) {
     partieActuelle.equipeQuiCommence = rand() % 2 + 1;
     partieActuelle.fin = false;
     
-    partieActuelle.mapType = rand() % 9;
+    
 
     char musiquePath[128];
     snprintf(musiquePath, sizeof(musiquePath), "ressource/musique/ogg/jeu/combat_%d.ogg", partieActuelle.mapType);
