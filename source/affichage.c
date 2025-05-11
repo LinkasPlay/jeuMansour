@@ -20,16 +20,15 @@ int screenHeight = 0;
 
 // ============================ AFFICHAGE =========================================
 
-Fighter* get_fighter(int equipe, int numero) {
-    if (equipe == 1) {
+Fighter* get_fighter(int numero) {
+        
         if (numero == 0) return &partieActuelle.joueur1.fighter1;
         if (numero == 1) return &partieActuelle.joueur1.fighter2;
         if (numero == 2) return &partieActuelle.joueur1.fighter3;
-    } else {
-        if (numero == 0) return &partieActuelle.joueur2.fighter1;
-        if (numero == 1) return &partieActuelle.joueur2.fighter2;
-        if (numero == 2) return &partieActuelle.joueur2.fighter3;
-    }
+        if (numero == 3) return &partieActuelle.joueur2.fighter1;
+        if (numero == 4) return &partieActuelle.joueur2.fighter2;
+        if (numero == 5) return &partieActuelle.joueur2.fighter3;
+    
     return NULL;
 }
 
@@ -59,8 +58,7 @@ void renduJeu(SDL_Renderer* rendu) {
 
     // === Portrait et infos personnage actif ===
     int equipe = (partieActuelle.perso_actif < 3) ? 1 : 2;
-    int numero = (equipe == 1) ? partieActuelle.perso_actif : partieActuelle.perso_actif - 3;
-    Fighter* actif = get_fighter(equipe, numero);
+    Fighter* actif = get_fighter(partieActuelle.perso_actif);
 
     // Chargement du portrait stylisé
     char pathPortrait[128];
@@ -311,7 +309,7 @@ void jouerAnimationAttaque(SDL_Renderer* renderer, int type, SDL_Rect lanceur, S
         case 3: // AOE (Zone)
             for (int frame = 0; frame < 3; frame++) {
                 for (int i = 0; i < 3; i++) {
-                    SDL_Rect aoeCible = get_rect_fighter(get_fighter((lanceur.x < cible.x) ? 2 : 1, i));
+                    SDL_Rect aoeCible = get_rect_fighter(get_fighter(i));
                     SDL_SetRenderDrawColor(renderer, 255, 100, 0, 80 + frame * 50);
                     SDL_RenderFillRect(renderer, &aoeCible);
                 }

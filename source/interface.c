@@ -76,7 +76,7 @@ void liberer_polices() {
 
 bool equipe_est_morte(int equipe) {
     for (int i = 0; i < 3; i++) {
-        Fighter* p = get_fighter(equipe, i);
+        Fighter* p = get_fighter(i);
         if (p->actu_pv > 0) return false;
     }
     return true;
