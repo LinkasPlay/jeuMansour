@@ -134,6 +134,8 @@ bool equipe_est_morte(int equipe);
 void runGame(SDL_Renderer* rendu);
 
 // === Variables globales ===
+extern int idIncassble;
+extern int dureeMur;
 extern SDL_Window* fenetre;
 extern int screenWidth;
 extern int screenHeight;

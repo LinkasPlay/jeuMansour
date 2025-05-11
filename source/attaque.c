@@ -1,4 +1,3 @@
-// ----- attaque.c -----
 #include <stdio.h>
 #include <string.h>
 #include "attaque.h"
@@ -89,54 +88,58 @@ void soin_effet(Fighter* lanceur, Fighter* cible, int quantite) {
 
 void defense(Fighter* attaquant, Fighter* cible) {
     attaquant->statutEffet = 13 ;
+    attaquant->dureeEffet = 1;
     SDL_Log("%s Choisi de ce defendre\n", attaquant->nom);
 }
 
 void attaqueClassique(Fighter* attaquant, Fighter* cible) {
     Fighter a = appliquer_modificateurs(attaquant);
+    Fighter modifCible;
+    Fighter* vraieCible = cible;
 
-    Fighter* cibleReelle = cible;
-    int indexProtecteur = cible->protegePar;
+    int equipeCibleInitiale = (cible == &partieActuelle.joueur1.fighter1 || 
+        cible == &partieActuelle.joueur1.fighter2 || 
+        cible == &partieActuelle.joueur1.fighter3) ? 1 : 2;
 
-    SDL_Log("Vérif redirection : cible = %s, protegePar = %d, protecteur = %s",
-        cible->nom, cible->protegePar,
-        (cible->protegePar >= 0 ? persoChoisi[cible->protegePar].nom : "aucun"));
+    int equipeIncassable = (idIncassble <= 2) ? 1 : 2;
 
-    if (indexProtecteur >= 0 &&
-        strcmp(persoChoisi[indexProtecteur].nom, "incassable") == 0) {
-        
-        cibleReelle = &persoChoisi[indexProtecteur];
-        SDL_Log("%s protège %s : redirection vers %s !", cibleReelle->nom, cible->nom, cibleReelle->nom);
+    if (dureeMur > 0 && equipeCibleInitiale == equipeIncassable) {
+    switch (idIncassble) {
+    case 0: vraieCible = &partieActuelle.joueur1.fighter1; break;
+    case 1: vraieCible = &partieActuelle.joueur1.fighter2; break;
+    case 2: vraieCible = &partieActuelle.joueur1.fighter3; break;
+    case 3: vraieCible = &partieActuelle.joueur2.fighter1; break;
+    case 4: vraieCible = &partieActuelle.joueur2.fighter2; break;
+    case 5: vraieCible = &partieActuelle.joueur2.fighter3; break;
+    }
     }
 
-    // Calcul des dégâts sur la cible réelle (ici Incassable si redirigé)
-    Fighter c = appliquer_modificateurs(cibleReelle);
 
-    int degats = a.attaque * 2 - c.defense;
+    modifCible = appliquer_modificateurs(vraieCible);
 
-    // Réduction si le défenseur a le statut DEFENSE
-    if (cibleReelle->statutEffet == 13) {
+    int degats = a.attaque * 2 - modifCible.defense;
+
+    if (vraieCible->statutEffet == 13) {
         degats *= 0.1;
-        cibleReelle->statutEffet = 0;  // Statut consommé
-        SDL_Log("Défense active : dégâts réduits pour %s !\n", cibleReelle->nom);
+        vraieCible->statutEffet = 0;
+        SDL_Log("Défense active : dégâts réduits pour %s !", vraieCible->nom);
     }
 
     if (degats < 10) degats = 10;
 
-    // Applique les dégâts à la cible réelle (Incassable si protégé)
-    cibleReelle->actu_pv -= degats;
-    if (cibleReelle->actu_pv < 0) cibleReelle->actu_pv = 0;
+    vraieCible->actu_pv -= degats;
+    if (vraieCible->actu_pv < 0) vraieCible->actu_pv = 0;
 
-    if (cibleReelle->pt < 10) cibleReelle->pt++;
+    if (vraieCible->pt < 10) vraieCible->pt++;
 
-    SDL_Log("%s utilise Attaque Classique sur %s (-%d PV)\n", a.nom, cibleReelle->nom, degats);
+    SDL_Log("%s utilise Attaque Classique sur %s (-%d PV)", a.nom, vraieCible->nom, degats);
 }
-
 
 
 
 void attaque_affutage_mortal(Fighter* attaquant, Fighter* cible) {
     attaquant->statutEffet = 1;
+    attaquant->dureeEffet = 3;
     SDL_Log("%s applique l'effet Saignement\n", attaquant->nom);
 }
 
@@ -174,8 +177,10 @@ void attaque_assaut_tranchant(Fighter* attaquant, Fighter* cible) {
 
 void attaque_eveil_du_sabre(Fighter* attaquant, Fighter* cible) {
     attaquant->statutEffet = 4;
+    attaquant->dureeEffet = 2;
     SDL_Log("%s augmente son attaque (Éveil du Sabre)\n", attaquant->nom);
 }
+
 
 
 void attaque_flammes_solaires(Fighter* attaquant, Fighter* cible) {
@@ -200,6 +205,7 @@ void attaque_explosion_ardente(Fighter* attaquant, Fighter* cible) {
     Fighter c = appliquer_modificateurs(cibleReelle);
 
     attaquant->statutEffet = 2;
+    attaquant->dureeEffet = 3;
     int degats = a.magie * 2 - c.magie;
     if (degats < 10) degats = 10;
 
@@ -214,11 +220,13 @@ void attaque_explosion_ardente(Fighter* attaquant, Fighter* cible) {
 
 void attaque_esprit_flamboyant(Fighter* attaquant, Fighter* cible) {
     attaquant->statutEffet = 4;
+    attaquant->dureeEffet = 2;
     SDL_Log("%s augmente son attaque (Esprit Flamboyant)\n", attaquant->nom);
 }
 
 void attaque_prison_de_givre(Fighter* attaquant, Fighter* cible) {
     cible->statutEffet = 11;
+    cible->dureeEffet = 2;
     SDL_Log("%s gèle %s (Prison de Givre)\n", attaquant->nom, cible->nom);
 }
 
@@ -238,7 +246,9 @@ void attaque_blizzard(Fighter* attaquant, Fighter* cible) {
 
     Fighter c = appliquer_modificateurs(cibleReelle);
 
-    cible->statutEffet = 11;  // Gel toujours sur la cible originale
+    cible->statutEffet = 11;
+    cible->dureeEffet = 2;
+
     int degats = (a.attaque * 0.3) * 2 - c.defense;
     if (degats < 10) degats = 10;
 
@@ -258,6 +268,8 @@ void attaque_glace_curative(Fighter* attaquant, Fighter* cible) {
 void attaque_lien_de_sang(Fighter* attaquant, Fighter* cible) {
     attaquant->statutEffet = 12;
     cible->statutEffet = 12;
+    attaquant->dureeEffet = 2;
+    cible->dureeEffet = 2;
     SDL_Log("%s crée un Lien de Sang avec %s\n", attaquant->nom, cible->nom);
 }
 
@@ -307,11 +319,13 @@ void attaque_hurlement_noir(Fighter* attaquant, Fighter* cible) {
 
 void attaque_brume_protectrice(Fighter* attaquant, Fighter* cible) {
     cible->statutEffet = 3;
+    cible->dureeEffet = 2;
     SDL_Log("%s augmente la défense de %s (Brume Protectrice)\n", attaquant->nom, cible->nom);
 }
 
 void attaque_danse_du_vent(Fighter* attaquant, Fighter* cible) {
     cible->statutEffet = 7;
+    cible->dureeEffet = 2;
     SDL_Log("%s affaiblit l’attaque de %s (Danse du Vent)\n", attaquant->nom, cible->nom);
 }
 
@@ -440,14 +454,15 @@ void attaque_execution_rapide(Fighter* attaquant, Fighter* cible) {
 
 
 void attaque_mur_vivant(Fighter* attaquant, Fighter* cible) {
-    // Enregistre que l'attaquant protège la cible avec "Mur Vivant"
-    cible->protegePar = get_index_fighter(attaquant);
-    SDL_Log("%s protège %s avec Mur Vivant (redirige les dégâts).\n", attaquant->nom, cible->nom);
+    dureeMur = 3;
+    SDL_Log("%s protége ses alliés (Mur Vivant)\n", attaquant->nom);
 }
+
 
 
 void attaque_barriere_de_pierre(Fighter* attaquant, Fighter* cible) {
     attaquant->statutEffet = 3;
+    attaquant->dureeEffet = 2;
     SDL_Log("%s augmente sa défense (Barrière de Pierre)\n", attaquant->nom);
 }
 
@@ -455,6 +470,4 @@ void attaque_rugissement_d_acier(Fighter* attaquant, Fighter* cible) {
     cible->statutEffet = 3;
     cible->dureeEffet = 2;
     SDL_Log("%s augmente la défense de %s (Rugissement d’Acier)\n", attaquant->nom, cible->nom);
-    
 }
-
