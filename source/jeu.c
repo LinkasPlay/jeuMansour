@@ -567,27 +567,27 @@ void runGame(SDL_Renderer* rendu) {
     if(partieActuelle.joueur1.fighter1.element == partieActuelle.mapType){ 
         partieActuelle.joueur1.fighter1.max_pv += 20;
         partieActuelle.joueur1.fighter1.actu_pv += 20;
-        SDL_Log("%s recoit un boost d'élement !",joueur1.fighter1.nom);
+        SDL_Log("%s recoit un boost d'élement !",partieActuelle.joueur1.fighter1.nom);
     } 
     partieActuelle.joueur1.fighter2 = persoChoisi[2];
     if(partieActuelle.joueur1.fighter2.element == partieActuelle.mapType){
         partieActuelle.joueur1.fighter2.max_pv += 20;
         partieActuelle.joueur1.fighter2.actu_pv += 20;
-        SDL_Log("%s recoit un boost d'élement !",joueur1.fighter2.nom);
+        SDL_Log("%s recoit un boost d'élement !",partieActuelle.joueur1.fighter2.nom);
     }
 
     partieActuelle.joueur1.fighter3 = persoChoisi[4];
     if(partieActuelle.joueur1.fighter3.element == partieActuelle.mapType){ 
         partieActuelle.joueur1.fighter3.max_pv += 20;
         partieActuelle.joueur1.fighter3.actu_pv += 20;
-        SDL_Log("%s recoit un boost d'élement !",joueur1.fighter3.nom);
+        SDL_Log("%s recoit un boost d'élement !",partieActuelle.joueur1.fighter3.nom);
     }
 
     partieActuelle.joueur2.fighter1 = persoChoisi[1];
     if(partieActuelle.joueur2.fighter1.element == partieActuelle.mapType){
         partieActuelle.joueur2.fighter1.max_pv += 20;
         partieActuelle.joueur2.fighter1.actu_pv += 20;
-        SDL_Log("%s recoit un boost d'élement !",joueur2.fighter1.nom);
+        SDL_Log("%s recoit un boost d'élement !",partieActuelle.joueur2.fighter1.nom);
     }
 
 
@@ -595,14 +595,14 @@ void runGame(SDL_Renderer* rendu) {
     if(partieActuelle.joueur2.fighter2.element == partieActuelle.mapType){ 
         partieActuelle.joueur2.fighter2.max_pv += 20;
         partieActuelle.joueur2.fighter2.actu_pv += 20;
-        SDL_Log("%s recoit un boost d'élement !",joueur2.fighter2.nom);
+        SDL_Log("%s recoit un boost d'élement !",partieActuelle.joueur2.fighter2.nom);
     }
 
     partieActuelle.joueur2.fighter3 = persoChoisi[5];
     if(partieActuelle.joueur2.fighter3.element == partieActuelle.mapType){
         partieActuelle.joueur2.fighter3.max_pv += 20;
         partieActuelle.joueur2.fighter3.actu_pv += 20;
-        SDL_Log("%s recoit un boost d'élement !",joueur2.fighter3.nom);
+        SDL_Log("%s recoit un boost d'élement !",partieActuelle.joueur2.fighter3.nom);
     }
 
     
